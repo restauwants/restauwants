@@ -1,5 +1,5 @@
 {
-  "name": "@acme/auth-proxy",
+  "name": "@restauwants/auth-proxy",
   "private": true,
   "type": "module",
   "scripts": {
@@ -14,10 +14,10 @@
     "@auth/core": "0.20.0"
   },
   "devDependencies": {
-    "@acme/eslint-config": "workspace:^0.2.0",
-    "@acme/prettier-config": "workspace:^0.1.0",
-    "@acme/tailwind-config": "workspace:^0.1.0",
-    "@acme/tsconfig": "workspace:^0.1.0",
+    "@restauwants/eslint-config": "workspace:^0.2.0",
+    "@restauwants/prettier-config": "workspace:^0.1.0",
+    "@restauwants/tailwind-config": "workspace:^0.1.0",
+    "@restauwants/tsconfig": "workspace:^0.1.0",
     "@types/node": "^20.11.0",
     "eslint": "^8.56.0",
     "h3": "^1.9.0",
@@ -28,8 +28,8 @@
   "eslintConfig": {
     "root": true,
     "extends": [
-      "@acme/eslint-config/base"
+      "@restauwants/eslint-config/base"
     ]
   },
-  "prettier": "@acme/prettier-config"
+  "prettier": "@restauwants/prettier-config"
 }

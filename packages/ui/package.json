@@ -1,5 +1,5 @@
 {
-  "name": "@acme/ui",
+  "name": "@restauwants/ui",
   "private": true,
   "version": "0.1.0",
   "type": "module",
@@ -34,10 +34,10 @@
     "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
-    "@acme/eslint-config": "workspace:^0.2.0",
-    "@acme/prettier-config": "workspace:^0.1.0",
-    "@acme/tailwind-config": "workspace:^0.1.0",
-    "@acme/tsconfig": "workspace:^0.1.0",
+    "@restauwants/eslint-config": "workspace:^0.2.0",
+    "@restauwants/prettier-config": "workspace:^0.1.0",
+    "@restauwants/tailwind-config": "workspace:^0.1.0",
+    "@restauwants/tsconfig": "workspace:^0.1.0",
     "@types/react": "^18.2.48",
     "eslint": "^8.56.0",
     "prettier": "^3.1.1",
@@ -52,9 +52,9 @@
   },
   "eslintConfig": {
     "extends": [
-      "@acme/eslint-config/base",
-      "@acme/eslint-config/react"
+      "@restauwants/eslint-config/base",
+      "@restauwants/eslint-config/react"
     ]
   },
-  "prettier": "@acme/prettier-config"
+  "prettier": "@restauwants/prettier-config"
 }
