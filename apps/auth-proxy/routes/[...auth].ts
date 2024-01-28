@@ -5,7 +5,7 @@ import { eventHandler, toWebRequest } from "h3";
 export default eventHandler(async (event) =>
   Auth(toWebRequest(event), {
     secret: process.env.AUTH_SECRET,
-    trustHost: !!process.env.VERCEL,
+    trustHost: true,
     redirectProxyUrl: process.env.AUTH_REDIRECT_PROXY_URL,
     providers: [
       Discord({
