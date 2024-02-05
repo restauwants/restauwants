@@ -1,10 +1,7 @@
 import { Suspense } from "react";
 
 import { api } from "~/trpc/server";
-import {
-  PostCardSkeleton,
-  PostList,
-} from "../_components/posts";
+import { PostCardSkeleton, PostList } from "../_components/posts";
 
 export const runtime = "edge";
 

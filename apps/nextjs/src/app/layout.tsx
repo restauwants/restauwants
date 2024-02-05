@@ -6,10 +6,9 @@ import { cn } from "@restauwants/ui";
 import { ThemeProvider, ThemeToggle } from "@restauwants/ui/theme";
 import { Toaster } from "@restauwants/ui/toast";
 
-import { Navigation } from "./_components/navigation";
-
 import { env } from "~/env";
 import { TRPCReactProvider } from "~/trpc/react";
+import { Navigation } from "./_components/navigation";
 
 import "~/app/globals.css";
 
@@ -55,10 +54,10 @@ export default function RootLayout(props: { children: React.ReactNode }) {
           <TRPCReactProvider>
             <main>{props.children}</main>
           </TRPCReactProvider>
-          <div className="fixed w-full bottom-4 grid grid-cols-3 gap-4 justify-items-center">
+          <div className="fixed bottom-4 grid w-full grid-cols-3 justify-items-center gap-4">
             <div />
-            <Navigation/>
-            <div className="ml-auto mr-2 my-auto">
+            <Navigation />
+            <div className="my-auto ml-auto mr-2">
               <ThemeToggle />
             </div>
           </div>
