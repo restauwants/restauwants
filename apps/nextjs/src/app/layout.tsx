@@ -55,9 +55,12 @@ export default function RootLayout(props: { children: React.ReactNode }) {
           <TRPCReactProvider>
             <main>{props.children}</main>
           </TRPCReactProvider>
-          <Navigation />
-          <div className="fixed bottom-4 right-4">
-            <ThemeToggle />
+          <div className="fixed w-full bottom-4 grid grid-cols-3 gap-4 justify-items-center">
+            <div />
+            <Navigation/>
+            <div className="ml-auto my-auto">
+              <ThemeToggle />
+            </div>
           </div>
           <Toaster />
         </ThemeProvider>
