@@ -53,7 +53,7 @@ export default function RootLayout(props: { children: React.ReactNode }) {
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <TRPCReactProvider>
-            {props.children}
+            <main>{props.children}</main>
           </TRPCReactProvider>
           <Navigation />
           <div className="fixed bottom-4 right-4">
