@@ -39,7 +39,7 @@ export const viewport: Viewport = {
   ],
 };
 
-export default function RootLayout(props: { children: React.ReactNode }) {
+export default function RootLayout(props: { children: React.ReactNode, feed: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body
@@ -50,7 +50,9 @@ export default function RootLayout(props: { children: React.ReactNode }) {
         )}
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <TRPCReactProvider>{props.children}</TRPCReactProvider>
+          <TRPCReactProvider>
+            {props.feed}
+          </TRPCReactProvider>
           <div className="absolute bottom-4 right-4">
             <ThemeToggle />
           </div>
