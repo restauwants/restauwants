@@ -41,7 +41,7 @@ export const viewport: Viewport = {
   ],
 };
 
-export default function RootLayout(props: { children: React.ReactNode, feed: React.ReactNode }) {
+export default function RootLayout(props: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body
@@ -53,7 +53,7 @@ export default function RootLayout(props: { children: React.ReactNode, feed: Rea
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <TRPCReactProvider>
-            {props.feed}
+            {props.children}
           </TRPCReactProvider>
           <Navigation />
           <div className="fixed bottom-4 right-4">
