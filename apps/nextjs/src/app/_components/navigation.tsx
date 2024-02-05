@@ -26,7 +26,7 @@ export function Navigation() {
                         </Link>
                     </NavigationMenuItem>
                     <NavigationMenuItem>
-                        <Link href="/addreview" legacyBehavior passHref>
+                        <Link href="/review" legacyBehavior passHref>
                             <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                                 <PlusCircledIcon />
                             </NavigationMenuLink>
