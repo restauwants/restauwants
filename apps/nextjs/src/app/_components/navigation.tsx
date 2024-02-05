@@ -16,7 +16,7 @@ import {
 export function Navigation() {
     return (
         <div className="fixed w-full bottom-4 flex justify-center">
-            <NavigationMenu className="p-2 bg-background rounded-full">
+            <NavigationMenu className="px-2 py-1 bg-background rounded-2xl">
                 <NavigationMenuList>
                     <NavigationMenuItem>
                         <Link href="/feed" legacyBehavior passHref>
