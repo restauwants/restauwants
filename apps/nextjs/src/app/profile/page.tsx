@@ -1,3 +1,5 @@
+import { AuthShowcase } from "../_components/auth-showcase";
+
 export default async function Profile() {
     return (
         <div className="container min-h-screen py-16">
@@ -5,6 +7,7 @@ export default async function Profile() {
             <h1 className="text-5xl font-extrabold tracking-tight sm:text-[5rem]">
             <span className="text-primary">Profile</span>
             </h1>
+          <AuthShowcase />
           </div>
         </div>
       );
