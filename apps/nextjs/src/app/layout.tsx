@@ -58,7 +58,7 @@ export default function RootLayout(props: { children: React.ReactNode }) {
           <div className="fixed w-full bottom-4 grid grid-cols-3 gap-4 justify-items-center">
             <div />
             <Navigation/>
-            <div className="ml-auto my-auto">
+            <div className="ml-auto mr-2 my-auto">
               <ThemeToggle />
             </div>
           </div>
