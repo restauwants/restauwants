@@ -6,6 +6,8 @@ import { cn } from "@restauwants/ui";
 import { ThemeProvider, ThemeToggle } from "@restauwants/ui/theme";
 import { Toaster } from "@restauwants/ui/toast";
 
+import { Navigation } from "./_components/navigation";
+
 import { env } from "~/env";
 import { TRPCReactProvider } from "~/trpc/react";
 
@@ -53,7 +55,8 @@ export default function RootLayout(props: { children: React.ReactNode, feed: Rea
           <TRPCReactProvider>
             {props.feed}
           </TRPCReactProvider>
-          <div className="absolute bottom-4 right-4">
+          <Navigation />
+          <div className="fixed bottom-4 right-4">
             <ThemeToggle />
           </div>
           <Toaster />
