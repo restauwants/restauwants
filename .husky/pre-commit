@@ -1,0 +1,4 @@
+pnpm lint
+pnpm lint:ws
+pnpm format
+# pnpm typecheck
