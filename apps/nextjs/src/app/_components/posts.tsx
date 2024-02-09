@@ -57,7 +57,7 @@ export function CreatePostForm() {
           render={({ field }) => (
             <FormItem>
               <FormControl>
-                <Input {...field} placeholder="Title" />
+                <Input {...field} placeholder="Enter the Restaurant" />
               </FormControl>
               <FormMessage />
             </FormItem>
