@@ -1,6 +1,6 @@
 baseURL = 'https://restauwants.github.io/restauwants/'
 languageCode = 'en-us'
-title = 'Restauwants Documentation'
+title = 'RestauWants Documentation'
 
 [module]
 [[module.imports]]
