@@ -9,6 +9,9 @@ title = 'RestauWants Documentation'
 # Change the default theme to be use when building the site with Hugo
 theme = "hugo-theme-relearn"
 
+[params]
+    themeVariant = "restauwants-variant"
+
 # For search functionality
 [outputs]
 home = [ "HTML", "RSS", "SEARCH"]
