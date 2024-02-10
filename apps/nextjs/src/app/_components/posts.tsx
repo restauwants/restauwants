@@ -23,8 +23,8 @@ export function CreatePostForm() {
   const form = useForm({
     schema: CreatePostSchema,
     defaultValues: {
-      content: "",
-      title: "",
+      restaurantName: "",
+      reviewDescription: "",
     },
   });
 
@@ -53,11 +53,11 @@ export function CreatePostForm() {
       >
         <FormField
           control={form.control}
-          name="title"
+          name="restaurantName"
           render={({ field }) => (
             <FormItem>
               <FormControl>
-                <Input {...field} placeholder="Title" />
+                <Input {...field} placeholder="Restaurant" />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -65,11 +65,11 @@ export function CreatePostForm() {
         />
         <FormField
           control={form.control}
-          name="content"
+          name="reviewDescription"
           render={({ field }) => (
             <FormItem>
               <FormControl>
-                <Input {...field} placeholder="Content" />
+                <Input {...field} placeholder="Description" />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -90,7 +90,7 @@ export function PostList(props: {
     initialData,
   });
 
-  if (posts.length === 0 && window.location.pathname === "/feed") {
+  if (posts.length === 0) {
     return (
       <div className="relative flex w-full flex-col content-center gap-4">
         <div className="mt-20 max-w-xs">
@@ -133,8 +133,10 @@ export function PostCard(props: {
   return (
     <div className="flex flex-row rounded-lg bg-muted p-4">
       <div className="flex-grow">
-        <h2 className="text-2xl font-bold text-primary">{props.post.title}</h2>
-        <p className="mt-2 text-sm">{props.post.content}</p>
+        <h2 className="text-2xl font-bold text-primary">
+          {props.post.restaurantName}
+        </h2>
+        <p className="mt-2 text-sm">{props.post.reviewDescription}</p>
       </div>
       <div>
         <Button
