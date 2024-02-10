@@ -90,16 +90,16 @@ export function PostList(props: {
     initialData,
   });
 
-  if (posts.length === 0) {
+  if (posts.length === 0 && window.location.pathname === "/feed") {
     return (
-      <div className="relative flex w-full flex-col gap-4">
-        <PostCardSkeleton pulse={false} />
-        <PostCardSkeleton pulse={false} />
-        <PostCardSkeleton pulse={false} />
-
-        <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/10">
-          <p className="text-2xl font-bold text-white">No posts yet</p>
+      <div className="relative flex w-full flex-col content-center gap-4">
+        <div className="mt-20 max-w-xs">
+          <p className="text-base text-black">
+            Your feed is looking a bit <span className="italic">hungry...</span>{" "}
+            Maybe it is time to find a place to eat!
+          </p>
         </div>
+        <div className=""></div>
       </div>
     );
   }
