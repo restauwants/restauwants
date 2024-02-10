@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 
 import { api } from "~/trpc/server";
-import { PostCardSkeleton, PostList } from "../_components/posts";
+import { PostList } from "../_components/posts";
 
 export const runtime = "edge";
 
@@ -16,15 +16,7 @@ export default async function Feed() {
           Restau<span className="text-primary">Wants</span>
         </h1>
         <div className="w-full max-w-2xl">
-          <Suspense
-            fallback={
-              <div className="flex w-full flex-col gap-4">
-                <PostCardSkeleton />
-                <PostCardSkeleton />
-                <PostCardSkeleton />
-              </div>
-            }
-          >
+          <Suspense fallback={<h4>Loading...</h4>}>
             <PostList posts={posts} />
           </Suspense>
         </div>
