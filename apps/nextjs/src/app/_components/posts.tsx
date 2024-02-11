@@ -25,6 +25,9 @@ export function CreatePostForm() {
     defaultValues: {
       restaurantName: "",
       reviewDescription: "",
+      stars: 0,
+      price: 0.0,
+      
     },
   });
 
@@ -57,7 +60,7 @@ export function CreatePostForm() {
           render={({ field }) => (
             <FormItem>
               <FormControl>
-                <Input {...field} placeholder="Restaurant" />
+                <Input {...field} placeholder="Enter the Restaurant" />
               </FormControl>
               <FormMessage />
             </FormItem>
