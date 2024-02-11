@@ -27,7 +27,6 @@ export function CreatePostForm() {
       reviewDescription: "",
       stars: 0,
       price: 0.0,
-      
     },
   });
 
