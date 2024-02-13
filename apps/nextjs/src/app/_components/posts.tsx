@@ -28,7 +28,7 @@ export function CreatePostForm() {
       stars: 0,
       price: 0.0,
       date: new Date(),
-      displayName: "",
+      displayName: "Noodles",
       createdAt: new Date(),
       updatedAt: new Date(),
     },
@@ -69,17 +69,26 @@ export function CreatePostForm() {
             </FormItem>
           )}
         />
-        {/* <FormField
-        control = {form.control}
-        name = "stars"
-        render = {({field}) => (
-          <FormItem>
-              <FormControl>
-
-              </FormControl>
-          </FormItem>
-        )}
-        /> */}
+        <FormField
+          control={form.control}
+          name="stars"
+          render={() => <div></div>}
+        />
+        <FormField
+          control={form.control}
+          name="price"
+          render={() => <div></div>}
+        />
+        <FormField
+          control={form.control}
+          name="date"
+          render={() => <div></div>}
+        />
+        <FormField
+          control={form.control}
+          name="displayName"
+          render={() => <div></div>}
+        />
         <FormField
           control={form.control}
           name="reviewDescription"
@@ -91,6 +100,16 @@ export function CreatePostForm() {
               <FormMessage />
             </FormItem>
           )}
+        />
+        <FormField
+          control={form.control}
+          name="createdAt"
+          render={() => <div></div>}
+        />
+        <FormField
+          control={form.control}
+          name="updatedAt"
+          render={() => <div></div>}
         />
         <Button>Create</Button>
       </form>
