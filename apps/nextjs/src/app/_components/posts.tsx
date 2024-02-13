@@ -29,6 +29,7 @@ export function CreatePostForm() {
       price: 0.0,
       date: new Date(),
       displayName: "Noodles",
+      username: "",
       createdAt: new Date(),
       updatedAt: new Date(),
     },
@@ -87,6 +88,11 @@ export function CreatePostForm() {
         <FormField
           control={form.control}
           name="displayName"
+          render={() => <div></div>}
+        />
+        <FormField
+          control={form.control}
+          name="username"
           render={() => <div></div>}
         />
         <FormField
