@@ -27,6 +27,10 @@ export function CreatePostForm() {
       reviewDescription: "",
       stars: 0,
       price: 0.0,
+      date: new Date(),
+      displayName: "",
+      createdAt: new Date(),
+      updatedAt: new Date(),
     },
   });
 
@@ -65,6 +69,17 @@ export function CreatePostForm() {
             </FormItem>
           )}
         />
+        {/* <FormField
+        control = {form.control}
+        name = "stars"
+        render = {({field}) => (
+          <FormItem>
+              <FormControl>
+
+              </FormControl>
+          </FormItem>
+        )}
+        /> */}
         <FormField
           control={form.control}
           name="reviewDescription"
