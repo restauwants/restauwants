@@ -1,8 +1,10 @@
-import { auth } from "@restauwants/auth";
-import { AuthShowcase } from "../_components/auth-showcase";
-import { api } from "~/trpc/server";
-import { PostList } from "../_components/posts";
 import { Suspense } from "react";
+
+import { auth } from "@restauwants/auth";
+
+import { api } from "~/trpc/server";
+import { AuthShowcase } from "../_components/auth-showcase";
+import { PostList } from "../_components/posts";
 
 export async function getUserID() {
   try {
