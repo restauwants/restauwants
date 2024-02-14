@@ -3,7 +3,6 @@ import {
   datetime,
   float,
   int,
-  text,
   timestamp,
   varchar,
 } from "drizzle-orm/mysql-core";
