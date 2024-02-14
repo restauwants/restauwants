@@ -134,14 +134,13 @@ export function PostList(props: {
 
   if (posts.length === 0) {
     return (
-      <div className="relative flex w-full flex-col content-center gap-4">
+      <div className="relative flex w-full flex-col items-center gap-4">
         <div className="mt-20 max-w-xs">
-          <p className="text-base text-black">
+          <p className="text-center">
             Your feed is looking a bit <span className="italic">hungry...</span>{" "}
             Maybe it is time to find a place to eat!
           </p>
         </div>
-        <div className=""></div>
       </div>
     );
   }
