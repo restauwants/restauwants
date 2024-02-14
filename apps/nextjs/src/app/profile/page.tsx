@@ -1,10 +1,6 @@
-import { Suspense } from "react";
-
 import { auth } from "@restauwants/auth";
 
-import { api } from "~/trpc/server";
 import { AuthShowcase } from "../_components/auth-showcase";
-import { PostList } from "../_components/posts";
 
 export async function getUserID() {
   try {
@@ -17,14 +13,12 @@ export async function getUserID() {
       throw new Error("User not authenticated");
     }
   } catch (error) {
-    const userId = " ";
-    return userId;
+    console.error("Error getting user ID:", error);
   }
 }
 
 export default function Profile() {
   const userId = getUserID();
-  const posts = api.post.all();
 
   return (
     <div className="flex h-screen flex-col">
@@ -38,9 +32,7 @@ export default function Profile() {
         </div>
       </div>
       <div className="flex-grow bg-white p-4">
-        <Suspense fallback={<h4>Loading...</h4>}>
-          <PostList posts={posts} />
-        </Suspense>
+        {/* Content for the bottom container goes here */}
       </div>
     </div>
   );
