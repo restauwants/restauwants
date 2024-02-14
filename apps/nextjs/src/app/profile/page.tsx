@@ -1,13 +1,38 @@
+import { auth } from "@restauwants/auth";
+
 import { AuthShowcase } from "../_components/auth-showcase";
 
-export default async function Profile() {
+export async function getUserID() {
+  try {
+    const session = await auth();
+
+    if (session && session.user) {
+      const userId = session.user.name;
+      return userId;
+    } else {
+      throw new Error("User not authenticated");
+    }
+  } catch (error) {
+    console.error("Error getting user ID:", error);
+  }
+}
+
+export default function Profile() {
+  const userId = getUserID();
+
   return (
-    <div className="container min-h-screen py-16">
-      <div className="flex flex-col items-center justify-center gap-4">
-        <h1 className="text-5xl font-extrabold tracking-tight sm:text-[5rem]">
-          <span className="text-primary">Profile</span>
-        </h1>
-        <AuthShowcase />
+    <div className="flex h-screen flex-col">
+      <div className="relative h-1/4 flex-none bg-gray-100 p-4">
+        <div className="absolute bottom-4 left-4">
+          <p className="text-xl text-black ">{userId}</p>
+        </div>
+
+        <div className="absolute right-4 top-4 p-4">
+          <AuthShowcase />
+        </div>
+      </div>
+      <div className="flex-grow bg-white p-4">
+        {/* Content for the bottom container goes here */}
       </div>
     </div>
   );
