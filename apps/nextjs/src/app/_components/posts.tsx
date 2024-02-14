@@ -178,6 +178,9 @@ export function PostCard(props: {
         <h2 className="text-2xl font-bold text-primary">
           {props.post.restaurantName}
         </h2>
+        <h2 className="text-2l font-bold">{props.post.stars}</h2>
+        <h2 className="text-2l font-bold">{props.post.displayName}</h2>
+        <h2 className="text-2l font-bold">{props.post.price}</h2>
         <p className="mt-2 text-sm">{props.post.reviewDescription}</p>
       </div>
       <div>
