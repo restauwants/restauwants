@@ -8,9 +8,6 @@ export default async function Review() {
         <h6>save</h6>
       </div>
       <div className="flex flex-col gap-3">
-        <div className="text-left">
-          <h5>I ate at...</h5>
-        </div>
         <CreatePostForm />
       </div>
     </div>

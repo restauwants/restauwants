@@ -5,6 +5,7 @@ import { use } from "react";
 import type { RouterOutputs } from "@restauwants/api";
 import { cn } from "@restauwants/ui";
 import { Button } from "@restauwants/ui/button";
+import { DateDropdown } from "@restauwants/ui/date_dropdown";
 import {
   Form,
   FormControl,
@@ -51,6 +52,9 @@ export function CreatePostForm() {
           createPost.mutate(data);
         })}
       >
+        <div className="text-left">
+          <h5>I ate at...</h5>
+        </div>
         <FormField
           control={form.control}
           name="title"
@@ -63,6 +67,15 @@ export function CreatePostForm() {
             </FormItem>
           )}
         />
+        <div className="flex items-center">
+          <div className="mr-5">
+            <h5>Date: </h5>
+          </div>
+          <div>
+            <DateDropdown />
+          </div>
+        </div>
+
         <FormField
           control={form.control}
           name="content"
@@ -75,7 +88,9 @@ export function CreatePostForm() {
             </FormItem>
           )}
         />
-        <Button>Create</Button>
+        <div className="flex flex-col items-center justify-center">
+          <Button>Create</Button>
+        </div>
       </form>
     </Form>
   );
@@ -133,7 +148,9 @@ export function PostCard(props: {
   return (
     <div className="flex flex-row rounded-lg bg-muted p-4">
       <div className="flex-grow">
-        <h2 className="text-2xl font-bold text-primary">{props.post.restaurantName}</h2>
+        <h2 className="text-2xl font-bold text-primary">
+          {props.post.restaurantName}
+        </h2>
         <p className="mt-2 text-sm">{props.post.reviewDescription}</p>
       </div>
       <div>
