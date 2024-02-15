@@ -28,15 +28,29 @@ export default async function Profile() {
 
   return (
     <div className="flex h-screen flex-col">
-      <div className="relative h-1/4 flex-none rounded-lg bg-muted p-4">
-        <div className="absolute bottom-4 left-4">
-          <p className="text-2xl font-bold text-primary ">{userId}</p>
-        </div>
-
+      <div className="relative h-1/6 flex-none rounded-t-none rounded-b-2xl bg-gradient-to-r from-primary to-muted p-4">
+        
         <div className="absolute right-4 top-4 p-4">
           <AuthShowcase />
         </div>
       </div>
+
+      
+      <div className="flex-none h-1/6 bg-transparent p-4 relative">
+        <div className="absolute top-4 left-4">
+            <p className="text-2xl font-bold text-primary ">{userId}</p>
+
+            <p className="text-xs font-normal max-w-screen-md sm:max-w-full">
+              Lorem ipsum dolor sit amet consectetur. Tincidunt et risus tellus orci. 
+              Leo imperdiet tortor vel viverra morbi laoreet. 
+              Sagittis sapien mattis nunc in mi. 
+              Dignissim tellus vitae egestas viverra augue nibh fames.
+            </p>
+        </div>
+      </div>
+
+      <hr className="border-b border-muted my-2" />
+
       <div className="flex-grow p-4">
         <Suspense fallback={<h4>Loading...</h4>}>
           <PostList posts={posts} />
