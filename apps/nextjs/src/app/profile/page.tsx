@@ -1,7 +1,9 @@
 import { Suspense } from "react";
+
 import { auth } from "@restauwants/auth";
-import { AuthShowcase } from "../_components/auth-showcase";
+
 import { api } from "~/trpc/server";
+import { AuthShowcase } from "../_components/auth-showcase";
 import { PostList } from "../_components/posts";
 
 export async function getUserID() {
@@ -19,7 +21,6 @@ export async function getUserID() {
     return userId;
   }
 }
-
 
 export default async function Profile() {
   const userId = await getUserID();
