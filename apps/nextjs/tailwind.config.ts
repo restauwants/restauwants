@@ -13,6 +13,11 @@ export default {
       fontFamily: {
         sans: ["var(--font-geist-sans)", ...fontFamily.sans],
         mono: ["var(--font-geist-mono)", ...fontFamily.mono],
+        italianno: ["Italianno", "cursive"],
+      },
+      colors: {
+        money: "#00AB41",
+        maintheme: "#E4A72F",
       },
     },
   },
