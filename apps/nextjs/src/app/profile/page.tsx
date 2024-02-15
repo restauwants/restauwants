@@ -1,9 +1,7 @@
-import { Suspense } from "react";
-
+import { Suspense, useEffect, useState } from "react";
 import { auth } from "@restauwants/auth";
-
-import { api } from "~/trpc/server";
 import { AuthShowcase } from "../_components/auth-showcase";
+import { api } from "~/trpc/server";
 import { PostList } from "../_components/posts";
 
 export async function getUserID() {
@@ -22,9 +20,33 @@ export async function getUserID() {
   }
 }
 
+
 export default function Profile() {
-  const userId = getUserID();
+  const [userId, setUserId] = useState("");
   const posts = api.post.all();
+
+  useEffect(() => {
+    const fetchUserID = async () => {
+      try {
+        // Check if window is defined to ensure it's executed on the client side
+        if (typeof window !== 'undefined') {
+          const session = await auth();
+
+          if (session && session.user) {
+            const userId = session.user.name;
+            setUserId(userId ?? "");
+          } else {
+            throw new Error("User not authenticated");
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching user ID:", error);
+        setUserId(" ");
+      }
+    };
+
+    void fetchUserID();
+  }, []); // empty dependency array means this effect runs once on mount
 
   return (
     <div className="flex h-screen flex-col">
