@@ -24,7 +24,7 @@ export async function AuthShowcase() {
     <div className="flex flex-col items-center justify-center gap-4">
       <form>
         <Button
-          size="lg"
+          size="md"
           formAction={async () => {
             "use server";
             await signOut();
