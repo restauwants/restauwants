@@ -11,6 +11,7 @@ export const config = {
 
 export async function middleware(request: NextRequest) {
   const session = await auth();
+  
   if (!session) {
     return NextResponse.redirect(new URL(baseURL + "/login"));
   } else if (session && request.nextUrl.pathname.startsWith("/login")) {
