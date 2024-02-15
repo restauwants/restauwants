@@ -7,6 +7,6 @@ export const CreatePostSchema = z.object({
   price: z.number().min(0.0),
   date: z.date().max(new Date()).min(new Date("1900-01-01")),
   displayName: z.string().min(1),
-  createdAt: z.date().max(new Date()),
-  updatedAt: z.date().max(new Date()),
+  createdAt: z.date().max(new Date("1900-01-01")),
+  updatedAt: z.date().max(new Date("1900-01-01")),
 });

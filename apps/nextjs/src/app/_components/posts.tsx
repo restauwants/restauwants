@@ -5,6 +5,7 @@ import { use } from "react";
 import type { RouterOutputs } from "@restauwants/api";
 import { cn } from "@restauwants/ui";
 import { Button } from "@restauwants/ui/button";
+import { DateDropdown } from "@restauwants/ui/date_dropdown";
 import {
   Form,
   FormControl,
@@ -52,46 +53,59 @@ export function CreatePostForm() {
   return (
     <Form {...form}>
       <form
-        className="flex w-full max-w-2xl flex-col gap-4"
+        className="flex w-full max-w-2xl flex-col gap-7"
         onSubmit={form.handleSubmit(async (data) => {
           createPost.mutate(data);
         })}
       >
-        <FormField
-          control={form.control}
-          name="restaurantName"
-          render={({ field }) => (
-            <FormItem>
-              <FormControl>
-                <Input {...field} placeholder="Enter the Restaurant" />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        {/* <FormField
-        control = {form.control}
-        name = "stars"
-        render = {({field}) => (
-          <FormItem>
-              <FormControl>
+        <div className="gap-5 text-left">
+          <h5>I ate at...</h5>
+          <FormField
+            control={form.control}
+            name="restaurantName"
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <Input {...field} placeholder="Enter the Restaurant" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
 
-              </FormControl>
-          </FormItem>
-        )}
-        /> */}
-        <FormField
-          control={form.control}
-          name="reviewDescription"
-          render={({ field }) => (
-            <FormItem>
-              <FormControl>
-                <Input {...field} placeholder="Description" />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <div className="flex items-center">
+          <div className="mr-5">
+            <h5>Date: </h5>
+          </div>
+          <FormField
+            control={form.control}
+            name="date"
+            render={({ field: { onChange, value } }) => (
+              <DateDropdown selectedDate={value} onChange={onChange} />
+            )}
+          />
+        </div>
+
+        <div className="gap-5 text-left">
+          <h5>Share Your Experience!</h5>
+          <FormField
+            control={form.control}
+            name="reviewDescription"
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <Input
+                    {...field}
+                    placeholder="What was the most memorable?"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+
         <Button>Create</Button>
       </form>
     </Form>
