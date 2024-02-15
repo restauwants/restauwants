@@ -4,8 +4,6 @@ import { auth } from "@restauwants/auth";
 
 import { AuthShowcase } from "../_components/auth-showcase";
 
-const baseURL = process.env.AUTH_URL;
-
 export default async function Login() {
   const session = await auth();
   if (session) {

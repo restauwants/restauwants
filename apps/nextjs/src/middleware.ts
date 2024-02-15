@@ -1,21 +1,20 @@
-import { auth, signIn, signOut } from "@restauwants/auth";
-export { default } from "next-auth/middleware";
-import { redirect } from 'next/navigation';
-import { NextResponse, NextRequest } from 'next/server'
+import { NextRequest, NextResponse } from "next/server";
+
+import { auth } from "@restauwants/auth";
+
 const baseURL = process.env.AUTH_URL;
 
 //import middleware from "next-auth/middleware";
 export const config = {
-    matcher: ['/review', '/feed', '/profile']
-  }
-
+  matcher: ["/review", "/feed", "/profile"],
+};
 
 export async function middleware(request: NextRequest) {
-    const session = await auth();
-    if (!session) {
-        return  NextResponse.redirect(new URL(baseURL + '/login'));
-    } else if (session && request.nextUrl.pathname.startsWith('/login')){
-        // Return an empty object if the user is authenticated
-        return  NextResponse.redirect(new URL(baseURL + '/profile'));
-    }
+  const session = await auth();
+  if (!session) {
+    return NextResponse.redirect(new URL(baseURL + "/login"));
+  } else if (session && request.nextUrl.pathname.startsWith("/login")) {
+    // Return an empty object if the user is authenticated
+    return NextResponse.redirect(new URL(baseURL + "/profile"));
+  }
 }
