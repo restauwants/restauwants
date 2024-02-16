@@ -28,28 +28,26 @@ export default async function Profile() {
 
   return (
     <div className="flex h-screen flex-col">
-      <div className="relative h-1/6 flex-none rounded-t-none rounded-b-2xl bg-gradient-to-r from-primary to-muted p-4">
-        
+      <div className="relative h-1/6 flex-none rounded-b-2xl rounded-t-none bg-gradient-to-r from-primary to-muted p-4">
         <div className="absolute right-4 top-4 p-4">
           <AuthShowcase />
         </div>
       </div>
 
-      
-      <div className="flex-none h-1/6 bg-transparent p-4 relative">
-        <div className="absolute top-4 left-4">
-            <p className="text-2xl font-bold text-primary ">{userId}</p>
+      <div className="relative h-1/6 flex-none bg-transparent p-4">
+        <div className="absolute left-4 top-4">
+          <p className="text-2xl font-bold text-primary ">{userId}</p>
 
-            <p className="text-xs font-normal max-w-screen-md sm:max-w-full">
-              Lorem ipsum dolor sit amet consectetur. Tincidunt et risus tellus orci. 
-              Leo imperdiet tortor vel viverra morbi laoreet. 
-              Sagittis sapien mattis nunc in mi. 
-              Dignissim tellus vitae egestas viverra augue nibh fames.
-            </p>
+          <p className="max-w-screen-md text-xs font-normal sm:max-w-full">
+            Lorem ipsum dolor sit amet consectetur. Tincidunt et risus tellus
+            orci. Leo imperdiet tortor vel viverra morbi laoreet. Sagittis
+            sapien mattis nunc in mi. Dignissim tellus vitae egestas viverra
+            augue nibh fames.
+          </p>
         </div>
       </div>
 
-      <hr className="border-b border-muted my-2" />
+      <hr className="my-2 border-b border-muted" />
 
       <div className="flex-grow p-4">
         <Suspense fallback={<h4>Loading...</h4>}>
