@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { float, int, timestamp, varchar } from "drizzle-orm/mysql-core";
+import { int, timestamp, varchar } from "drizzle-orm/mysql-core";
 
 import { mySqlTable } from "./_table";
 
@@ -8,7 +8,7 @@ export const post = mySqlTable("post", {
   restaurantName: varchar("restaurantName", { length: 256 }),
   reviewDescription: varchar("reviewText", { length: 256 }),
   stars: int("stars").default(5),
-  price: float("price"),
+  price: varchar("price", { length: 256 }),
   date: varchar("date", { length: 256 }),
   displayName: varchar("displayName", { length: 256 }),
   username: varchar("username", { length: 256 }),
