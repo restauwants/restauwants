@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useState } from "react";
+import { use, useEffect, useState } from "react";
 
 import type { RouterOutputs } from "@restauwants/api";
 import { cn } from "@restauwants/ui";
@@ -40,6 +40,7 @@ export function CreatePostForm() {
   const createPost = api.post.create.useMutation({
     onSuccess: async () => {
       form.reset();
+      setClickedIndex(-1);
       await utils.post.invalidate();
     },
     onError: (err) => {
@@ -52,15 +53,12 @@ export function CreatePostForm() {
   });
   const [clickedIndex, setClickedIndex] = useState<number>(-1);
 
-  const handleStarClick = (
-    index: number,
-  ): typeof defaults | { stars: number } => {
+  const handleStarClick = (index: number) => {
     setClickedIndex(index);
-    return {
-      ...form.defaultValues,
-      stars: clickedIndex + 1,
-    } as typeof defaults | { stars: number };
   };
+  useEffect(() => {
+    form.setValue("stars", clickedIndex + 1);
+  }, [clickedIndex]);
 
   return (
     <Form {...form}>
@@ -116,7 +114,9 @@ export function CreatePostForm() {
                   className="h-4 w-4"
                   viewBox="0 0 20 20"
                   xmlns="http://www.w3.org/2000/svg"
-                  onClick={() => handleStarClick(index)}
+                  onClick={() => {
+                    handleStarClick(index);
+                  }}
                 >
                   <g id="SVGRepo_bgCarrier" strokeWidth="0" />
                   <g
@@ -146,6 +146,7 @@ export function CreatePostForm() {
             <FormItem>
               <FormControl>
                 <Input
+                  type="number"
                   onChange={field.onChange}
                   value={field.value}
                   name={field.name}
@@ -251,7 +252,7 @@ export function PostCard(props: {
 
   const formattedDate = props.post.date.toLocaleString();
 
-  const regex = /^(\d{4})-(\d{2})-(\d{2}), \d{1,2}:\d{2}:\d{2} [aApP]\.m\.$/;
+  const regex = /^(\d{4})-(\d{2})-(\d{2})$/;
   const match = formattedDate.match(regex);
   const [, year, month, day] = match;
 
@@ -312,7 +313,7 @@ export function PostCard(props: {
       </div>
       <div className="flex w-full justify-start">
         <p className="text-xs">
-          {month}, {day}, {year}
+          {day} {month}, {year}
         </p>
       </div>
       <div className="flex-grow text-sm">{props.post.reviewDescription}</div>
