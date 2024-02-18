@@ -308,9 +308,7 @@ export function PostCard(props: {
         </div>
       </div>
       <div className="flex w-full justify-start">
-        <p className="text-xs">
-          {postDate.toLocaleDateString()}
-        </p>
+        <p className="text-xs">{postDate.toLocaleDateString()}</p>
       </div>
       <div className="flex-grow text-sm">{props.post.reviewDescription}</div>
       <Button
