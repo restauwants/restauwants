@@ -246,11 +246,9 @@ export function PostCard(props: {
     },
   });
 
-  const formattedDate = props.post.date.toLocaleString();
-
-  const regex = /^(\d{4})-(\d{2})-(\d{2})$/;
-  const match = formattedDate.match(regex);
-  const [, year, month, day] = match;
+  // props.post.date is currently type string ...
+  // Initialize as Date (defaulting to start of epoch)
+  const postDate = new Date(props.post.date ?? 0);
 
   return (
     <div className="border-base h-full w-full border-b-2">
@@ -311,7 +309,7 @@ export function PostCard(props: {
       </div>
       <div className="flex w-full justify-start">
         <p className="text-xs">
-          {day} {month}, {year}
+          {postDate.toLocaleDateString()}
         </p>
       </div>
       <div className="flex-grow text-sm">{props.post.reviewDescription}</div>
