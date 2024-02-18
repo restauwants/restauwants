@@ -207,6 +207,12 @@ export function PostList(props: {
     initialData,
   });
 
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   if (posts.length === 0) {
     return (
       <div className="relative flex w-full flex-col items-center gap-4">
@@ -218,6 +224,11 @@ export function PostList(props: {
         </div>
       </div>
     );
+  }
+
+  // Avoid pre-render on post list -- prevents issues with date formatting
+  if (!isMounted) {
+    return <h4>Loading...</h4>;
   }
 
   return (
