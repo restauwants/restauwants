@@ -55,7 +55,27 @@ To get it running, follow the steps below:
 
 This project is set up to use the [VSCode DevContainer](https://code.visualstudio.com/docs/remote/containers) for development. If you have the [Remote - Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) extension installed, you can open the project in a container by clicking the green "Open in Container" button in the bottom right corner of the window.
 
-### 2. When it's time to add a new package
+### 2. Setup the environment variables
+
+Create a `.env` file in the root of the project by copying the `.env.example` file and filling in the required environment variables. Similarly, inside of [`apps/auth-proxy`](./apps/auth-proxy), create a `.env` file by copying the `.env.example` file and filling in the required environment variables.
+
+```bash
+cp .env.example .env
+cp apps/auth-proxy/.env.example apps/auth-proxy/.env
+```
+
+### 3. Run the project locally
+
+To run the project locally, run the following in the root of the project:
+
+```bash
+pnpm run dev
+docker compose up
+```
+
+The Next.js application will be available on [http://localhost:3000](http://localhost:3000). The docker-compose command will start the MySQL database, Adminer, and PlanetScale API proxy. The Adminer interface will be available on [http://localhost:8080](http://localhost:8080).
+
+### 4. When it's time to add a new package
 
 To add a new package, simply run `pnpm turbo gen init` in the monorepo root. This will prompt you for a package name as well as if you want to install any dependencies to the new package (of course you can also do this yourself later).
 
