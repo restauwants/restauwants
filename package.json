@@ -36,8 +36,5 @@
     "overrides": {
       "@auth/core": "0.20.0"
     }
-  },
-  "dependencies": {
-    "@radix-ui/react-alert-dialog": "^1.0.5"
   }
 }
