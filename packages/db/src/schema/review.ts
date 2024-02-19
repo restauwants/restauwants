@@ -3,7 +3,7 @@ import { int, timestamp, varchar } from "drizzle-orm/mysql-core";
 
 import { mySqlTable } from "./_table";
 
-export const post = mySqlTable("post", {
+export const review = mySqlTable("review", {
   id: int("id").autoincrement().primaryKey(),
   restaurantName: varchar("restaurantName", { length: 256 }),
   reviewDescription: varchar("reviewText", { length: 256 }),
