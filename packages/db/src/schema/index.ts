@@ -10,6 +10,8 @@ import {
 
 import { mySqlTable } from "./_table";
 
+// #### Auth Schema ####
+
 export const users = mySqlTable("user", {
   id: varchar("id", { length: 255 }).notNull().primaryKey(),
   name: varchar("name", { length: 255 }),
@@ -21,8 +23,11 @@ export const users = mySqlTable("user", {
   image: varchar("image", { length: 255 }),
 });
 
-export const usersRelations = relations(users, ({ many }) => ({
+export const usersRelations = relations(users, ({ one, many }) => ({
   accounts: many(accounts),
+  reviews: many(reviews),
+  userData: one(userData),
+  comments: many(comments),
 }));
 
 export const accounts = mySqlTable(
@@ -83,3 +88,62 @@ export const verificationTokens = mySqlTable(
     compoundKey: primaryKey({ columns: [vt.identifier, vt.token] }),
   }),
 );
+
+// #### Model Schema ####
+
+export const reviews = mySqlTable("review", {
+  id: int("id").notNull().primaryKey(),
+  userId: int("userId").notNull(),
+  restaurantId: int("restaurantId").notNull(),
+  rating: int("rating").notNull(),
+  price: int("price").notNull(),
+  text: varchar("text", { length: 255 }).notNull(),
+  visitedAt: timestamp("visitedAt").notNull(),
+  createdAt: timestamp("createdAt")
+    .notNull()
+    .default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: timestamp("updatedAt")
+    .notNull()
+    .default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const reviewRelations = relations(reviews, ({ one }) => ({
+  user: one(users),
+  restaurant: one(restaurants),
+}));
+
+export const userData = mySqlTable("userData", {
+  id: int("id").notNull().primaryKey(),
+  username: varchar("username", { length: 255 }).notNull(),
+});
+
+export const userDataRelations = relations(userData, ({ one }) => ({
+  user: one(users),
+}));
+
+export const restaurants = mySqlTable("restaurant", {
+  id: int("id").notNull().primaryKey(),
+  name: varchar("name", { length: 255 }).notNull(),
+});
+
+export const restaurantRelations = relations(restaurants, ({ many }) => ({
+  reviews: many(reviews),
+}));
+
+export const comments = mySqlTable("comment", {
+  id: int("id").notNull().primaryKey(),
+  userId: int("userId").notNull(),
+  reviewId: int("reviewId").notNull(),
+  text: varchar("text", { length: 255 }).notNull(),
+  createdAt: timestamp("createdAt")
+    .notNull()
+    .default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: timestamp("updatedAt")
+    .notNull()
+    .default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const commentRelations = relations(comments, ({ one }) => ({
+  user: one(users),
+  review: one(reviews),
+}));
