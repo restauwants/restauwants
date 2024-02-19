@@ -2,10 +2,7 @@ import { connect } from "@planetscale/database";
 import { drizzle } from "drizzle-orm/planetscale-serverless";
 
 import { isLocal } from "./local";
-import * as auth from "./schema/auth";
-import * as review from "./schema/review";
-
-export const schema = { ...auth, ...review };
+import * as schema from "./schema";
 
 export { mySqlTable as tableCreator } from "./schema/_table";
 
