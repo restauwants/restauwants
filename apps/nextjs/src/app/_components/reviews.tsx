@@ -15,11 +15,11 @@ import {
 } from "@restauwants/ui/form";
 import { Input } from "@restauwants/ui/input";
 import { toast } from "@restauwants/ui/toast";
-import { CreatePostSchema } from "@restauwants/validators";
+import { CreateReviewSchema } from "@restauwants/validators";
 
 import { api } from "~/trpc/react";
 
-export function CreatePostForm() {
+export function CreateReviewForm() {
   const defaults = {
     restaurantName: "",
     reviewDescription: "",
@@ -32,22 +32,22 @@ export function CreatePostForm() {
     updatedAt: new Date(),
   };
   const form = useForm({
-    schema: CreatePostSchema,
+    schema: CreateReviewSchema,
     defaultValues: defaults,
   });
 
   const utils = api.useUtils();
-  const createPost = api.post.create.useMutation({
+  const createReview = api.review.create.useMutation({
     onSuccess: async () => {
       form.reset();
       setClickedIndex(-1);
-      await utils.post.invalidate();
+      await utils.review.invalidate();
     },
     onError: (err) => {
       toast.error(
         err?.data?.code === "UNAUTHORIZED"
-          ? "You must be logged in to post"
-          : "Failed to create post",
+          ? "You must be logged in to add a review"
+          : "Failed to create review",
       );
     },
   });
@@ -65,7 +65,7 @@ export function CreatePostForm() {
       <form
         className="flex w-full max-w-2xl flex-col gap-4"
         onSubmit={form.handleSubmit(async (data) => {
-          createPost.mutate(data);
+          createReview.mutate(data);
         })}
       >
         <FormField
@@ -198,16 +198,16 @@ export function CreatePostForm() {
   );
 }
 
-export function PostList(props: {
-  posts: Promise<RouterOutputs["post"]["all"]>;
+export function ReviewList(props: {
+  reviews: Promise<RouterOutputs["review"]["all"]>;
 }) {
   // TODO: Make `useSuspenseQuery` work without having to pass a promise from RSC
-  const initialData = use(props.posts);
-  const { data: posts } = api.post.all.useQuery(undefined, {
+  const initialData = use(props.reviews);
+  const { data: reviews } = api.review.all.useQuery(undefined, {
     initialData,
   });
 
-  if (posts.length === 0) {
+  if (reviews.length === 0) {
     return (
       <div className="relative flex w-full flex-col items-center gap-4">
         <div className="mt-20 max-w-xs">
@@ -222,31 +222,31 @@ export function PostList(props: {
 
   return (
     <div className="flex h-full w-full flex-col">
-      {posts.map((p) => {
-        return <PostCard key={p.id} post={p} />;
+      {reviews.map((p) => {
+        return <ReviewCard key={p.id} review={p} />;
       })}
     </div>
   );
 }
 
-export function PostCard(props: {
-  post: RouterOutputs["post"]["all"][number];
+export function ReviewCard(props: {
+  review: RouterOutputs["review"]["all"][number];
 }) {
   const utils = api.useUtils();
-  const deletePost = api.post.delete.useMutation({
+  const deleteReview = api.review.delete.useMutation({
     onSuccess: async () => {
-      await utils.post.invalidate();
+      await utils.review.invalidate();
     },
     onError: (err) => {
       toast.error(
         err?.data?.code === "UNAUTHORIZED"
-          ? "You must be logged in to delete a post"
-          : "Failed to delete post",
+          ? "You must be logged in to delete a review"
+          : "Failed to delete review",
       );
     },
   });
 
-  const formattedDate = props.post.date.toLocaleString();
+  const formattedDate = props.review.date.toLocaleString();
 
   const regex = /^(\d{4})-(\d{2})-(\d{2})$/;
   const match = formattedDate.match(regex);
@@ -255,14 +255,14 @@ export function PostCard(props: {
   return (
     <div className="border-base h-full w-full border-b-2">
       <div className="flex h-7 w-full items-center justify-between text-center">
-        <h2 className="text-xl font-bold">{props.post.restaurantName}</h2>
+        <h2 className="text-xl font-bold">{props.review.restaurantName}</h2>
         <div className="flex">
-          <h2 className="text-base font-bold">{props.post.displayName}</h2>
+          <h2 className="text-base font-bold">{props.review.displayName}</h2>
         </div>
       </div>
       <div className="flex h-5 w-full justify-between">
         <div className="flex h-full w-full justify-start gap-0.5">
-          {Array.from({ length: props.post.stars ?? 5 }).map((_, index) => (
+          {Array.from({ length: props.review.stars ?? 5 }).map((_, index) => (
             <svg
               key={index}
               className="h-3 w-3"
@@ -283,7 +283,7 @@ export function PostCard(props: {
               </g>
             </svg>
           ))}
-          {Array.from({ length: 5 - (props.post.stars ?? 0) }).map(
+          {Array.from({ length: 5 - (props.review.stars ?? 0) }).map(
             (_, index) => (
               <svg
                 key={index}
@@ -306,7 +306,7 @@ export function PostCard(props: {
               </svg>
             ),
           )}
-          <p className="text-money text-xs">${props.post.price}</p>
+          <p className="text-money text-xs">${props.review.price}</p>
         </div>
       </div>
       <div className="flex w-full justify-start">
@@ -314,10 +314,10 @@ export function PostCard(props: {
           {day} {month}, {year}
         </p>
       </div>
-      <div className="flex-grow text-sm">{props.post.reviewDescription}</div>
+      <div className="flex-grow text-sm">{props.review.reviewDescription}</div>
       <Button
         className="h-3 cursor-pointer text-sm font-bold hover:bg-transparent hover:text-white"
-        onClick={() => deletePost.mutate(props.post.id)}
+        onClick={() => deleteReview.mutate(props.review.id)}
       >
         Delete
       </Button>
@@ -325,7 +325,7 @@ export function PostCard(props: {
   );
 }
 
-export function PostCardSkeleton(props: { pulse?: boolean }) {
+export function ReviewCardSkeleton(props: { pulse?: boolean }) {
   const { pulse = true } = props;
   return (
     <div className="flex flex-row rounded-lg bg-muted p-4">

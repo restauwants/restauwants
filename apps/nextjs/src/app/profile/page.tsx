@@ -4,7 +4,7 @@ import { auth } from "@restauwants/auth";
 
 import { api } from "~/trpc/server";
 import { AuthShowcase } from "../_components/auth-showcase";
-import { PostList } from "../_components/posts";
+import { ReviewList } from "../_components/reviews";
 
 export async function getUserID() {
   try {
@@ -24,7 +24,7 @@ export async function getUserID() {
 
 export default async function Profile() {
   const userId = await getUserID();
-  const posts = api.post.all();
+  const reviews = api.review.all();
 
   return (
     <div className="flex h-screen flex-col">
@@ -51,7 +51,7 @@ export default async function Profile() {
 
       <div className="flex-grow p-4">
         <Suspense fallback={<h4>Loading...</h4>}>
-          <PostList posts={posts} />
+          <ReviewList reviews={reviews} />
         </Suspense>
       </div>
     </div>

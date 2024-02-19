@@ -8,15 +8,15 @@ import { createCallerFactory, createTRPCContext } from "./trpc";
  * Create a server-side caller for the tRPC API
  * @example
  * const trpc = createCaller(createContext);
- * const res = await trpc.post.all();
- *       ^? Post[]
+ * const res = await trpc.review.all();
+ *       ^? Review[]
  */
 const createCaller = createCallerFactory(appRouter);
 
 /**
  * Inference helpers for input types
  * @example
- * type PostByIdInput = RouterInputs['post']['byId']
+ * type ReviewByIdInput = RouterInputs['review']['byId']
  *      ^? { id: number }
  **/
 type RouterInputs = inferRouterInputs<AppRouter>;
@@ -24,8 +24,8 @@ type RouterInputs = inferRouterInputs<AppRouter>;
 /**
  * Inference helpers for output types
  * @example
- * type AllPostsOutput = RouterOutputs['post']['all']
- *      ^? Post[]
+ * type AllReviewsOutput = RouterOutputs['review']['all']
+ *      ^? Review[]
  **/
 type RouterOutputs = inferRouterOutputs<AppRouter>;
 

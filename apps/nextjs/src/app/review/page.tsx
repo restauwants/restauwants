@@ -1,4 +1,4 @@
-import { CreatePostForm } from "../_components/posts";
+import { CreateReviewForm } from "../_components/reviews";
 
 export default async function Review() {
   return (
@@ -7,7 +7,7 @@ export default async function Review() {
         <div className="text-left">
           <h5>I ate at...</h5>
         </div>
-        <CreatePostForm />
+        <CreateReviewForm />
       </div>
     </div>
   );
