@@ -261,7 +261,7 @@ export function ReviewCard(props: {
               </g>
             </svg>
           ))}
-          <p className="text-money text-xs">${props.review.price}</p>
+          <p className="text-xs">${props.review.price}</p>
         </div>
       </div>
       <div className="flex w-full justify-start">
