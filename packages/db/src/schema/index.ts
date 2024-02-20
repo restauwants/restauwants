@@ -1,5 +1,6 @@
 import { relations, sql } from "drizzle-orm";
 import {
+  float,
   index,
   int,
   primaryKey,
@@ -25,9 +26,9 @@ export const users = mySqlTable("user", {
 
 export const usersRelations = relations(users, ({ one, many }) => ({
   accounts: many(accounts),
-  reviews: many(reviews),
+  reviews: many(review),
   userData: one(userData),
-  comments: many(comments),
+  comments: many(comment),
 }));
 
 export const accounts = mySqlTable(
@@ -91,12 +92,12 @@ export const verificationTokens = mySqlTable(
 
 // #### Model Schema ####
 
-export const reviews = mySqlTable("review", {
-  id: int("id").notNull().primaryKey(),
-  userId: int("userId").notNull(),
+export const review = mySqlTable("review", {
+  id: int("id").autoincrement().notNull().primaryKey(),
+  userId: varchar("userId", { length: 255 }).notNull(),
   restaurantId: int("restaurantId").notNull(),
   rating: int("rating").notNull(),
-  price: int("price").notNull(),
+  price: float("price").notNull(),
   text: varchar("text", { length: 255 }).notNull(),
   visitedAt: timestamp("visitedAt").notNull(),
   createdAt: timestamp("createdAt")
@@ -107,13 +108,13 @@ export const reviews = mySqlTable("review", {
     .default(sql`CURRENT_TIMESTAMP`),
 });
 
-export const reviewRelations = relations(reviews, ({ one }) => ({
+export const reviewRelations = relations(review, ({ one }) => ({
   user: one(users),
-  restaurant: one(restaurants),
+  restaurant: one(restaurant),
 }));
 
 export const userData = mySqlTable("userData", {
-  id: int("id").notNull().primaryKey(),
+  id: varchar("id", { length: 255 }).notNull().primaryKey(),
   username: varchar("username", { length: 255 }).notNull(),
 });
 
@@ -121,18 +122,18 @@ export const userDataRelations = relations(userData, ({ one }) => ({
   user: one(users),
 }));
 
-export const restaurants = mySqlTable("restaurant", {
-  id: int("id").notNull().primaryKey(),
+export const restaurant = mySqlTable("restaurant", {
+  id: int("id").autoincrement().notNull().primaryKey(),
   name: varchar("name", { length: 255 }).notNull(),
 });
 
-export const restaurantRelations = relations(restaurants, ({ many }) => ({
-  reviews: many(reviews),
+export const restaurantRelations = relations(restaurant, ({ many }) => ({
+  reviews: many(review),
 }));
 
-export const comments = mySqlTable("comment", {
-  id: int("id").notNull().primaryKey(),
-  userId: int("userId").notNull(),
+export const comment = mySqlTable("comment", {
+  id: int("id").autoincrement().notNull().primaryKey(),
+  userId: varchar("userId", { length: 255 }).notNull(),
   reviewId: int("reviewId").notNull(),
   text: varchar("text", { length: 255 }).notNull(),
   createdAt: timestamp("createdAt")
@@ -143,7 +144,7 @@ export const comments = mySqlTable("comment", {
     .default(sql`CURRENT_TIMESTAMP`),
 });
 
-export const commentRelations = relations(comments, ({ one }) => ({
+export const commentRelations = relations(comment, ({ one }) => ({
   user: one(users),
-  review: one(reviews),
+  review: one(review),
 }));

@@ -4,6 +4,8 @@ import { drizzle } from "drizzle-orm/planetscale-serverless";
 import { isLocal } from "./local";
 import * as schema from "./schema";
 
+export { schema };
+
 export { mySqlTable as tableCreator } from "./schema/_table";
 
 export * from "drizzle-orm";
