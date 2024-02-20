@@ -261,11 +261,11 @@ export function ReviewCard(props: {
               </g>
             </svg>
           ))}
-          <p className="text-xs">${props.review.price}</p>
+          <p className="text-s">${props.review.price}</p>
         </div>
       </div>
       <div className="flex w-full justify-start">
-        <p className="text-xs">
+        <p className="text-s">
           {new Date(props.review.visitedAt).toLocaleDateString()}
         </p>
       </div>
