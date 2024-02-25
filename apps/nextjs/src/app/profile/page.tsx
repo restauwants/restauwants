@@ -3,8 +3,20 @@ import { Suspense } from "react";
 import { auth } from "@restauwants/auth";
 
 import { api } from "~/trpc/server";
-import { LogoutButton } from "../_components/logoutButton";
+//import { LogoutButton } from "../_components/logoutButton";
 import { ReviewList } from "../_components/reviews";
+
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "/workspaces/restauwants/packages/ui/src/alert-dialog";
 
 export async function getUserID() {
   const session = await auth();
@@ -27,7 +39,21 @@ export default async function Profile() {
       <div className="flex min-h-screen flex-col items-center justify-center">
         <div className="w-full max-w-2xl">
           <div className="flex h-1/6 max-h-40 flex-row justify-end rounded-b-2xl rounded-t-none bg-gradient-to-r from-primary to-muted p-4">
-            <LogoutButton />
+            <AlertDialog>
+              <AlertDialogTrigger>Open</AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Log Out Confirmation</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Are you absolutely sure you want to Log Out?
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction>Log Out</AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </div>
 
           <div className="border-b-2 p-8">
