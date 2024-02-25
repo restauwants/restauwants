@@ -15,24 +15,50 @@ import { api } from "~/trpc/server";
 import { ManageFriends } from "../../../components/friends";
 import { ReviewList } from "../../../components/reviews";
 import { Logout } from "./logout";
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "node_modules/@restauwants/ui/src/alert-dialog";
 
 function More() {
   return (
     <Dialog>
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" size="icon">
-            <DotsVerticalIcon className="size-5" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent>
-          <DialogTrigger className="w-full">
-            <DropdownMenuItem>Friends</DropdownMenuItem>
-          </DialogTrigger>
-          <DropdownMenuSeparator />
-          <Logout />
-        </DropdownMenuContent>
-      </DropdownMenu>
+      <AlertDialog>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="icon">
+              <DotsVerticalIcon className="size-5" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DialogTrigger className="w-full">
+              <DropdownMenuItem>Friends</DropdownMenuItem>
+            </DialogTrigger>
+            <DropdownMenuSeparator />
+            <AlertDialogTrigger className="w-full">
+              <DropdownMenuItem>Sign Out</DropdownMenuItem>
+            </AlertDialogTrigger>
+          </DropdownMenuContent>
+        </DropdownMenu>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Sign Out Confirmation</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you absolutely sure you want to sign out?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <Logout />
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
       <ManageFriends />
     </Dialog>
   );

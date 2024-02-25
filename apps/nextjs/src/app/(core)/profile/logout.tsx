@@ -1,9 +1,9 @@
 "use client";
 
-import { DropdownMenuItem } from "@restauwants/ui/dropdown-menu";
+import { AlertDialogAction } from "@restauwants/ui/alert-dialog";
 
 import { logout } from "../../actions";
 
 export function Logout() {
-  return <DropdownMenuItem onClick={() => logout()}>Logout</DropdownMenuItem>;
+  return <AlertDialogAction onClick={() => logout()}>Logout</AlertDialogAction>;
 }
