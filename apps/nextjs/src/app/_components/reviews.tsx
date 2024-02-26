@@ -161,6 +161,9 @@ export function CreateReviewForm() {
 
 export function ReviewList(props: {
   reviews: Promise<RouterOutputs["review"]["all"]>;
+  curUser: {
+    value: string;
+  };
 }) {
   // TODO: Make `useSuspenseQuery` work without having to pass a promise from RSC
   const initialData = use(props.reviews);
@@ -180,11 +183,12 @@ export function ReviewList(props: {
       </div>
     );
   }
+  const user: string = props.curUser.value;
 
   return (
     <div className="flex h-full w-full flex-col">
       {reviews.map((p) => {
-        return <ReviewCard key={p.id} review={p} />;
+        return <ReviewCard key={p.id} review={p} MyUserID={user} />;
       })}
     </div>
   );
@@ -192,6 +196,7 @@ export function ReviewList(props: {
 
 export function ReviewCard(props: {
   review: RouterOutputs["review"]["all"][number];
+  MyUserID: string;
 }) {
   const utils = api.useUtils();
   const deleteReview = api.review.delete.useMutation({
@@ -206,7 +211,8 @@ export function ReviewCard(props: {
       );
     },
   });
-
+  const myUserVal = String(props.MyUserID);
+  const curUserClean: string = myUserVal.replace(/"/g, "");
   // TODO(#37): retrieve the restaurant name for a restaurant ID
   // TODO(#25): retrieve the user name for a user ID
   return (
@@ -270,12 +276,19 @@ export function ReviewCard(props: {
         </p>
       </div>
       <div className="flex-grow text-sm">{props.review.text}</div>
-      <Button
-        className="h-3 cursor-pointer text-sm font-bold hover:bg-transparent hover:text-white"
-        onClick={() => deleteReview.mutate(props.review.id)}
-      >
-        Delete
-      </Button>
+      {props.review.userId === curUserClean && (
+        <div className="flex justify-between">
+          <Button
+            className="h-3 cursor-pointer text-sm font-bold hover:bg-transparent hover:text-white"
+            onClick={() => deleteReview.mutate(props.review.id)}
+          >
+            Delete
+          </Button>
+          <Button className="h-3 cursor-pointer text-sm font-bold hover:bg-transparent hover:text-white">
+            Edit
+          </Button>
+        </div>
+      )}
     </div>
   );
 }

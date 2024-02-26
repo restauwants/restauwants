@@ -1,26 +1,15 @@
 import { Suspense } from "react";
 
-import { auth } from "@restauwants/auth";
-
 import { api } from "~/trpc/server";
+import { getUserID } from "../_components/get_user";
 import { LogoutButton } from "../_components/logoutButton";
 import { ReviewList } from "../_components/reviews";
-
-export async function getUserID() {
-  const session = await auth();
-
-  if (!session || !session.user) {
-    throw new Error("User not authenticated");
-  }
-
-  return session.user.id;
-}
 
 export default async function Profile() {
   // TODO: use user name instead of user id
 
-  const userId = await getUserID();
   const reviews = api.review.all();
+  const userId: string = getUserID();
 
   return (
     <div className="pb=16 container min-h-screen pt-0">
@@ -41,7 +30,7 @@ export default async function Profile() {
           </div>
 
           <Suspense fallback={<h4>Loading...</h4>}>
-            <ReviewList reviews={reviews} />
+            <ReviewList reviews={reviews} curUser={userId} />
           </Suspense>
         </div>
       </div>
