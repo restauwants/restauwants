@@ -189,6 +189,7 @@ function reviewList() {
   return function ReviewList(props: {
     reviews: Promise<RouterOutputs["review"]["all"]>;
     userId?: string;
+    curUser: string;
   }) {
     // TODO: Make `useSuspenseQuery` work without having to pass a promise from RSC
     const initialData = use(props.reviews);
@@ -211,7 +212,7 @@ function reviewList() {
     return (
       <div className="flex w-full flex-col space-y-6">
         {reviews.map((p) => {
-          return <ReviewCard key={p.id} review={p} />;
+          return <ReviewCard key={p.id} review={p} MyUserID={props.curUser} />;
         })}
       </div>
     );
@@ -222,6 +223,7 @@ export const ReviewList = reviewList();
 
 export function ReviewCard(props: {
   review: RouterOutputs["review"]["all"][number];
+  MyUserID: string;
 }) {
   const utils = api.useUtils();
   const deleteReview = api.review.delete.useMutation({
@@ -232,7 +234,8 @@ export function ReviewCard(props: {
       toast.error("Failed to delete review");
     },
   });
-
+  const myUserVal = String(props.MyUserID);
+  const curUserClean: string = myUserVal.replace(/"/g, "");
   // TODO(#37): retrieve the restaurant name for a restaurant ID
   // TODO(#25): retrieve the user name for a user ID
   return (
@@ -247,20 +250,23 @@ export function ReviewCard(props: {
             <span className="text-nowrap">
               {fromNow(props.review.createdAt)}
             </span>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon">
-                  <DotsHorizontalIcon className="size-5" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuItem
-                  onClick={() => deleteReview.mutate(props.review.id)}
-                >
-                  Delete
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            {props.review.userId === curUserClean && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon">
+                    <DotsHorizontalIcon className="size-5" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuItem
+                    onClick={() => deleteReview.mutate(props.review.id)}
+                  >
+                    Delete
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>Edit</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
           </div>
         </div>
         <div className="border-t" />
