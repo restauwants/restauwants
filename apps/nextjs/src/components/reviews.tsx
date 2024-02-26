@@ -210,6 +210,42 @@ export function ReviewList(props: {
   );
 }
 
+export function MyReviewList(props: {
+  reviews: Promise<RouterOutputs["review"]["all"]>;
+  MyUserID: string;
+}) {
+  // TODO: Make `useSuspenseQuery` work without having to pass a promise from RSC
+  const initialData = use(props.reviews);
+  const { data: reviews } = api.review.all.useQuery(undefined, {
+    initialData,
+  });
+
+  const filteredReviews = reviews.filter(
+    (review) => review.userId === props.MyUserID,
+  );
+
+  if (reviews.length === 0) {
+    return (
+      <div className="relative flex w-full flex-col items-center gap-4">
+        <div className="mt-20 max-w-xs">
+          <p className="text-center">
+            Your feed is looking a bit <span className="italic">hungry...</span>{" "}
+            Maybe it is time to find a place to eat!
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex h-full w-full flex-col">
+      {filteredReviews.map((p) => {
+        return <ReviewCard key={p.id} review={p} />;
+      })}
+    </div>
+  );
+}
+
 export function ReviewCard(props: {
   review: RouterOutputs["review"]["all"][number];
 }) {
