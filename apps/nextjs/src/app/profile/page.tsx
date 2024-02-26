@@ -3,9 +3,8 @@ import { Suspense } from "react";
 import { auth } from "@restauwants/auth";
 
 import { api } from "~/trpc/server";
-//import { LogoutButton } from "../_components/logoutButton";
+import { LogoutButton } from "../_components/logoutButton";
 import { ReviewList } from "../_components/reviews";
-
 import {
   AlertDialog,
   AlertDialogAction,
@@ -40,7 +39,7 @@ export default async function Profile() {
         <div className="w-full max-w-2xl">
           <div className="flex h-1/6 max-h-40 flex-row justify-end rounded-b-2xl rounded-t-none bg-gradient-to-r from-primary to-muted p-4">
             <AlertDialog>
-              <AlertDialogTrigger>Open</AlertDialogTrigger>
+              <AlertDialogTrigger>Log Out</AlertDialogTrigger>
               <AlertDialogContent>
                 <AlertDialogHeader>
                   <AlertDialogTitle>Log Out Confirmation</AlertDialogTitle>
@@ -50,7 +49,9 @@ export default async function Profile() {
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                   <AlertDialogCancel>Cancel</AlertDialogCancel>
-                  <AlertDialogAction>Log Out</AlertDialogAction>
+                  <AlertDialogAction>
+                    <LogoutButton />
+                  </AlertDialogAction>
                 </AlertDialogFooter>
               </AlertDialogContent>
             </AlertDialog>
