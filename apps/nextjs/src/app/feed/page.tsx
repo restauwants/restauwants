@@ -9,7 +9,7 @@ export const runtime = "edge";
 export default async function Feed() {
   // You can await this here if you don't want to show Suspense fallback below
   const reviews = api.review.all();
-  const userId: string = getUserID();
+  const userId = await getUserID();
 
   return (
     <div className="container min-h-screen py-16">

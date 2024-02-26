@@ -9,7 +9,7 @@ export default async function Profile() {
   // TODO: use user name instead of user id
 
   const reviews = api.review.all();
-  const userId: string = getUserID();
+  const userId: string = await getUserID();
 
   return (
     <div className="pb=16 container min-h-screen pt-0">

@@ -161,9 +161,7 @@ export function CreateReviewForm() {
 
 export function ReviewList(props: {
   reviews: Promise<RouterOutputs["review"]["all"]>;
-  curUser: {
-    value: string;
-  };
+  curUser: string;
 }) {
   // TODO: Make `useSuspenseQuery` work without having to pass a promise from RSC
   const initialData = use(props.reviews);
@@ -183,7 +181,7 @@ export function ReviewList(props: {
       </div>
     );
   }
-  const user: string = props.curUser.value;
+  const user: string = props.curUser;
 
   return (
     <div className="flex h-full w-full flex-col">
