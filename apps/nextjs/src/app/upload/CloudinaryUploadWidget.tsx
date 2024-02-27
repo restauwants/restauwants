@@ -16,13 +16,16 @@ interface uploadWidget {
 interface cloudinaryResult {
   event: string;
   info: {
-    public_id?: string,
+    public_id?: string;
     resource_type?: string;
   };
 }
 
 interface Cloudinary {
-  createUploadWidget: (config: unknown, callback: (error: string, result: cloudinaryResult) => void) => uploadWidget;
+  createUploadWidget: (
+    config: unknown,
+    callback: (error: string, result: cloudinaryResult) => void,
+  ) => uploadWidget;
   // Add other methods and properties as needed
 }
 
@@ -32,7 +35,13 @@ declare global {
   }
 }
 
-function CloudinaryUploadWidget({ uwConfig, setPublicId }: { uwConfig: UwConfig, setPublicId: (arg0: string) => undefined }) {
+function CloudinaryUploadWidget({
+  uwConfig,
+  setPublicId,
+}: {
+  uwConfig: UwConfig;
+  setPublicId: (arg0: string) => undefined;
+}) {
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
@@ -58,18 +67,19 @@ function CloudinaryUploadWidget({ uwConfig, setPublicId }: { uwConfig: UwConfig,
     if (loaded) {
       const myWidget = window.cloudinary.createUploadWidget(
         uwConfig,
-        (error: string|null, result: cloudinaryResult) => {
+        (error: string | null, result: cloudinaryResult) => {
           if (!error && result && result.event === "success") {
             console.log("Done! Here is the image info: ", result.info);
             if (result.info.public_id) {
               setPublicId(result.info.public_id);
             }
           }
-        }
+        },
       );
 
-      document.getElementById("upload_widget")?.addEventListener(
-        "click", () => myWidget.open(), false);
+      document
+        .getElementById("upload_widget")
+        ?.addEventListener("click", () => myWidget.open(), false);
     }
   };
 
