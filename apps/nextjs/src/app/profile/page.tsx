@@ -15,7 +15,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "/workspaces/restauwants/packages/ui/src/alert-dialog";
+} from "@restauwants/ui/alert-dialog";
 
 export async function getUserID() {
   const session = await auth();
