@@ -1,10 +1,6 @@
 import { Suspense } from "react";
 
 import { auth } from "@restauwants/auth";
-
-import { api } from "~/trpc/server";
-import { LogoutButton } from "../_components/logoutButton";
-import { ReviewList } from "../_components/reviews";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -16,6 +12,10 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@restauwants/ui/alert-dialog";
+
+import { api } from "~/trpc/server";
+import { LogoutButton } from "../_components/logoutButton";
+import { ReviewList } from "../_components/reviews";
 
 export async function getUserID() {
   const session = await auth();
