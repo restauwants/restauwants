@@ -3,6 +3,7 @@ import { createContext, useEffect, useState } from "react";
 // Create a context to manage the script loading state
 const CloudinaryScriptContext = createContext({ loaded: false });
 
+// There must be a better way of annotating these types from Cloudinary
 interface UwConfig {
   cloudName: string;
   uploadPreset: string;
@@ -40,7 +41,7 @@ function CloudinaryUploadWidget({
   setPublicId,
 }: {
   uwConfig: UwConfig;
-  setPublicId: (arg0: string) => undefined;
+  setPublicId: React.Dispatch<React.SetStateAction<string>>;
 }) {
   const [loaded, setLoaded] = useState(false);
 
