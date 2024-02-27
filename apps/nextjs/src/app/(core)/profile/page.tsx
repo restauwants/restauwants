@@ -20,10 +20,10 @@ import {
 } from "@restauwants/ui/dropdown-menu";
 import { SettingsIcon } from "@restauwants/ui/icons";
 import { Dialog, DialogTrigger } from "@restauwants/ui/modal";
+import { Posts_collection } from "../../../components/posts_collection";
 
 import { api } from "~/trpc/server";
 import { ManageFriends } from "../../../components/friends";
-import { ReviewList } from "../../../components/reviews";
 import { SignOut } from "./signOut";
 
 function More() {
@@ -78,7 +78,7 @@ export default async function Profile() {
       </div>
       <div className="container pt-4">
         <Suspense fallback={<h4>Loading...</h4>}>
-          <ReviewList reviews={reviews} byUserId={user.id} />
+          <Posts_collection reviews={reviews} byUserId={user.id} />
         </Suspense>
       </div>
     </div>
