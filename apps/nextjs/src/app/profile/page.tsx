@@ -1,10 +1,11 @@
-import { Suspense } from "react";
+import { Suspense, useState } from "react";
 
 import { auth } from "@restauwants/auth";
 
 import { api } from "~/trpc/server";
 import { AuthShowcase } from "../_components/auth-showcase";
 import { PostList } from "../_components/posts";
+import { Posts_collection } from "../_components/posts_collection";
 
 export async function getUserID() {
   try {
@@ -46,14 +47,7 @@ export default async function Profile() {
           </p>
         </div>
       </div>
-
-      <hr className="my-2 border-b border-muted" />
-
-      <div className="flex-grow p-4">
-        <Suspense fallback={<h4>Loading...</h4>}>
-          <PostList posts={posts} />
-        </Suspense>
-      </div>
+      <Posts_collection posts={posts} />
     </div>
   );
 }
