@@ -10,27 +10,11 @@ export default async function Login() {
     redirect("/profile");
   }
   return (
-    <div
-      className="container min-h-screen py-8"
-      style={{
-        backgroundImage: `url('/vecteezy_crab-stick-salad_2164000.jpg')`,
-        backgroundSize: "cover", // Ensure the image covers the entire container
-        backgroundRepeat: "no-repeat", // Prevent the image from repeating
-        backgroundPosition: "center", // Center the background image
-      }}
-    >
-      <div className="absolute bottom-0 left-0 right-0 rounded-t-3xl bg-secondary object-top p-[20%] pb-24 pt-[6%] md:left-1/2 md:-translate-x-1/2 md:transform">
-        <div className="flex w-[100%] flex-col items-center justify-center">
-          <span className="text pb-4 text-center text-sm md:w-[100%]">
-            Welcome back to
-          </span>
-          <h1 className="text-5xl font-extrabold tracking-tight sm:text-[5rem]">
-            <span className="text p-4">RestauWants</span>
-          </h1>
-          <div className="pt-[16%]">
-            <LoginButton />
-          </div>
-        </div>
+    <div className="bg-login-background flex min-h-screen min-w-full items-end justify-center bg-cover bg-bottom bg-no-repeat">
+      <div className="flex w-full max-w-screen-sm flex-col items-center space-y-2 rounded-t-3xl bg-white px-8 pb-20 pt-8 text-center">
+        <h1 className="text-5xl font-extrabold">RestauWants</h1>
+        <p className="text-gray-500">Please login to continue</p>
+        <LoginButton />
       </div>
     </div>
   );
