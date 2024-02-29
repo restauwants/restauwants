@@ -9,5 +9,9 @@
   },
   "editor.quickSuggestions": {
     "strings": "on"
-  }
+  },
+  "typescript.tsdk": "node_modules/typescript/lib",
+
+  // Port forwarding for service inside of DevContainer
+  "remote.localPortHost": "allInterfaces"
 }
