@@ -10,7 +10,6 @@
     "./calendar": "./src/calendar.tsx",
     "./card": "./src/card.tsx",
     "./command": "./src/command.tsx",
-    "./dialog": "./src/dialog.tsx",
     "./date-picker": "./src/date-picker.tsx",
     "./dropdown-menu": "./src/dropdown-menu.tsx",
     "./drawer": "./src/drawer.tsx",
