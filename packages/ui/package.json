@@ -12,7 +12,8 @@
     "./theme": "./src/theme.tsx",
     "./toast": "./src/toast.tsx",
     "./navigation-menu": "./src/navigation-menu.tsx",
-    "./alert-dialog": "./src/alert-dialog.tsx"
+    "./alert-dialog": "./src/alert-dialog.tsx",
+    "./icons": "./src/icons.tsx"
   },
   "license": "MIT",
   "scripts": {

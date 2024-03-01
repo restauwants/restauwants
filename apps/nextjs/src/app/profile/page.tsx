@@ -1,5 +1,4 @@
 import { Suspense } from "react";
-import { ExitIcon } from "@radix-ui/react-icons";
 
 import { auth } from "@restauwants/auth";
 import {
@@ -13,6 +12,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@restauwants/ui/alert-dialog";
+import { ExitIcon } from "@restauwants/ui/icons";
 
 import { api } from "~/trpc/server";
 import { LogoutButton } from "../_components/logoutButton";
