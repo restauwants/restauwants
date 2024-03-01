@@ -1,6 +1,6 @@
 "use client";
 
-import { use } from "react";
+import { use, useState } from "react";
 
 import type { RouterOutputs } from "@restauwants/api";
 import { cn } from "@restauwants/ui";
@@ -23,6 +23,19 @@ import {
 } from "@restauwants/validators/client";
 
 import { api } from "~/trpc/react";
+import EditModal from "./EditModal";
+
+interface Review {
+  restaurantId: number;
+  rating: number;
+  price: number;
+  text: string;
+  visitedAt: Date;
+  id: number;
+  userId: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
 
 export function CreateReviewForm() {
   const form = useForm({
@@ -164,10 +177,22 @@ export function ReviewList(props: {
   curUser: string;
 }) {
   // TODO: Make `useSuspenseQuery` work without having to pass a promise from RSC
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedReview, setSelectedReview] = useState<Review | undefined>(
+    undefined,
+  );
   const initialData = use(props.reviews);
   const { data: reviews } = api.review.all.useQuery(undefined, {
     initialData,
   });
+
+  const handleEditClick = (review: Review) => {
+    setIsModalOpen(true);
+    setSelectedReview(review);
+  };
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
 
   if (reviews.length === 0) {
     return (
@@ -186,16 +211,35 @@ export function ReviewList(props: {
   return (
     <div className="flex h-full w-full flex-col">
       {reviews.map((p) => {
-        return <ReviewCard key={p.id} review={p} MyUserID={user} />;
+        return (
+          <ReviewCard
+            key={p.id}
+            review={p}
+            MyUserID={user}
+            onEdit={() => handleEditClick(p)}
+          />
+        );
       })}
+      {selectedReview && (
+        <EditModal
+          isOpen={isModalOpen}
+          onClose={handleCloseModal}
+          review={selectedReview}
+        >
+          <></>
+        </EditModal>
+      )}
     </div>
   );
 }
 
-export function ReviewCard(props: {
+interface ReviewCardProps {
   review: RouterOutputs["review"]["all"][number];
   MyUserID: string;
-}) {
+  onEdit: () => void;
+}
+
+export function ReviewCard(props: ReviewCardProps) {
   const utils = api.useUtils();
   const deleteReview = api.review.delete.useMutation({
     onSuccess: async () => {
@@ -282,7 +326,10 @@ export function ReviewCard(props: {
           >
             Delete
           </Button>
-          <Button className="h-3 cursor-pointer text-sm font-bold hover:bg-transparent hover:text-white">
+          <Button
+            className="h-3 cursor-pointer text-sm font-bold hover:bg-transparent hover:text-white"
+            onClick={props.onEdit}
+          >
             Edit
           </Button>
         </div>
