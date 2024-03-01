@@ -1,6 +1,7 @@
 "use client";
 
 import { use } from "react";
+import Link from "next/link";
 
 import type { RouterOutputs } from "@restauwants/api";
 import { cn } from "@restauwants/ui";
@@ -209,10 +210,16 @@ export function ReviewCard(props: {
 
   // TODO(#37): retrieve the restaurant name for a restaurant ID
   // TODO(#25): retrieve the user name for a user ID
+  const restName = props.review.restaurantId;
+
   return (
     <div className="border-base h-full w-full border-b-2">
       <div className="flex h-7 w-full items-center justify-between text-center">
-        <h2 className="text-xl font-bold">{props.review.restaurantId}</h2>
+        <h2 className="text-xl font-bold">
+          <Link href="/restaurants/[restName]" as={`/restaurants/${restName}`}>
+            {props.review.restaurantId}
+          </Link>
+        </h2>
         <div className="flex">
           <h2 className="text-base font-bold">{props.review.userId}</h2>
         </div>
