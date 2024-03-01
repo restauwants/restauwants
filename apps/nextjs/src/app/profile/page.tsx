@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { ExitIcon } from "@radix-ui/react-icons";
 
 import { auth } from "@restauwants/auth";
 import {
@@ -39,7 +40,9 @@ export default async function Profile() {
         <div className="w-full max-w-2xl">
           <div className="flex h-1/6 max-h-40 flex-row justify-end rounded-b-2xl rounded-t-none bg-gradient-to-r from-primary to-muted p-4">
             <AlertDialog>
-              <AlertDialogTrigger>Log Out</AlertDialogTrigger>
+              <AlertDialogTrigger>
+                <ExitIcon />
+              </AlertDialogTrigger>
               <AlertDialogContent>
                 <AlertDialogHeader>
                   <AlertDialogTitle>Log Out Confirmation</AlertDialogTitle>
