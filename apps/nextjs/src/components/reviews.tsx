@@ -1,6 +1,6 @@
 "use client";
 
-import { use } from "react";
+import { use, useState } from "react";
 
 import type { RouterOutputs } from "@restauwants/api";
 import { cn } from "@restauwants/ui";
@@ -43,6 +43,19 @@ import {
 } from "@restauwants/validators/client";
 
 import { api } from "~/trpc/react";
+import EditModal from "./EditModal";
+
+interface Review {
+  restaurantId: number;
+  rating: number;
+  price: number;
+  text: string;
+  visitedAt: Date;
+  id: number;
+  userId: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
 
 export function CreateReviewForm() {
   const form = useForm({
@@ -195,6 +208,19 @@ function reviewList() {
     const initialData = use(props.reviews);
     const { data: reviews } = useQuery(initialData, props.userId)();
 
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedReview, setSelectedReview] = useState<Review | undefined>(
+      undefined,
+    );
+
+    const handleEditClick = (review: Review) => {
+      setIsModalOpen(true);
+      setSelectedReview(review);
+    };
+    const handleCloseModal = () => {
+      setIsModalOpen(false);
+    };
+
     if (reviews.length === 0) {
       return (
         <div className="relative flex w-full flex-col items-center gap-4">
@@ -212,8 +238,15 @@ function reviewList() {
     return (
       <div className="flex w-full flex-col space-y-6">
         {reviews.map((p) => {
-          return <ReviewCard key={p.id} review={p} MyUserID={props.curUser} />;
+          return <ReviewCard key={p.id} review={p} MyUserID={props.curUser} onEdit={() => handleEditClick(p)}/>;
         })}
+        {selectedReview && (
+          <EditModal
+            isOpen={isModalOpen}
+            onClose={handleCloseModal}
+            review={selectedReview}
+          />
+        )}
       </div>
     );
   };
@@ -224,6 +257,7 @@ export const ReviewList = reviewList();
 export function ReviewCard(props: {
   review: RouterOutputs["review"]["all"][number];
   MyUserID: string;
+  onEdit: () => void;
 }) {
   const utils = api.useUtils();
   const deleteReview = api.review.delete.useMutation({
@@ -263,7 +297,7 @@ export function ReviewCard(props: {
                   >
                     Delete
                   </DropdownMenuItem>
-                  <DropdownMenuItem>Edit</DropdownMenuItem>
+                  <DropdownMenuItem onClick={props.onEdit}>Edit</DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             )}

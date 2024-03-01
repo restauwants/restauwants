@@ -2,7 +2,10 @@ import { z } from "zod";
 
 import { desc, eq, schema } from "@restauwants/db";
 import { ReviewSchema as ReviewSchemaDatabase } from "@restauwants/validators/db";
-import { CreateReviewSchema as CreateReviewSchemaExternal } from "@restauwants/validators/server/external";
+import {
+  CreateReviewSchema as CreateReviewSchemaExternal,
+  EditReviewSchema as EditReviewSchemaExternal,
+} from "@restauwants/validators/server/external";
 
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 
@@ -49,5 +52,21 @@ export const reviewRouter = createTRPCRouter({
     .input(z.number())
     .mutation(async ({ ctx, input }) => {
       await ctx.db.delete(schema.review).where(eq(schema.review.id, input));
+    }),
+
+  update: protectedProcedure
+    .input(EditReviewSchemaExternal)
+    .mutation(({ ctx, input }) => {
+      return ctx.db
+        .update(schema.review)
+        .set({
+          restaurantId: input.restaurantId,
+          rating: input.rating,
+          price: input.price,
+          text: input.text,
+          visitedAt: input.visitedAt,
+          updatedAt: new Date(),
+        })
+        .where(eq(schema.review.id, input.id));
     }),
 });

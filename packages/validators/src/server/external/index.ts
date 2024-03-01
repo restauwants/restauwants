@@ -22,6 +22,17 @@ export const CreateReviewSchema = z.object({
   }),
 });
 
+export const EditReviewSchema = z.object({
+  id: z.number().int().positive(),
+  restaurantId: z.number().int().positive(),
+  rating: z.number().int().max(5).positive(),
+  price: z.number().max(1000000).positive(),
+  text: z.string().min(0).max(255),
+  visitedAt: z.date().refine((d) => d <= new Date(), {
+    message: "updatedAt must be in the past",
+  }),
+});
+
 export const ReceivedFriendRequestSchema = z.object({
   fromUsername: username,
   createdAt: z.date().refine((d) => d <= new Date(), {
