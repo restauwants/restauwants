@@ -10,7 +10,7 @@ export default async function Feed() {
   const reviews = api.review.all();
 
   return (
-    <div className="container min-h-screen py-16">
+    <div className="container min-h-dvh py-16">
       <div className="flex flex-col items-center justify-center gap-4">
         <h1 className="border-b-2 text-5xl font-extrabold tracking-tight sm:text-[5rem]">
           Restau<span className="text-primary">Wants</span>

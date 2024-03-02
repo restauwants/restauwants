@@ -23,8 +23,8 @@ export default async function Profile() {
   const reviews = api.review.all();
 
   return (
-    <div className="pb=16 container min-h-screen pt-0">
-      <div className="flex min-h-screen flex-col items-center justify-center">
+    <div className="pb=16 container min-h-dvh pt-0">
+      <div className="flex min-h-dvh flex-col items-center justify-center">
         <div className="w-full max-w-2xl">
           <div className="flex h-1/6 max-h-40 flex-row justify-end rounded-b-2xl rounded-t-none bg-gradient-to-r from-primary to-muted p-4">
             <LogoutButton />
