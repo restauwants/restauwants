@@ -11,13 +11,13 @@ export async function LogoutButton() {
   return (
     <form>
       <Button
-        size="md"
+        size="sm"
         formAction={async () => {
           "use server";
           await signOut();
         }}
       >
-        Sign out
+        Sign Out
       </Button>
     </form>
   );

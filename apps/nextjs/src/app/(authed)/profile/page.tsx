@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import { auth } from "@restauwants/auth";
 
 import { api } from "~/trpc/server";
+import { AddContactButton } from "../../../components/addContactButton";
 import { LogoutButton } from "../../../components/logoutButton";
 import { ReviewList } from "../../../components/reviews";
 
@@ -24,14 +25,15 @@ export default async function Profile() {
 
   return (
     <div className="container flex min-h-dvh justify-center">
-      <div className="w-full max-w-2xl divide-y-2">
-        <div>
-          <div className="flex flex-row justify-between gap-4 pt-4">
+      <div className="w-full max-w-2xl space-y-4 divide-y-2">
+        <div className="space-y-4">
+          <div className="flex flex-row items-start justify-between gap-4 pt-4">
             <p className="text-2xl font-bold text-primary ">{userId}</p>
+            <AddContactButton />
             <LogoutButton />
           </div>
 
-          <p className="text-s p-4 font-normal">
+          <p className="text-s font-normal">
             Lorem ipsum dolor sit amet consectetur. Tincidunt et risus tellus
             orci. Leo imperdiet tortor vel viverra morbi laoreet. Sagittis
             sapien mattis nunc in mi. Dignissim tellus vitae egestas viverra
