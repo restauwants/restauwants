@@ -23,27 +23,25 @@ export default async function Profile() {
   const reviews = api.review.all();
 
   return (
-    <div className="pb=16 container min-h-dvh pt-0">
-      <div className="flex min-h-dvh flex-col items-center justify-center">
-        <div className="w-full max-w-2xl">
-          <div className="flex h-1/6 max-h-40 flex-row justify-end rounded-b-2xl rounded-t-none bg-gradient-to-r from-primary to-muted p-4">
+    <div className="container flex min-h-dvh justify-center">
+      <div className="w-full max-w-2xl divide-y-2">
+        <div>
+          <div className="flex flex-row justify-between gap-4 pt-4">
+            <p className="text-2xl font-bold text-primary ">{userId}</p>
             <LogoutButton />
           </div>
 
-          <div className="border-b-2 p-8">
-            <p className="text-2xl font-bold text-primary ">{userId}</p>
-            <p className="text-s font-normal">
-              Lorem ipsum dolor sit amet consectetur. Tincidunt et risus tellus
-              orci. Leo imperdiet tortor vel viverra morbi laoreet. Sagittis
-              sapien mattis nunc in mi. Dignissim tellus vitae egestas viverra
-              augue nibh fames.
-            </p>
-          </div>
-
-          <Suspense fallback={<h4>Loading...</h4>}>
-            <ReviewList reviews={reviews} />
-          </Suspense>
+          <p className="text-s p-4 font-normal">
+            Lorem ipsum dolor sit amet consectetur. Tincidunt et risus tellus
+            orci. Leo imperdiet tortor vel viverra morbi laoreet. Sagittis
+            sapien mattis nunc in mi. Dignissim tellus vitae egestas viverra
+            augue nibh fames.
+          </p>
         </div>
+
+        <Suspense fallback={<h4>Loading...</h4>}>
+          <ReviewList reviews={reviews} />
+        </Suspense>
       </div>
     </div>
   );

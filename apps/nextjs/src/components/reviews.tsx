@@ -182,7 +182,7 @@ export function ReviewList(props: {
   }
 
   return (
-    <div className="flex h-full w-full flex-col">
+    <div className="flex w-full flex-col divide-y-2">
       {reviews.map((p) => {
         return <ReviewCard key={p.id} review={p} />;
       })}
@@ -210,7 +210,7 @@ export function ReviewCard(props: {
   // TODO(#37): retrieve the restaurant name for a restaurant ID
   // TODO(#25): retrieve the user name for a user ID
   return (
-    <div className="border-base h-full w-full border-b-2">
+    <div className="w-full">
       <div className="flex h-7 w-full items-center justify-between text-center">
         <h2 className="text-xl font-bold">{props.review.restaurantId}</h2>
         <div className="flex">
@@ -218,11 +218,11 @@ export function ReviewCard(props: {
         </div>
       </div>
       <div className="flex h-5 w-full justify-between">
-        <div className="flex h-full w-full justify-start gap-0.5">
+        <div className="flex w-full items-center justify-start gap-0.5">
           {Array.from({ length: props.review.rating }).map((_, index) => (
             <svg
               key={index}
-              className="h-3 w-3"
+              className="h-4 w-3 pb-1"
               viewBox="0 0 20 20"
               xmlns="http://www.w3.org/2000/svg"
             >
@@ -243,7 +243,7 @@ export function ReviewCard(props: {
           {Array.from({ length: 5 - props.review.rating }).map((_, index) => (
             <svg
               key={index}
-              className="h-3 w-3"
+              className="h-4 w-3 pb-1"
               viewBox="0 0 20 20"
               xmlns="http://www.w3.org/2000/svg"
             >
@@ -271,7 +271,8 @@ export function ReviewCard(props: {
       </div>
       <div className="flex-grow text-sm">{props.review.text}</div>
       <Button
-        className="h-3 cursor-pointer text-sm font-bold hover:bg-transparent hover:text-white"
+        variant="destructive"
+        size="sm"
         onClick={() => deleteReview.mutate(props.review.id)}
       >
         Delete
