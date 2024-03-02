@@ -8,7 +8,7 @@ import { Toaster } from "@restauwants/ui/toast";
 
 import { env } from "~/env";
 import { TRPCReactProvider } from "~/trpc/react";
-import { Navigation } from "./_components/navigation";
+import { Navigation } from "../components/navigation";
 
 import "~/app/globals.css";
 
