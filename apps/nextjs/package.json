@@ -34,6 +34,7 @@
     "react-infinite-scroll-component": "^6.1.0",
     "superjson": "2.2.1",
     "usehooks-ts": "^3.0.2",
+    "uuid": "^9.0.1",
     "zod": "^3.22.4"
   },
   "devDependencies": {
