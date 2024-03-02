@@ -1,4 +1,4 @@
-import { CreateReviewForm } from "../../components/reviews";
+import { CreateReviewForm } from "../../../components/reviews";
 
 export default async function Review() {
   return (

@@ -3,8 +3,8 @@ import { Suspense } from "react";
 import { auth } from "@restauwants/auth";
 
 import { api } from "~/trpc/server";
-import { LogoutButton } from "../../components/logoutButton";
-import { ReviewList } from "../../components/reviews";
+import { LogoutButton } from "../../../components/logoutButton";
+import { ReviewList } from "../../../components/reviews";
 
 export async function getUserID() {
   const session = await auth();
