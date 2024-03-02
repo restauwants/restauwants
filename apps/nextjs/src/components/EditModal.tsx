@@ -53,7 +53,7 @@ const EditModal: FC<ModalProps> = ({ isOpen, onClose, review }) => {
 
   useEffect(() => {
     if (isOpen) {
-      form.setValue("rating", review.rating.toString());
+      form.setValue("rating", (review.rating - 1).toString());
       form.setValue("restaurantId", review.restaurantId.toString());
       form.setValue("price", review.price.toString());
       form.setValue("text", review.text);
@@ -64,8 +64,8 @@ const EditModal: FC<ModalProps> = ({ isOpen, onClose, review }) => {
 
   const updateReview = api.review.update.useMutation({
     onSuccess: async () => {
-      form.reset();
       await utils.review.invalidate();
+      onClose();
     },
     onError: (err) => {
       toast.error(
@@ -80,19 +80,33 @@ const EditModal: FC<ModalProps> = ({ isOpen, onClose, review }) => {
     onClose();
   };
 
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === "Escape") {
+      onClose();
+    }
+  };
+
   // TODO(#37): retrieve the restaurant name for a restaurant ID
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <div className="absolute inset-0 bg-black opacity-50"></div>
+      <div
+        className="absolute inset-0 bg-black opacity-50"
+        onClick={onClose}
+        onKeyDown={handleKeyDown}
+        role="button"
+        tabIndex={0}
+      ></div>
       <div className="z-50 rounded-lg bg-white p-6">
-        <button
-          className="text-bold h-7 w-7 rounded-xl bg-black text-white"
-          onClick={handleClick}
-        >
-          X
-        </button>
+        <div className="flex justify-end">
+          <button
+            className="text-bold h-7 w-7 rounded-xl bg-black text-white"
+            onClick={handleClick}
+          >
+            X
+          </button>
+        </div>
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(async (data) =>
