@@ -10,7 +10,9 @@ export default function Layout(props: { children: React.ReactNode }) {
       <BottomBar>
         <div />
         <Navigation />
-        <ThemeToggle />
+        <div className="ml-auto mr-4">
+          <ThemeToggle />
+        </div>
       </BottomBar>
     </>
   );
