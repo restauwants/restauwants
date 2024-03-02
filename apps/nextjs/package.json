@@ -40,6 +40,7 @@
     "use-places-autocomplete": "^4.0.1",
     "usePlacesAutocompleteService": "link:react-google-autocomplete/lib/usePlacesAutocompleteService",
     "usehooks-ts": "^3.0.2",
+    "uuid": "^9.0.1",
     "vaul": "^0.9.0",
     "zod": "^3.22.4"
   },
