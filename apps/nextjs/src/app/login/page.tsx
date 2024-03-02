@@ -2,8 +2,9 @@ import { LoginButton } from "../_components/loginButton";
 
 export default async function Login() {
   return (
-    <div className="bg-login-background flex min-h-screen min-w-full items-end justify-center bg-cover bg-bottom bg-no-repeat">
-      <div className="flex w-full max-w-screen-sm flex-col items-center space-y-2 rounded-t-3xl bg-background px-8 pb-20 pt-8 text-center">
+    <div className="flex min-h-full min-w-full items-center justify-center">
+      <div className="bg-login-background absolute -z-50 h-full w-full max-w-screen-sm bg-cover bg-bottom bg-no-repeat sm:rounded-3xl" />
+      <div className="flex flex-col items-center space-y-2 rounded-3xl border-2 bg-background p-8 text-center shadow-2xl">
         <h1 className="text-5xl font-extrabold">RestauWants</h1>
         <p>Please login to continue</p>
         <LoginButton />
