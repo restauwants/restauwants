@@ -2,11 +2,9 @@
 
 import { Button } from "@restauwants/ui/button";
 import { Input } from "@restauwants/ui/input";
-import { Label } from "@restauwants/ui/label";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -18,41 +16,54 @@ export function AddContact() {
     <Dialog>
       <DialogTrigger asChild>
         <Button variant="primary" size="sm">
-          Edit Profile
+          Manage Friends
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent>
         <DialogHeader>
-          <DialogTitle>Send Friend Request</DialogTitle>
-          <DialogDescription>
-            Enter the username of the friend you want to add.
-          </DialogDescription>
+          <DialogTitle>Manage Friends</DialogTitle>
         </DialogHeader>
-        <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="name" className="text-right">
-              Name
-            </Label>
-            <Input
-              id="name"
-              defaultValue="Pedro Duarte"
-              className="col-span-3"
-            />
+        <h4 className="font-medium">Add a Friend</h4>
+        <Input id="username" placeholder="Enter the username of your friend" />
+        <DialogFooter>
+          <Button type="submit">Send Request</Button>
+        </DialogFooter>
+        <h4 className="font-medium">Received Friend Requests</h4>
+        <div className="flex flex-col gap-4 divide-y-2 [&>*:first-child]:pt-0 [&>div]:pt-4">
+          <div className="flex flex-row justify-between">
+            <p>John Doe</p>
+            <div className="space-x-2">
+              <Button variant="outline" size="sm">
+                Accept
+              </Button>
+              <Button variant="outline" size="sm">
+                Reject
+              </Button>
+            </div>
           </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="username" className="text-right">
-              Username
-            </Label>
-            <Input
-              id="username"
-              defaultValue="@peduarte"
-              className="col-span-3"
-            />
+          <div className="flex flex-row justify-between">
+            <p>Jane Doe</p>
+            <div className="space-x-2">
+              <Button variant="outline" size="sm">
+                Accept
+              </Button>
+              <Button variant="outline" size="sm">
+                Reject
+              </Button>
+            </div>
+          </div>
+          <div className="flex flex-row justify-between">
+            <p>John Smith</p>
+            <div className="space-x-2">
+              <Button variant="outline" size="sm">
+                Accept
+              </Button>
+              <Button variant="outline" size="sm">
+                Reject
+              </Button>
+            </div>
           </div>
         </div>
-        <DialogFooter>
-          <Button type="submit">Save changes</Button>
-        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

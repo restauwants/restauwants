@@ -211,7 +211,7 @@ export function ReviewCard(props: {
   // TODO(#25): retrieve the user name for a user ID
   return (
     <div className="w-full">
-      <div className="flex h-7 w-full items-center justify-between text-center">
+      <div className="flex w-full items-center justify-between text-center">
         <h2 className="text-xl font-bold">{props.review.restaurantId}</h2>
         <div className="flex">
           <h2 className="text-base font-bold">{props.review.userId}</h2>
