@@ -12,13 +12,13 @@ import {
 } from "@restauwants/ui/modal";
 import { ScrollArea } from "@restauwants/ui/scroll-area";
 
-interface PendingContactProps {
+interface FriendRequestProps {
   name: string;
   accept: () => void;
   reject: () => void;
 }
 
-export function PendingContact({ name, accept, reject }: PendingContactProps) {
+export function FriendRequest({ name, accept, reject }: FriendRequestProps) {
   return (
     <div className="flex flex-row justify-between">
       <p>{name}</p>
@@ -34,7 +34,7 @@ export function PendingContact({ name, accept, reject }: PendingContactProps) {
   );
 }
 
-export function AddContact() {
+export function ManageFriends() {
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -57,7 +57,7 @@ export function AddContact() {
           className="max-h-52 rounded-xl border-2 bg-card p-4"
         >
           <div className="flex flex-col gap-4 divide-y-2 [&>*:first-child]:pt-0 [&>div]:items-center [&>div]:pt-4 [&>p]:h-fit">
-            <PendingContact
+            <FriendRequest
               name="John Doe"
               accept={() => undefined}
               reject={() => undefined}
