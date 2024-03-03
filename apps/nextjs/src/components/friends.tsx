@@ -18,7 +18,7 @@ interface FriendRequestProps {
   reject: () => void;
 }
 
-export function FriendRequest({ name, accept, reject }: FriendRequestProps) {
+function FriendRequest({ name, accept, reject }: FriendRequestProps) {
   return (
     <div className="flex flex-row justify-between">
       <p>{name}</p>
@@ -28,6 +28,24 @@ export function FriendRequest({ name, accept, reject }: FriendRequestProps) {
         </Button>
         <Button variant="outline" size="sm" onClick={reject}>
           Reject
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+interface ExistingFriendProps {
+  name: string;
+  remove: () => void;
+}
+
+function ExistingFriend({ name, remove }: ExistingFriendProps) {
+  return (
+    <div className="flex flex-row justify-between">
+      <p>{name}</p>
+      <div className="space-x-1">
+        <Button variant="outline" size="sm" onClick={remove}>
+          Remove
         </Button>
       </div>
     </div>
@@ -70,14 +88,7 @@ export function ManageFriends() {
           className="max-h-52 rounded-xl border-2 bg-card p-4"
         >
           <div className="flex flex-col gap-4 divide-y-2 [&>*:first-child]:pt-0 [&>div]:items-center [&>div]:pt-4 [&>p]:h-fit">
-            <div className="flex flex-row justify-between">
-              <p>John Doe</p>
-              <div className="space-x-1">
-                <Button variant="outline" size="sm">
-                  Remove
-                </Button>
-              </div>
-            </div>
+            <ExistingFriend name="John Doe" remove={() => undefined} />
           </div>
         </ScrollArea>
       </DialogContent>
