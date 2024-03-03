@@ -83,18 +83,46 @@ function ExistingFriendList() {
   );
 }
 
-export function ManageFriends() {
-  const addFriendForm = useForm({
+function AddFriendForm() {
+  const form = useForm({
     schema: AddFriendFormSchema,
     defaultValues: {
       username: "",
     },
   });
 
-  const onAddFriendFormSubmit = (data: z.infer<typeof AddFriendFormSchema>) => {
+  const onSubmit = (data: z.infer<typeof AddFriendFormSchema>) => {
     console.log(data);
   };
 
+  return (
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)}>
+        <h4 className="font-medium">Add a Friend</h4>
+        <FormField
+          control={form.control}
+          name="username"
+          render={({ field }) => (
+            <FormItem className="pt-4">
+              <FormControl>
+                <Input
+                  placeholder="Enter the username of your friend"
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage>&nbsp;</FormMessage>
+            </FormItem>
+          )}
+        />
+        <DialogFooter>
+          <Button type="submit">Send Request</Button>
+        </DialogFooter>
+      </form>
+    </Form>
+  );
+}
+
+export function ManageFriends() {
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -106,29 +134,7 @@ export function ManageFriends() {
         <DialogHeader>
           <DialogTitle>Manage Friends</DialogTitle>
         </DialogHeader>
-        <Form {...addFriendForm}>
-          <form onSubmit={addFriendForm.handleSubmit(onAddFriendFormSubmit)}>
-            <h4 className="font-medium">Add a Friend</h4>
-            <FormField
-              control={addFriendForm.control}
-              name="username"
-              render={({ field }) => (
-                <FormItem className="pt-4">
-                  <FormControl>
-                    <Input
-                      placeholder="Enter the username of your friend"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage>&nbsp;</FormMessage>
-                </FormItem>
-              )}
-            />
-            <DialogFooter>
-              <Button type="submit">Send Request</Button>
-            </DialogFooter>
-          </form>
-        </Form>
+        <AddFriendForm />
         <h4 className="pt-4 font-medium">Received Friend Requests</h4>
         <ScrollArea
           type="always"
