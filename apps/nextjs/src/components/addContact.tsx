@@ -12,6 +12,28 @@ import {
 } from "@restauwants/ui/modal";
 import { ScrollArea } from "@restauwants/ui/scroll-area";
 
+interface PendingContactProps {
+  name: string;
+  accept: () => void;
+  reject: () => void;
+}
+
+export function PendingContact({ name, accept, reject }: PendingContactProps) {
+  return (
+    <div className="flex flex-row justify-between">
+      <p>{name}</p>
+      <div className="space-x-1">
+        <Button variant="outline" size="sm" onClick={accept}>
+          Accept
+        </Button>
+        <Button variant="outline" size="sm" onClick={reject}>
+          Reject
+        </Button>
+      </div>
+    </div>
+  );
+}
+
 export function AddContact() {
   return (
     <Dialog>
@@ -35,50 +57,11 @@ export function AddContact() {
           className="max-h-52 rounded-xl border-2 bg-card p-4"
         >
           <div className="flex flex-col gap-4 divide-y-2 [&>*:first-child]:pt-0 [&>div]:items-center [&>div]:pt-4 [&>p]:h-fit">
-            <div className="flex flex-row justify-between">
-              <p>John Doe</p>
-              <div className="space-x-1">
-                <Button variant="outline" size="sm">
-                  Accept
-                </Button>
-                <Button variant="outline" size="sm">
-                  Reject
-                </Button>
-              </div>
-            </div>
-            <div className="flex flex-row justify-between">
-              <p>John Doe</p>
-              <div className="space-x-1">
-                <Button variant="outline" size="sm">
-                  Accept
-                </Button>
-                <Button variant="outline" size="sm">
-                  Reject
-                </Button>
-              </div>
-            </div>
-            <div className="flex flex-row justify-between">
-              <p>John Doe</p>
-              <div className="space-x-1">
-                <Button variant="outline" size="sm">
-                  Accept
-                </Button>
-                <Button variant="outline" size="sm">
-                  Reject
-                </Button>
-              </div>
-            </div>
-            <div className="flex flex-row justify-between">
-              <p>John Doe</p>
-              <div className="space-x-1">
-                <Button variant="outline" size="sm">
-                  Accept
-                </Button>
-                <Button variant="outline" size="sm">
-                  Reject
-                </Button>
-              </div>
-            </div>
+            <PendingContact
+              name="John Doe"
+              accept={() => undefined}
+              reject={() => undefined}
+            />
           </div>
         </ScrollArea>
         <h4 className="pt-4 font-medium">Your Friends</h4>
@@ -87,46 +70,6 @@ export function AddContact() {
           className="max-h-52 rounded-xl border-2 bg-card p-4"
         >
           <div className="flex flex-col gap-4 divide-y-2 [&>*:first-child]:pt-0 [&>div]:items-center [&>div]:pt-4 [&>p]:h-fit">
-            <div className="flex flex-row justify-between">
-              <p>John Doe</p>
-              <div className="space-x-1">
-                <Button variant="outline" size="sm">
-                  Remove
-                </Button>
-              </div>
-            </div>
-            <div className="flex flex-row justify-between">
-              <p>John Doe</p>
-              <div className="space-x-1">
-                <Button variant="outline" size="sm">
-                  Remove
-                </Button>
-              </div>
-            </div>
-            <div className="flex flex-row justify-between">
-              <p>John Doe</p>
-              <div className="space-x-1">
-                <Button variant="outline" size="sm">
-                  Remove
-                </Button>
-              </div>
-            </div>
-            <div className="flex flex-row justify-between">
-              <p>John Doe</p>
-              <div className="space-x-1">
-                <Button variant="outline" size="sm">
-                  Remove
-                </Button>
-              </div>
-            </div>
-            <div className="flex flex-row justify-between">
-              <p>John Doe</p>
-              <div className="space-x-1">
-                <Button variant="outline" size="sm">
-                  Remove
-                </Button>
-              </div>
-            </div>
             <div className="flex flex-row justify-between">
               <p>John Doe</p>
               <div className="space-x-1">
