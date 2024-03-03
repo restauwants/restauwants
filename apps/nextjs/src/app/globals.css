@@ -6,9 +6,9 @@
   :root {
     --background: theme(colors.neutral.50);
     --foreground: theme(colors.neutral.900);
-    --card: theme(colors.neutral.50);
+    --card: theme(colors.neutral.100);
     --card-foreground: theme(colors.neutral.900);
-    --popover: theme(colors.neutral.50);
+    --popover: theme(colors.neutral.100);
     --popover-foreground: theme(colors.neutral.900);
     --primary: theme(colors.orange.600);
     --primary-foreground: theme(colors.neutral.100);
@@ -29,9 +29,9 @@
   .dark {
     --background: theme(colors.neutral.900);
     --foreground: theme(colors.neutral.100);
-    --card: theme(colors.neutral.900);
+    --card: theme(colors.neutral.800);
     --card-foreground: theme(colors.neutral.100);
-    --popover: theme(colors.neutral.900);
+    --popover: theme(colors.neutral.800);
     --popover-foreground: theme(colors.neutral.100);
     --primary: theme(colors.orange.600);
     --primary-foreground: theme(colors.neutral.100);
