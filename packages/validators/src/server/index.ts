@@ -16,3 +16,11 @@ export const CreateReviewSchema = z.object({
     message: "updatedAt must be in the past",
   }),
 });
+
+export const AddFriendSchema = z.object({
+  fromUserId: z.string().min(0).max(255),
+  toUserId: z.string().min(0).max(255),
+  createdAt: z.date().refine((d) => d <= new Date(), {
+    message: "createdAt must be in the past",
+  }),
+});

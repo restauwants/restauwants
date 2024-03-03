@@ -198,12 +198,8 @@ export function ReviewCard(props: {
     onSuccess: async () => {
       await utils.review.invalidate();
     },
-    onError: (err) => {
-      toast.error(
-        err?.data?.code === "UNAUTHORIZED"
-          ? "You must be logged in to delete a review"
-          : "Failed to delete review",
-      );
+    onError: () => {
+      toast.error("Failed to delete review");
     },
   });
 

@@ -21,7 +21,13 @@ import {
   DialogTrigger,
 } from "@restauwants/ui/modal";
 import { ScrollArea } from "@restauwants/ui/scroll-area";
-import { AddFriendFormSchema } from "@restauwants/validators/client";
+import { toast } from "@restauwants/ui/toast";
+import {
+  AddFriendFormSchema,
+  AddFriendSchema,
+} from "@restauwants/validators/client";
+
+import { api } from "~/trpc/react";
 
 interface FriendRequestCardProps {
   name: string;
@@ -91,8 +97,20 @@ function AddFriendForm() {
     },
   });
 
+  const utils = api.useUtils();
+
+  const sendFriendRequest = api.friend.add.useMutation({
+    onSuccess: async () => {
+      form.reset();
+      await utils.friend.invalidate();
+    },
+    onError: () => {
+      toast.error("Failed to send friend request");
+    },
+  });
+
   const onSubmit = (data: z.infer<typeof AddFriendFormSchema>) => {
-    console.log(data);
+    sendFriendRequest.mutate(AddFriendSchema.parse(data));
   };
 
   return (
