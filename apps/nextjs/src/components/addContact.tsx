@@ -10,6 +10,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@restauwants/ui/modal";
+import { ScrollArea } from "@restauwants/ui/scroll-area";
 
 export function AddContact() {
   return (
@@ -29,41 +30,274 @@ export function AddContact() {
           <Button type="submit">Send Request</Button>
         </DialogFooter>
         <h4 className="font-medium">Received Friend Requests</h4>
-        <div className="flex flex-col gap-4 divide-y-2 [&>*:first-child]:pt-0 [&>div]:pt-4">
-          <div className="flex flex-row justify-between">
-            <p>John Doe</p>
-            <div className="space-x-2">
-              <Button variant="outline" size="sm">
-                Accept
-              </Button>
-              <Button variant="outline" size="sm">
-                Reject
-              </Button>
+        <ScrollArea className="max-h-96">
+          <div className="flex flex-col gap-4 divide-y-2 [&>*:first-child]:pt-0 [&>div]:items-center [&>div]:pr-3 [&>div]:pt-4 [&>p]:h-fit">
+            <div className="flex flex-row justify-between">
+              <p>John Doe</p>
+              <div className="space-x-2">
+                <Button variant="outline" size="sm">
+                  Accept
+                </Button>
+                <Button variant="outline" size="sm">
+                  Reject
+                </Button>
+              </div>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>Jane Doe</p>
+              <div className="space-x-2">
+                <Button variant="outline" size="sm">
+                  Accept
+                </Button>
+                <Button variant="outline" size="sm">
+                  Reject
+                </Button>
+              </div>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>John Smith</p>
+              <div className="space-x-2">
+                <Button variant="outline" size="sm">
+                  Accept
+                </Button>
+                <Button variant="outline" size="sm">
+                  Reject
+                </Button>
+              </div>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>John Smith</p>
+              <div className="space-x-2">
+                <Button variant="outline" size="sm">
+                  Accept
+                </Button>
+                <Button variant="outline" size="sm">
+                  Reject
+                </Button>
+              </div>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>John Smith</p>
+              <div className="space-x-2">
+                <Button variant="outline" size="sm">
+                  Accept
+                </Button>
+                <Button variant="outline" size="sm">
+                  Reject
+                </Button>
+              </div>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>John Smith</p>
+              <div className="space-x-2">
+                <Button variant="outline" size="sm">
+                  Accept
+                </Button>
+                <Button variant="outline" size="sm">
+                  Reject
+                </Button>
+              </div>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>John Smith</p>
+              <div className="space-x-2">
+                <Button variant="outline" size="sm">
+                  Accept
+                </Button>
+                <Button variant="outline" size="sm">
+                  Reject
+                </Button>
+              </div>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>John Smith</p>
+              <div className="space-x-2">
+                <Button variant="outline" size="sm">
+                  Accept
+                </Button>
+                <Button variant="outline" size="sm">
+                  Reject
+                </Button>
+              </div>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>John Smith</p>
+              <div className="space-x-2">
+                <Button variant="outline" size="sm">
+                  Accept
+                </Button>
+                <Button variant="outline" size="sm">
+                  Reject
+                </Button>
+              </div>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>John Smith</p>
+              <div className="space-x-2">
+                <Button variant="outline" size="sm">
+                  Accept
+                </Button>
+                <Button variant="outline" size="sm">
+                  Reject
+                </Button>
+              </div>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>John Smith</p>
+              <div className="space-x-2">
+                <Button variant="outline" size="sm">
+                  Accept
+                </Button>
+                <Button variant="outline" size="sm">
+                  Reject
+                </Button>
+              </div>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>John Smith</p>
+              <div className="space-x-2">
+                <Button variant="outline" size="sm">
+                  Accept
+                </Button>
+                <Button variant="outline" size="sm">
+                  Reject
+                </Button>
+              </div>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>John Smith</p>
+              <div className="space-x-2">
+                <Button variant="outline" size="sm">
+                  Accept
+                </Button>
+                <Button variant="outline" size="sm">
+                  Reject
+                </Button>
+              </div>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>John Smith</p>
+              <div className="space-x-2">
+                <Button variant="outline" size="sm">
+                  Accept
+                </Button>
+                <Button variant="outline" size="sm">
+                  Reject
+                </Button>
+              </div>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>John Smith</p>
+              <div className="space-x-2">
+                <Button variant="outline" size="sm">
+                  Accept
+                </Button>
+                <Button variant="outline" size="sm">
+                  Reject
+                </Button>
+              </div>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>John Smith</p>
+              <div className="space-x-2">
+                <Button variant="outline" size="sm">
+                  Accept
+                </Button>
+                <Button variant="outline" size="sm">
+                  Reject
+                </Button>
+              </div>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>John Smith</p>
+              <div className="space-x-2">
+                <Button variant="outline" size="sm">
+                  Accept
+                </Button>
+                <Button variant="outline" size="sm">
+                  Reject
+                </Button>
+              </div>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>John Smith</p>
+              <div className="space-x-2">
+                <Button variant="outline" size="sm">
+                  Accept
+                </Button>
+                <Button variant="outline" size="sm">
+                  Reject
+                </Button>
+              </div>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>John Smith</p>
+              <div className="space-x-2">
+                <Button variant="outline" size="sm">
+                  Accept
+                </Button>
+                <Button variant="outline" size="sm">
+                  Reject
+                </Button>
+              </div>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>John Smith</p>
+              <div className="space-x-2">
+                <Button variant="outline" size="sm">
+                  Accept
+                </Button>
+                <Button variant="outline" size="sm">
+                  Reject
+                </Button>
+              </div>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>John Smith</p>
+              <div className="space-x-2">
+                <Button variant="outline" size="sm">
+                  Accept
+                </Button>
+                <Button variant="outline" size="sm">
+                  Reject
+                </Button>
+              </div>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>John Smith</p>
+              <div className="space-x-2">
+                <Button variant="outline" size="sm">
+                  Accept
+                </Button>
+                <Button variant="outline" size="sm">
+                  Reject
+                </Button>
+              </div>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>John Smith</p>
+              <div className="space-x-2">
+                <Button variant="outline" size="sm">
+                  Accept
+                </Button>
+                <Button variant="outline" size="sm">
+                  Reject
+                </Button>
+              </div>
+            </div>
+            <div className="flex flex-row justify-between">
+              <p>John Smith</p>
+              <div className="space-x-2">
+                <Button variant="outline" size="sm">
+                  Accept
+                </Button>
+                <Button variant="outline" size="sm">
+                  Reject
+                </Button>
+              </div>
             </div>
           </div>
-          <div className="flex flex-row justify-between">
-            <p>Jane Doe</p>
-            <div className="space-x-2">
-              <Button variant="outline" size="sm">
-                Accept
-              </Button>
-              <Button variant="outline" size="sm">
-                Reject
-              </Button>
-            </div>
-          </div>
-          <div className="flex flex-row justify-between">
-            <p>John Smith</p>
-            <div className="space-x-2">
-              <Button variant="outline" size="sm">
-                Accept
-              </Button>
-              <Button variant="outline" size="sm">
-                Reject
-              </Button>
-            </div>
-          </div>
-        </div>
+        </ScrollArea>
       </DialogContent>
     </Dialog>
   );
