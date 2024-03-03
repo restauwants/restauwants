@@ -1,20 +1,27 @@
-import { schema } from "@restauwants/db";
-import { AddFriendSchema as ClientAddFriendSchema } from "@restauwants/validators/client";
-import { AddFriendSchema as ServerAddFriendSchema } from "@restauwants/validators/server";
+import { eq, schema } from "@restauwants/db";
+import { FriendSchema } from "@restauwants/validators/db";
+import { AddFriendSchema as ExternalAddFriendSchema } from "@restauwants/validators/server/external";
 
-import { usernameToId } from "../common/user";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 
 export const friendRouter = createTRPCRouter({
   add: protectedProcedure
-    .input(ClientAddFriendSchema)
+    .input(ExternalAddFriendSchema)
     .mutation(async ({ ctx, input }) => {
-      const toUserId = await usernameToId(input.username, ctx.db);
-      const storable = ServerAddFriendSchema.parse({
-        fromUserId: ctx.session.user.id,
-        toUserId: toUserId,
-        createdAt: new Date(),
-      });
-      return ctx.db.insert(schema.friendRequest).values(storable);
+      const toUserId = (
+        await ctx.db.query.userData.findFirst({
+          where: eq(schema.userData.username, input.username),
+        })
+      )?.id;
+      if (!toUserId) {
+        throw new Error("Recipient not found");
+      }
+      return ctx.db.insert(schema.friendRequest).values(
+        FriendSchema.parse({
+          fromUserId: ctx.session.user.id,
+          toUserId: toUserId,
+          createdAt: new Date(),
+        }),
+      );
     }),
 });

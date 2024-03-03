@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const CreateReviewSchema = z.object({
+export const ReviewSchema = z.object({
   userId: z.string().min(0).max(255),
   restaurantId: z.number().int(),
   rating: z.number().int().min(1).max(5),
@@ -17,10 +17,19 @@ export const CreateReviewSchema = z.object({
   }),
 });
 
-export const AddFriendSchema = z.object({
+export const FriendSchema = z.object({
   fromUserId: z.string().min(0).max(255),
   toUserId: z.string().min(0).max(255),
   createdAt: z.date().refine((d) => d <= new Date(), {
     message: "createdAt must be in the past",
   }),
+});
+
+export const UserSchema = z.object({
+  id: z.string().min(0).max(255),
+});
+
+export const UserDataSchema = z.object({
+  id: z.string().min(0).max(255),
+  username: z.string().min(2).max(32),
 });

@@ -117,7 +117,7 @@ export const reviewRelations = relations(review, ({ one }) => ({
 
 export const userData = mySqlTable("userData", {
   id: varchar("id", { length: 255 }).notNull().primaryKey(),
-  username: varchar("username", { length: 255 }).notNull(),
+  username: varchar("username", { length: 32 }).notNull(),
 });
 
 export const userDataRelations = relations(userData, ({ one }) => ({

@@ -5,7 +5,9 @@
   "type": "module",
   "exports": {
     "./client": "./src/client/index.ts",
-    "./server": "./src/server/index.ts"
+    "./server/external": "./src/server/external/index.ts",
+    "./server/internal": "./src/server/internal/index.ts",
+    "./db": "./src/db/index.ts"
   },
   "license": "MIT",
   "scripts": {

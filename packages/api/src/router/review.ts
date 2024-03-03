@@ -1,8 +1,8 @@
 import { z } from "zod";
 
 import { desc, eq, schema } from "@restauwants/db";
-import { CreateReviewSchema as ClientCreateReviewSchema } from "@restauwants/validators/client";
-import { CreateReviewSchema as ServerCreateReviewSchema } from "@restauwants/validators/server";
+import { ReviewSchema } from "@restauwants/validators/db";
+import { CreateReviewSchema as ExternalCreateReviewSchema } from "@restauwants/validators/server/external";
 
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 
@@ -23,15 +23,16 @@ export const reviewRouter = createTRPCRouter({
     }),
 
   create: protectedProcedure
-    .input(ClientCreateReviewSchema)
+    .input(ExternalCreateReviewSchema)
     .mutation(({ ctx, input }) => {
-      const storable = ServerCreateReviewSchema.parse({
-        ...input,
-        userId: ctx.session.user.id,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      });
-      return ctx.db.insert(schema.review).values(storable);
+      return ctx.db.insert(schema.review).values(
+        ReviewSchema.parse({
+          ...input,
+          userId: ctx.session.user.id,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        }),
+      );
     }),
 
   delete: protectedProcedure.input(z.number()).mutation(({ ctx, input }) => {
