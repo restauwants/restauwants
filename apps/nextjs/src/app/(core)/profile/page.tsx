@@ -1,11 +1,12 @@
 import { Suspense } from "react";
 
 import { auth } from "@restauwants/auth";
+import { Button } from "@restauwants/ui/button";
 
 import { api } from "~/trpc/server";
 import { ManageFriends } from "../../../components/friends";
-import { LogoutButton } from "../../../components/logoutButton";
 import { ReviewList } from "../../../components/reviews";
+import { logout } from "../../actions";
 
 export async function getUserID() {
   const session = await auth();
@@ -29,7 +30,11 @@ export default async function Profile() {
         <div className="space-y-4">
           <div className="flex flex-row items-start justify-between gap-4 pt-4">
             <ManageFriends />
-            <LogoutButton />
+            <form>
+              <Button size="sm" formAction={logout}>
+                Sign Out
+              </Button>
+            </form>
           </div>
           <p className="text-2xl font-bold text-primary ">{userId}</p>
 
