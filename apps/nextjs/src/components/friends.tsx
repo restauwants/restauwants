@@ -12,13 +12,13 @@ import {
 } from "@restauwants/ui/modal";
 import { ScrollArea } from "@restauwants/ui/scroll-area";
 
-interface FriendRequestProps {
+interface FriendRequestCardProps {
   name: string;
   accept: () => void;
   reject: () => void;
 }
 
-function FriendRequest({ name, accept, reject }: FriendRequestProps) {
+function FriendRequestCard({ name, accept, reject }: FriendRequestCardProps) {
   return (
     <div className="flex flex-row justify-between">
       <p>{name}</p>
@@ -34,12 +34,24 @@ function FriendRequest({ name, accept, reject }: FriendRequestProps) {
   );
 }
 
-interface ExistingFriendProps {
+function FriendRequestList() {
+  return (
+    <div className="flex flex-col gap-4 divide-y-2 [&>*:first-child]:pt-0 [&>div]:items-center [&>div]:pt-4 [&>p]:h-fit">
+      <FriendRequestCard
+        name="John Doe"
+        accept={() => undefined}
+        reject={() => undefined}
+      />
+    </div>
+  );
+}
+
+interface ExistingFriendCardProps {
   name: string;
   remove: () => void;
 }
 
-function ExistingFriend({ name, remove }: ExistingFriendProps) {
+function ExistingFriendCard({ name, remove }: ExistingFriendCardProps) {
   return (
     <div className="flex flex-row justify-between">
       <p>{name}</p>
@@ -48,6 +60,14 @@ function ExistingFriend({ name, remove }: ExistingFriendProps) {
           Remove
         </Button>
       </div>
+    </div>
+  );
+}
+
+function ExistingFriendList() {
+  return (
+    <div className="flex flex-col gap-4 divide-y-2 [&>*:first-child]:pt-0 [&>div]:items-center [&>div]:pt-4 [&>p]:h-fit">
+      <ExistingFriendCard name="John Doe" remove={() => undefined} />
     </div>
   );
 }
@@ -74,22 +94,14 @@ export function ManageFriends() {
           type="always"
           className="max-h-52 rounded-xl border-2 bg-card p-4"
         >
-          <div className="flex flex-col gap-4 divide-y-2 [&>*:first-child]:pt-0 [&>div]:items-center [&>div]:pt-4 [&>p]:h-fit">
-            <FriendRequest
-              name="John Doe"
-              accept={() => undefined}
-              reject={() => undefined}
-            />
-          </div>
+          <FriendRequestList />
         </ScrollArea>
         <h4 className="pt-4 font-medium">Your Friends</h4>
         <ScrollArea
           type="always"
           className="max-h-52 rounded-xl border-2 bg-card p-4"
         >
-          <div className="flex flex-col gap-4 divide-y-2 [&>*:first-child]:pt-0 [&>div]:items-center [&>div]:pt-4 [&>p]:h-fit">
-            <ExistingFriend name="John Doe" remove={() => undefined} />
-          </div>
+          <ExistingFriendList />
         </ScrollArea>
       </DialogContent>
     </Dialog>
