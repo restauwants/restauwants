@@ -1,5 +1,7 @@
-import { auth, signOut } from "@restauwants/auth";
+import { auth } from "@restauwants/auth";
 import { Button } from "@restauwants/ui/button";
+
+import { logout } from "../app/actions";
 
 export async function LogoutButton() {
   const session = await auth();
@@ -10,13 +12,7 @@ export async function LogoutButton() {
 
   return (
     <form>
-      <Button
-        size="sm"
-        formAction={async () => {
-          "use server";
-          await signOut();
-        }}
-      >
+      <Button size="sm" formAction={logout}>
         Sign Out
       </Button>
     </form>

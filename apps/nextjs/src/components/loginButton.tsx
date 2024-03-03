@@ -1,5 +1,7 @@
-import { auth, signIn } from "@restauwants/auth";
+import { auth } from "@restauwants/auth";
 import { Button } from "@restauwants/ui/button";
+
+import { login } from "../app/actions";
 
 export async function LoginButton() {
   const session = await auth();
@@ -10,13 +12,7 @@ export async function LoginButton() {
 
   return (
     <form>
-      <Button
-        size="sm"
-        formAction={async () => {
-          "use server";
-          await signIn("discord");
-        }}
-      >
+      <Button size="sm" formAction={login}>
         Sign in with Discord
       </Button>
     </form>
