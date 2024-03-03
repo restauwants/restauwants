@@ -19,3 +19,7 @@ export const CreateReviewSchema = z.object({
 export const AddFriendSchema = z.object({
   username: z.string().min(2).max(32),
 });
+
+export const CreateProfileSchema = z.object({
+  username: z.string().min(2).max(32),
+});
