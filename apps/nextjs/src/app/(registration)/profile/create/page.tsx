@@ -1,6 +1,7 @@
 "use client";
 
 import type { z } from "zod";
+import { useState } from "react";
 
 import { Button } from "@restauwants/ui/button";
 import {
@@ -33,6 +34,8 @@ export default function CreateProfile() {
 
   const utils = api.useUtils();
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const createProfile = api.user.profile.create.useMutation({
     onSuccess: async () => {
       await utils.user.invalidate();
@@ -40,12 +43,18 @@ export default function CreateProfile() {
     },
     onError: () => {
       toast.error("Failed to create profile");
+      setIsLoading(false);
     },
   });
 
   const onSubmit = (data: z.infer<typeof CreateProfileFormSchema>) => {
+    setIsLoading(true);
     createProfile.mutate(CreateProfileSchema.parse(data));
   };
+
+  if (isLoading) {
+    return <h4>Creating profile...</h4>;
+  }
 
   return (
     <>
