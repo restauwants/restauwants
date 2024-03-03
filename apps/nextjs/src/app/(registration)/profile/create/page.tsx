@@ -12,8 +12,15 @@ import {
   useForm,
 } from "@restauwants/ui/form";
 import { Input } from "@restauwants/ui/input";
-import { CreateProfileFormSchema } from "@restauwants/validators/client";
+import { toast } from "@restauwants/ui/toast";
+import {
+  CreateProfileFormSchema,
+  CreateProfileSchema,
+} from "@restauwants/validators/client";
 
+import { navigate } from "~/app/actions";
+import { profilePage as profilePagePage } from "~/app/paths";
+import { api } from "~/trpc/react";
 import { logout } from "../../../actions";
 
 export default function CreateProfile() {
@@ -24,8 +31,20 @@ export default function CreateProfile() {
     },
   });
 
+  const utils = api.useUtils();
+
+  const createProfile = api.user.profile.create.useMutation({
+    onSuccess: async () => {
+      await utils.user.invalidate();
+      await navigate(profilePagePage);
+    },
+    onError: () => {
+      toast.error("Failed to create profile");
+    },
+  });
+
   const onSubmit = (data: z.infer<typeof CreateProfileFormSchema>) => {
-    console.log("Creating profile", data); // TODO
+    createProfile.mutate(CreateProfileSchema.parse(data));
   };
 
   return (
