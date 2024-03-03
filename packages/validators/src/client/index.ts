@@ -21,3 +21,7 @@ export const CreateReviewFormSchema = z.object({
     }),
   ),
 });
+
+export const AddFriendFormSchema = z.object({
+  username: z.string().min(2).max(32),
+});
