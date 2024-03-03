@@ -29,6 +29,8 @@ export const usersRelations = relations(users, ({ one, many }) => ({
   reviews: many(review),
   userData: one(userData),
   comments: many(comment),
+  friends: many(friend),
+  friendRequests: many(friendRequest),
 }));
 
 export const accounts = mySqlTable(
@@ -147,4 +149,38 @@ export const comment = mySqlTable("comment", {
 export const commentRelations = relations(comment, ({ one }) => ({
   user: one(users),
   review: one(review),
+}));
+
+export const friend = mySqlTable("friend", {
+  id: int("id").autoincrement().notNull().primaryKey(),
+  fromUserId: varchar("fromUserId", { length: 255 }).notNull(),
+  toUserId: varchar("toUserId", { length: 255 }).notNull(),
+  confirmedAt: timestamp("confirmedAt")
+    .notNull()
+    .default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const friendRelations = relations(friend, ({ one }) => ({
+  fromUser: one(users, { fields: [friend.fromUserId], references: [users.id] }),
+  toUser: one(users, { fields: [friend.toUserId], references: [users.id] }),
+}));
+
+export const friendRequest = mySqlTable("friendRequest", {
+  id: int("id").autoincrement().notNull().primaryKey(),
+  fromUserId: varchar("fromUserId", { length: 255 }).notNull(),
+  toUserId: varchar("toUserId", { length: 255 }).notNull(),
+  createdAt: timestamp("createdAt")
+    .notNull()
+    .default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const friendRequestRelations = relations(friendRequest, ({ one }) => ({
+  fromUser: one(users, {
+    fields: [friendRequest.fromUserId],
+    references: [users.id],
+  }),
+  toUser: one(users, {
+    fields: [friendRequest.toUserId],
+    references: [users.id],
+  }),
 }));
