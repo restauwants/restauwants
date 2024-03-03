@@ -271,7 +271,7 @@ export function ReviewCard(props: {
       </div>
       <div className="flex-grow text-sm">{props.review.text}</div>
       <Button
-        variant="destructive"
+        variant="outline"
         size="sm"
         onClick={() => deleteReview.mutate(props.review.id)}
       >
