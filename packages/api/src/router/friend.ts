@@ -16,12 +16,19 @@ export const friendRouter = createTRPCRouter({
       if (!toUserId) {
         throw new Error("Recipient not found");
       }
-      return ctx.db.insert(schema.friendRequest).values(
-        FriendSchema.parse({
-          fromUserId: ctx.session.user.id,
-          toUserId: toUserId,
-          createdAt: new Date(),
-        }),
-      );
+      return ctx.db
+        .insert(schema.friendRequest)
+        .values(
+          FriendSchema.parse({
+            fromUserId: ctx.session.user.id,
+            toUserId: toUserId,
+            createdAt: new Date(),
+          }),
+        )
+        .onDuplicateKeyUpdate({
+          set: {
+            createdAt: new Date(),
+          },
+        });
     }),
 });
