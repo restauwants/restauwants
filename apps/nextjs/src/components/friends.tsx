@@ -103,6 +103,7 @@ function AddFriendForm() {
     onSuccess: async () => {
       form.reset();
       await utils.friend.invalidate();
+      toast.success("Friend request sent");
     },
     onError: () => {
       toast.error("Failed to send friend request");
