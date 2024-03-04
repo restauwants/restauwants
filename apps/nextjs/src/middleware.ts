@@ -35,7 +35,7 @@ function handleMissingSession(request: NextRequest) {
 }
 
 async function handleExistingSession(request: NextRequest) {
-  const user = await api.user.current();
+  const user = await api.user.currentWithOptionals();
   if (!isCompleteUser(user)) {
     return restrictToPage(request, profileCreationPagePath);
   }
