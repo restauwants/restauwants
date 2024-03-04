@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { username } from "../common";
+
 export const ReviewSchema = z.object({
   userId: z.string().min(0).max(255),
   restaurantId: z.number().int(),
@@ -31,5 +33,5 @@ export const UserSchema = z.object({
 
 export const UserDataSchema = z.object({
   id: z.string().min(0).max(255),
-  username: z.string().min(2).max(32),
+  username: username,
 });

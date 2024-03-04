@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { username } from "../common";
+
 export {
   CreateReviewSchema,
   AddFriendSchema,
@@ -22,9 +24,9 @@ export const CreateReviewFormSchema = z.object({
 });
 
 export const AddFriendFormSchema = z.object({
-  username: z.string().min(2).max(32),
+  username: username,
 });
 
 export const CreateProfileFormSchema = z.object({
-  username: z.string().min(2).max(32),
+  username: username,
 });
