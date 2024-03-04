@@ -23,7 +23,9 @@ importers:
       '@turbo/gen':
         specifier: ^1.11.3
         version: 1.11.3(@types/node@20.11.7)(typescript@5.3.3)
-
+      '@types/googlemaps':
+        specifier: ^3.43.3
+        version: 3.43.3
       husky:
         specifier: ^9.0.10
         version: 9.0.10
@@ -2875,6 +2877,11 @@ packages:
     dependencies:
       '@types/minimatch': 5.1.2
       '@types/node': 20.11.7
+    dev: true
+
+  /@types/googlemaps@3.43.3:
+    resolution: {integrity: sha512-ZWNoz/O8MPEpiajvj7QiqCY8tTLFNqNZ/a+s+zTV58wFVNAvvqV4bdGfnsjTb5Cs4V6wEsLrX8XRhmnyYJ2Tdg==}
+    deprecated: 'Types for the Google Maps browser API have moved to @types/google.maps. Note: these types are not for the googlemaps npm package, which is a Node API.'
     dev: true
 
   /@types/http-proxy@1.17.14:
