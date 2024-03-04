@@ -4,6 +4,36 @@ import { GlobeIcon, SewingPinFilledIcon } from "@restauwants/ui/icons";
 
 import { api } from "~/trpc/server";
 
+let map!: google.maps.Map;
+const center: google.maps.LatLngLiteral = { lat: 30, lng: -110 };
+
+//Need Restaurant Name from ID through Restaurant DB
+//Need google place ID from review
+
+function initMap(): void {
+  map = new google.maps.Map(document.getElementById("map") as HTMLElement, {
+    center,
+    zoom: 8,
+  });
+}
+
+function getPlaceDetails(placeId: string) {
+  const service = new google.maps.places.PlacesService(map);
+  const request = {
+    placeId,
+    fields: ["name", "formatted_address", "formatted_phone_number", "website"],
+  };
+
+  service.getDetails(request, (placeResult, status) => {
+    if (status === google.maps.places.PlacesServiceStatus.OK) {
+      console.log(placeResult);
+      // You can handle the place details here
+    } else {
+      console.error("Error fetching place details:", status);
+    }
+  });
+}
+
 export default async function RestaurantDetail({
   params,
 }: {
