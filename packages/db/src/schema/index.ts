@@ -151,28 +151,42 @@ export const commentRelations = relations(comment, ({ one }) => ({
   review: one(review),
 }));
 
-export const friend = mySqlTable("friend", {
-  id: int("id").autoincrement().notNull().primaryKey(),
-  fromUserId: varchar("fromUserId", { length: 255 }).notNull(),
-  toUserId: varchar("toUserId", { length: 255 }).notNull(),
-  confirmedAt: timestamp("confirmedAt")
-    .notNull()
-    .default(sql`CURRENT_TIMESTAMP`),
-});
+export const friend = mySqlTable(
+  "friend",
+  {
+    fromUserId: varchar("fromUserId", { length: 255 }).notNull(),
+    toUserId: varchar("toUserId", { length: 255 }).notNull(),
+    confirmedAt: timestamp("confirmedAt")
+      .notNull()
+      .default(sql`CURRENT_TIMESTAMP`),
+  },
+  (friend) => ({
+    compoundKey: primaryKey({
+      columns: [friend.fromUserId, friend.toUserId],
+    }),
+  }),
+);
 
 export const friendRelations = relations(friend, ({ one }) => ({
   fromUser: one(users, { fields: [friend.fromUserId], references: [users.id] }),
   toUser: one(users, { fields: [friend.toUserId], references: [users.id] }),
 }));
 
-export const friendRequest = mySqlTable("friendRequest", {
-  id: int("id").autoincrement().notNull().primaryKey(),
-  fromUserId: varchar("fromUserId", { length: 255 }).notNull(),
-  toUserId: varchar("toUserId", { length: 255 }).notNull(),
-  createdAt: timestamp("createdAt")
-    .notNull()
-    .default(sql`CURRENT_TIMESTAMP`),
-});
+export const friendRequest = mySqlTable(
+  "friendRequest",
+  {
+    fromUserId: varchar("fromUserId", { length: 255 }).notNull(),
+    toUserId: varchar("toUserId", { length: 255 }).notNull(),
+    createdAt: timestamp("createdAt")
+      .notNull()
+      .default(sql`CURRENT_TIMESTAMP`),
+  },
+  (friendRequest) => ({
+    compoundKey: primaryKey({
+      columns: [friendRequest.fromUserId, friendRequest.toUserId],
+    }),
+  }),
+);
 
 export const friendRequestRelations = relations(friendRequest, ({ one }) => ({
   fromUser: one(users, {
