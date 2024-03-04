@@ -1,6 +1,5 @@
 import { Suspense } from "react";
 
-import { auth } from "@restauwants/auth";
 import { Button } from "@restauwants/ui/button";
 
 import { api } from "~/trpc/server";
@@ -8,20 +7,8 @@ import { ManageFriends } from "../../../components/friends";
 import { ReviewList } from "../../../components/reviews";
 import { logout } from "../../actions";
 
-export async function getUserID() {
-  const session = await auth();
-
-  if (!session || !session.user) {
-    throw new Error("User not authenticated");
-  }
-
-  return session.user.id;
-}
-
 export default async function Profile() {
-  // TODO: use user name instead of user id
-
-  const userId = await getUserID();
+  const username = (await api.user.current()).username;
   const reviews = api.review.all();
 
   return (
@@ -36,8 +23,7 @@ export default async function Profile() {
               </Button>
             </form>
           </div>
-          <p className="text-2xl font-bold text-primary ">{userId}</p>
-
+          <p className="text-2xl font-bold text-primary ">{username}</p>
           <p className="text-s font-normal">
             Lorem ipsum dolor sit amet consectetur. Tincidunt et risus tellus
             orci. Leo imperdiet tortor vel viverra morbi laoreet. Sagittis
