@@ -12,8 +12,8 @@ export const friendRouter = createTRPCRouter({
     .input(SentFriendRequestSchema)
     .mutation(async ({ ctx, input }) => {
       const toUserId = (
-        await ctx.db.query.userData.findFirst({
-          where: eq(schema.userData.username, input.username),
+        await ctx.db.query.profile.findFirst({
+          where: eq(schema.profile.username, input.username),
         })
       )?.id;
       if (!toUserId) {
@@ -43,12 +43,12 @@ export const friendRouter = createTRPCRouter({
       .orderBy(desc(schema.friendRequest.createdAt))
       .limit(10)
       .innerJoin(
-        schema.userData,
-        eq(schema.userData.id, schema.friendRequest.fromUserId),
+        schema.profile,
+        eq(schema.profile.id, schema.friendRequest.fromUserId),
       );
     return receivedFriendRequests.map((r) => {
       return ReceivedFriendRequestSchema.parse({
-        fromUsername: r.userData.username,
+        fromUsername: r.profile.username,
         createdAt: r.friendRequest.createdAt,
       });
     });

@@ -27,7 +27,7 @@ export const users = mySqlTable("user", {
 export const usersRelations = relations(users, ({ one, many }) => ({
   accounts: many(accounts),
   reviews: many(review),
-  userData: one(userData),
+  profile: one(profile),
   comments: many(comment),
   friends: many(friend),
   friendRequests: many(friendRequest),
@@ -115,12 +115,12 @@ export const reviewRelations = relations(review, ({ one }) => ({
   restaurant: one(restaurant),
 }));
 
-export const userData = mySqlTable("userData", {
+export const profile = mySqlTable("profile", {
   id: varchar("id", { length: 255 }).notNull().primaryKey(),
   username: varchar("username", { length: 32 }).notNull(),
 });
 
-export const userDataRelations = relations(userData, ({ one }) => ({
+export const profileRelations = relations(profile, ({ one }) => ({
   user: one(users),
 }));
 

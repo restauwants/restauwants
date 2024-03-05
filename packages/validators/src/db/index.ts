@@ -39,7 +39,7 @@ export const UserSchema = z.object({
   id: z.string().min(0).max(255),
 });
 
-export const UserDataSchema = z.object({
+export const ProfileSchema = z.object({
   id: z.string().min(0).max(255),
   username: username,
 });

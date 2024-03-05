@@ -1,5 +1,5 @@
 import { eq, schema } from "@restauwants/db";
-import { UserDataSchema } from "@restauwants/validators/db";
+import { ProfileSchema } from "@restauwants/validators/db";
 import {
   CreateProfileSchema as ExternalCreateReviewSchema,
   UserSchema,
@@ -11,23 +11,23 @@ import { createTRPCRouter, protectedProcedure } from "../trpc";
 export const userRouter = createTRPCRouter({
   current: protectedProcedure.query(async ({ ctx }) => {
     const userId = ctx.session.user.id;
-    const userData = await ctx.db.query.userData.findFirst({
-      where: eq(schema.userData.id, userId),
+    const profile = await ctx.db.query.profile.findFirst({
+      where: eq(schema.profile.id, userId),
     });
     return UserSchema.parse({
       id: userId,
-      username: userData?.username,
+      username: profile?.username,
     });
   }),
 
   currentWithOptionals: protectedProcedure.query(async ({ ctx }) => {
     const userId = ctx.session.user.id;
-    const userData = await ctx.db.query.userData.findFirst({
-      where: eq(schema.userData.id, userId),
+    const profile = await ctx.db.query.profile.findFirst({
+      where: eq(schema.profile.id, userId),
     });
     return UserSchemaWithOptionals.parse({
       id: userId,
-      username: userData?.username,
+      username: profile?.username,
     });
   }),
 
@@ -36,8 +36,8 @@ export const userRouter = createTRPCRouter({
       .input(ExternalCreateReviewSchema)
       .mutation(async ({ ctx, input }) => {
         const userId = ctx.session.user.id;
-        await ctx.db.insert(schema.userData).values(
-          UserDataSchema.parse({
+        await ctx.db.insert(schema.profile).values(
+          ProfileSchema.parse({
             ...input,
             id: userId,
           }),
