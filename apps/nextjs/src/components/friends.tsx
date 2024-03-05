@@ -24,21 +24,25 @@ import { ScrollArea } from "@restauwants/ui/scroll-area";
 import { toast } from "@restauwants/ui/toast";
 import {
   AddFriendFormSchema,
-  AddFriendSchema,
+  SentFriendRequestSchema,
 } from "@restauwants/validators/client";
 
 import { api } from "~/trpc/react";
 
 interface FriendRequestCardProps {
-  name: string;
+  username: string;
   accept: () => void;
   reject: () => void;
 }
 
-function FriendRequestCard({ name, accept, reject }: FriendRequestCardProps) {
+function FriendRequestCard({
+  username,
+  accept,
+  reject,
+}: FriendRequestCardProps) {
   return (
     <div className="flex flex-row justify-between">
-      <p>{name}</p>
+      <p>{username}</p>
       <div className="space-x-1">
         <Button variant="outline" size="sm" onClick={accept}>
           Accept
@@ -52,26 +56,36 @@ function FriendRequestCard({ name, accept, reject }: FriendRequestCardProps) {
 }
 
 function FriendRequestList() {
+  const [friendRequests] = api.friend.requests.useSuspenseQuery();
+
+  if (friendRequests.length === 0) {
+    return <p className="text-muted-foreground">No friend requests yet!</p>;
+  }
+
   return (
     <div className="flex flex-col gap-4 divide-y-2 [&>*:first-child]:pt-0 [&>div]:items-center [&>div]:pt-4 [&>p]:h-fit">
-      <FriendRequestCard
-        name="John Doe"
-        accept={() => undefined}
-        reject={() => undefined}
-      />
+      {friendRequests.map((friendRequest) => (
+        <FriendRequestCard
+          // TODO: add stable identifier to friend requests
+          key={friendRequest.fromUsername}
+          username={friendRequest.fromUsername}
+          accept={() => undefined}
+          reject={() => undefined}
+        />
+      ))}
     </div>
   );
 }
 
 interface ExistingFriendCardProps {
-  name: string;
+  username: string;
   remove: () => void;
 }
 
-function ExistingFriendCard({ name, remove }: ExistingFriendCardProps) {
+function ExistingFriendCard({ username, remove }: ExistingFriendCardProps) {
   return (
     <div className="flex flex-row justify-between">
-      <p>{name}</p>
+      <p>{username}</p>
       <div className="space-x-1">
         <Button variant="outline" size="sm" onClick={remove}>
           Remove
@@ -84,7 +98,7 @@ function ExistingFriendCard({ name, remove }: ExistingFriendCardProps) {
 function ExistingFriendList() {
   return (
     <div className="flex flex-col gap-4 divide-y-2 [&>*:first-child]:pt-0 [&>div]:items-center [&>div]:pt-4 [&>p]:h-fit">
-      <ExistingFriendCard name="John Doe" remove={() => undefined} />
+      <ExistingFriendCard username="John Doe" remove={() => undefined} />
     </div>
   );
 }
@@ -111,7 +125,7 @@ function AddFriendForm() {
   });
 
   const onSubmit = (data: z.infer<typeof AddFriendFormSchema>) => {
-    sendFriendRequest.mutate(AddFriendSchema.parse(data));
+    sendFriendRequest.mutate(SentFriendRequestSchema.parse(data));
   };
 
   return (

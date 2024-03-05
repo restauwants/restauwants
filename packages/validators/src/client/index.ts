@@ -3,12 +3,13 @@ import { z } from "zod";
 import { username } from "../common";
 
 export {
-  CreateReviewSchema,
-  AddFriendSchema,
-  UserSchema,
-  CreateProfileSchema,
   UserSchemaWithOptionals,
+  UserSchema,
   isCompleteUser,
+  CreateReviewSchema,
+  ReceivedFriendRequestSchema,
+  SentFriendRequestSchema,
+  CreateProfileSchema,
 } from "../server/external";
 
 export const CreateReviewFormSchema = z.object({

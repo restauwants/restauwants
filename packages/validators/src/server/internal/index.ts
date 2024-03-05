@@ -2,10 +2,7 @@ import { z } from "zod";
 
 import { username } from "../../common";
 
-export {
-  ReviewSchema as CreateReviewSchema,
-  FriendSchema as AddFriendSchema,
-} from "../../db";
+export { ReviewSchema, FriendSchema, FriendRequestSchema } from "../../db";
 
 export const UserSchemaWithOptionals = z.object({
   id: z.string().min(0).max(255),

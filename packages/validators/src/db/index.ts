@@ -22,6 +22,14 @@ export const ReviewSchema = z.object({
 export const FriendSchema = z.object({
   fromUserId: z.string().min(0).max(255),
   toUserId: z.string().min(0).max(255),
+  confirmedAt: z.date().refine((d) => d <= new Date(), {
+    message: "createdAt must be in the past",
+  }),
+});
+
+export const FriendRequestSchema = z.object({
+  fromUserId: z.string().min(0).max(255),
+  toUserId: z.string().min(0).max(255),
   createdAt: z.date().refine((d) => d <= new Date(), {
     message: "createdAt must be in the past",
   }),
