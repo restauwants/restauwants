@@ -128,9 +128,33 @@ function ExistingFriendCard({ username, remove }: ExistingFriendCardProps) {
 }
 
 function ExistingFriendList() {
+  const [friends] = api.friend.all.useSuspenseQuery();
+
+  const utils = api.useUtils();
+
+  const removeFriend = api.friend.remove.useMutation({
+    onSuccess: async (_data, variables) => {
+      await utils.friend.invalidate();
+      toast.success(`Removed friend ${variables.username}`);
+    },
+    onError: (_data, variables) => {
+      toast.error(`Failed to remove friend ${variables.username}`);
+    },
+  });
+
+  if (friends.length === 0) {
+    return <p className="text-muted-foreground">No friends yet!</p>;
+  }
+
   return (
     <div className="flex flex-col gap-4 divide-y-2 [&>*:first-child]:pt-0 [&>div]:items-center [&>div]:pt-4 [&>p]:h-fit">
-      <ExistingFriendCard username="John Doe" remove={() => undefined} />
+      {friends.map((friend) => (
+        <ExistingFriendCard
+          key={friend.username}
+          username={friend.username}
+          remove={() => removeFriend.mutate({ username: friend.username })}
+        />
+      ))}
     </div>
   );
 }
