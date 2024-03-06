@@ -1,19 +1,23 @@
 import type { Database } from "@restauwants/db";
-import { and, desc, eq, or, schema } from "@restauwants/db";
+import { alias, and, desc, eq, or, schema } from "@restauwants/db";
 import { usernameToId } from "@restauwants/db/queries";
-import { FriendRequestSchema, FriendSchema } from "@restauwants/validators/db";
 import {
-  AcceptFriendRequestSchema,
-  ReceivedFriendRequestSchema,
-  RejectFriendRequestSchema,
-  SentFriendRequestSchema,
+  FriendRequestSchema as FriendRequestSchemaDatabase,
+  FriendSchema as FriendSchemaDatabase,
+} from "@restauwants/validators/db";
+import {
+  AcceptFriendRequestSchema as AcceptFriendRequestSchemaExternal,
+  FriendSchema as FriendSchemaExternal,
+  ReceivedFriendRequestSchema as ReceivedFriendRequestSchemaExternal,
+  RejectFriendRequestSchema as RejectFriendRequestSchemaExternal,
+  SentFriendRequestSchema as SentFriendRequestSchemaExternal,
 } from "@restauwants/validators/server/external";
 
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 
 export const friendRouter = createTRPCRouter({
   add: protectedProcedure
-    .input(SentFriendRequestSchema)
+    .input(SentFriendRequestSchemaExternal)
     .mutation(async ({ ctx, input }) => {
       const toUserId = await usernameToId(ctx.db, input.username);
 
@@ -47,7 +51,7 @@ export const friendRouter = createTRPCRouter({
         eq(schema.profile.id, schema.friendRequest.fromUserId),
       );
     return receivedFriendRequests.map((r) => {
-      return ReceivedFriendRequestSchema.parse({
+      return ReceivedFriendRequestSchemaExternal.parse({
         fromUsername: r.profile.username,
         createdAt: r.friendRequest.createdAt,
       });
@@ -55,7 +59,7 @@ export const friendRouter = createTRPCRouter({
   }),
 
   accept: protectedProcedure
-    .input(AcceptFriendRequestSchema)
+    .input(AcceptFriendRequestSchemaExternal)
     .mutation(async ({ ctx, input }) => {
       const fromUserId = await usernameToId(ctx.db, input.fromUsername);
       if (!fromUserId) {
@@ -68,7 +72,7 @@ export const friendRouter = createTRPCRouter({
     }),
 
   reject: protectedProcedure
-    .input(RejectFriendRequestSchema)
+    .input(RejectFriendRequestSchemaExternal)
     .mutation(async ({ ctx, input }) => {
       const fromUserId = await usernameToId(ctx.db, input.fromUsername);
       if (!fromUserId) {
@@ -76,6 +80,24 @@ export const friendRouter = createTRPCRouter({
       }
       await deleteFriendRequest(ctx.db, fromUserId, ctx.session.user.id);
     }),
+
+  all: protectedProcedure.query(async ({ ctx }) => {
+    const fromProfile = alias(schema.profile, "fromProfile");
+    const toProfile = alias(schema.profile, "toProfile");
+    const fromUserId = ctx.session.user.id;
+    const friends = await ctx.db
+      .select()
+      .from(schema.friend)
+      .where(eq(schema.friend.fromUserId, fromUserId))
+      .innerJoin(fromProfile, eq(fromProfile.id, schema.friend.fromUserId))
+      .innerJoin(toProfile, eq(toProfile.id, schema.friend.toUserId));
+    return friends.map((f) => {
+      return FriendSchemaExternal.parse({
+        username: f.toProfile.username,
+        confirmedAt: f.friend.confirmedAt,
+      });
+    });
+  }),
 });
 
 const areFriends = async (
@@ -131,12 +153,12 @@ const createFriendship = async (
 ): Promise<void> => {
   const now = new Date();
   const bidirectional = [
-    FriendSchema.parse({
+    FriendSchemaDatabase.parse({
       fromUserId: userIdA,
       toUserId: userIdB,
       confirmedAt: now,
     }),
-    FriendSchema.parse({
+    FriendSchemaDatabase.parse({
       fromUserId: userIdB,
       toUserId: userIdA,
       confirmedAt: now,
@@ -190,7 +212,7 @@ const sendFriendRequest = async (
   await db
     .insert(schema.friendRequest)
     .values(
-      FriendRequestSchema.parse({
+      FriendRequestSchemaDatabase.parse({
         fromUserId,
         toUserId,
         createdAt: now,

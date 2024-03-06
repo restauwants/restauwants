@@ -1,8 +1,8 @@
 import { z } from "zod";
 
 import { desc, eq, schema } from "@restauwants/db";
-import { ReviewSchema } from "@restauwants/validators/db";
-import { CreateReviewSchema as ExternalCreateReviewSchema } from "@restauwants/validators/server/external";
+import { ReviewSchema as ReviewSchemaDatabase } from "@restauwants/validators/db";
+import { CreateReviewSchema as CreateReviewSchemaExternal } from "@restauwants/validators/server/external";
 
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 
@@ -23,10 +23,10 @@ export const reviewRouter = createTRPCRouter({
     }),
 
   create: protectedProcedure
-    .input(ExternalCreateReviewSchema)
+    .input(CreateReviewSchemaExternal)
     .mutation(async ({ ctx, input }) => {
       await ctx.db.insert(schema.review).values(
-        ReviewSchema.parse({
+        ReviewSchemaDatabase.parse({
           ...input,
           userId: ctx.session.user.id,
           createdAt: new Date(),

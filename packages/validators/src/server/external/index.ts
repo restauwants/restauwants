@@ -25,6 +25,13 @@ export const ReceivedFriendRequestSchema = z.object({
   }),
 });
 
+export const FriendSchema = z.object({
+  username: username,
+  confirmedAt: z.date().refine((d) => d <= new Date(), {
+    message: "createdAt must be in the past",
+  }),
+});
+
 export const AcceptFriendRequestSchema = z.object({
   fromUsername: username,
 });

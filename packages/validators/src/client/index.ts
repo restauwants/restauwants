@@ -7,6 +7,7 @@ export {
   UserSchema,
   isCompleteUser,
   CreateReviewSchema,
+  FriendSchema,
   ReceivedFriendRequestSchema,
   SentFriendRequestSchema,
   CreateProfileSchema,
