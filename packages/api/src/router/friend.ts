@@ -22,6 +22,10 @@ export const friendRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const toUserId = await usernameToId(ctx.db, input.username);
 
+      if (ctx.session.user.id === toUserId) {
+        throw new Error("Cannot add yourself as a friend");
+      }
+
       if (!toUserId) {
         throw new Error("Recipient not found");
       }
@@ -163,6 +167,9 @@ const createFriendship = async (
   userIdA: string,
   userIdB: string,
 ): Promise<void> => {
+  if (userIdA === userIdB) {
+    throw new Error("Cannot be friends with yourself");
+  }
   const now = new Date();
   const bidirectional = [
     FriendSchemaDatabase.parse({
@@ -241,6 +248,9 @@ const sendFriendRequest = async (
   fromUserId: string,
   toUserId: string,
 ): Promise<void> => {
+  if (fromUserId === toUserId) {
+    throw new Error("Cannot send a friend request to yourself");
+  }
   const now = new Date();
   await db
     .insert(schema.friendRequest)
