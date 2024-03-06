@@ -42,10 +42,6 @@ export const userRouter = createTRPCRouter({
             id: userId,
           }),
         );
-        return UserSchema.parse({
-          id: userId,
-          username: input.username,
-        });
       }),
   }),
 });
