@@ -1,5 +1,6 @@
 "use server";
 
+import { headers } from "next/headers";
 import { Storage } from "@google-cloud/storage";
 import { v4 as uuidv4 } from "uuid";
 
@@ -21,6 +22,22 @@ export async function getSignedUrl(
   });
   const bucket = storage.bucket("restauwants");
 
+  const origin = headers().get("host");
+  if (origin) {
+    console.log(origin);
+
+    await bucket.setCorsConfiguration([
+      {
+        maxAgeSeconds: 3600,
+        method: ["OPTIONS", "POST", "PUT", "GET"],
+        origin: ["http://localhost:51903"],
+        responseHeader: ["Access-Control-Allow-Origin", "Content-Type", "Vary"],
+      },
+    ]);
+  } else {
+      return Promise.reject(new Error("No origin header found."));
+  }
+
   if (0 >= contentLengthInBytes) {
     return Promise.reject(new Error("No file attached."));
   } else if (contentLengthInBytes > MAX_FILE_SIZE) {
@@ -32,9 +49,11 @@ export async function getSignedUrl(
   const file = bucket.file(filename);
 
   const options = {
-    action: "read" as const,
+    version: "v4" as const,
+    action: "write" as const,
     expires: Date.now() + 10 * 60 * 1000, // 10 minutes
     extensionHeaders: { "content-length": contentLengthInBytes },
+    contentType: "image/jpeg",//"application/octet-stream",
   };
 
   const [url] = await file.getSignedUrl(options);
