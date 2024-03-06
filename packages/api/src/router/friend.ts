@@ -40,6 +40,7 @@ export const friendRouter = createTRPCRouter({
     }),
 
   requests: protectedProcedure.query(async ({ ctx }) => {
+    const fromProfile = alias(schema.profile, "fromProfile");
     const receivedFriendRequests = await ctx.db
       .select()
       .from(schema.friendRequest)
@@ -47,12 +48,12 @@ export const friendRouter = createTRPCRouter({
       .orderBy(desc(schema.friendRequest.createdAt))
       .limit(10)
       .innerJoin(
-        schema.profile,
-        eq(schema.profile.id, schema.friendRequest.fromUserId),
+        fromProfile,
+        eq(fromProfile.id, schema.friendRequest.fromUserId),
       );
     return receivedFriendRequests.map((r) => {
       return ReceivedFriendRequestSchemaExternal.parse({
-        fromUsername: r.profile.username,
+        fromUsername: r.fromProfile.username,
         createdAt: r.friendRequest.createdAt,
       });
     });
