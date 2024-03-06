@@ -8,6 +8,10 @@ export {
   isCompleteUser,
 } from "../internal";
 
+export const RemoveFriendSchema = z.object({
+  username: username,
+});
+
 export const CreateReviewSchema = z.object({
   restaurantId: z.number().int().positive(),
   rating: z.number().int().max(5).positive(),

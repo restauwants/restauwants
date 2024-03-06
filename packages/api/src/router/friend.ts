@@ -10,6 +10,7 @@ import {
   FriendSchema as FriendSchemaExternal,
   ReceivedFriendRequestSchema as ReceivedFriendRequestSchemaExternal,
   RejectFriendRequestSchema as RejectFriendRequestSchemaExternal,
+  RemoveFriendSchema as RemoveFriendSchemaExternal,
   SentFriendRequestSchema as SentFriendRequestSchemaExternal,
 } from "@restauwants/validators/server/external";
 
@@ -80,6 +81,16 @@ export const friendRouter = createTRPCRouter({
         throw new Error("User not found");
       }
       await deleteFriendRequest(ctx.db, fromUserId, ctx.session.user.id);
+    }),
+
+  remove: protectedProcedure
+    .input(RemoveFriendSchemaExternal)
+    .mutation(async ({ ctx, input }) => {
+      const userId = await usernameToId(ctx.db, input.username);
+      if (!userId) {
+        throw new Error("User not found");
+      }
+      await deleteFriendship(ctx.db, ctx.session.user.id, userId);
     }),
 
   all: protectedProcedure.query(async ({ ctx }) => {
@@ -166,6 +177,27 @@ const createFriendship = async (
     }),
   ];
   await db.insert(schema.friend).values(bidirectional);
+};
+
+const deleteFriendship = async (
+  db: Database,
+  userIdA: string,
+  userIdB: string,
+): Promise<void> => {
+  await db
+    .delete(schema.friend)
+    .where(
+      or(
+        and(
+          eq(schema.friend.fromUserId, userIdA),
+          eq(schema.friend.toUserId, userIdB),
+        ),
+        and(
+          eq(schema.friend.fromUserId, userIdB),
+          eq(schema.friend.toUserId, userIdA),
+        ),
+      ),
+    );
 };
 
 const deleteFriendRequest = async (
