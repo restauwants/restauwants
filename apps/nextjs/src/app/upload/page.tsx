@@ -24,6 +24,12 @@ export default function Upload() {
           console.log("url:", url);
           console.log("filename:", filename);
           console.log("file size:", file.size);
+          //console.log("test post request:", await generateV4UploadSignedUrl());
+          const res = await fetch(url, {
+            method: 'PUT',
+            body: file 
+          })
+          console.log(res)
         } catch (e) {
           console.error(e);
         }
