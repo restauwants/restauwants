@@ -5,6 +5,7 @@ import { FriendRequestSchema, FriendSchema } from "@restauwants/validators/db";
 import {
   AcceptFriendRequestSchema,
   ReceivedFriendRequestSchema,
+  RejectFriendRequestSchema,
   SentFriendRequestSchema,
 } from "@restauwants/validators/server/external";
 
@@ -64,6 +65,16 @@ export const friendRouter = createTRPCRouter({
         await createFriendship(tx, ctx.session.user.id, fromUserId);
         await deleteFriendRequestsBetween(tx, ctx.session.user.id, fromUserId);
       });
+    }),
+
+  reject: protectedProcedure
+    .input(RejectFriendRequestSchema)
+    .mutation(async ({ ctx, input }) => {
+      const fromUserId = await usernameToId(ctx.db, input.fromUsername);
+      if (!fromUserId) {
+        throw new Error("User not found");
+      }
+      await deleteFriendRequest(ctx.db, fromUserId, ctx.session.user.id);
     }),
 });
 
@@ -132,6 +143,21 @@ const createFriendship = async (
     }),
   ];
   await db.insert(schema.friend).values(bidirectional);
+};
+
+const deleteFriendRequest = async (
+  db: Database,
+  fromUserId: string,
+  toUserId: string,
+): Promise<void> => {
+  await db
+    .delete(schema.friendRequest)
+    .where(
+      and(
+        eq(schema.friendRequest.fromUserId, fromUserId),
+        eq(schema.friendRequest.toUserId, toUserId),
+      ),
+    );
 };
 
 const deleteFriendRequestsBetween = async (

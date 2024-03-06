@@ -29,6 +29,10 @@ export const AcceptFriendRequestSchema = z.object({
   fromUsername: username,
 });
 
+export const RejectFriendRequestSchema = z.object({
+  fromUsername: username,
+});
+
 export const SentFriendRequestSchema = z.object({
   username: username,
 });
