@@ -3,6 +3,7 @@ import { and, desc, eq, or, schema } from "@restauwants/db";
 import { usernameToId } from "@restauwants/db/queries";
 import { FriendRequestSchema, FriendSchema } from "@restauwants/validators/db";
 import {
+  AcceptFriendRequestSchema,
   ReceivedFriendRequestSchema,
   SentFriendRequestSchema,
 } from "@restauwants/validators/server/external";
@@ -51,6 +52,19 @@ export const friendRouter = createTRPCRouter({
       });
     });
   }),
+
+  accept: protectedProcedure
+    .input(AcceptFriendRequestSchema)
+    .mutation(async ({ ctx, input }) => {
+      const fromUserId = await usernameToId(ctx.db, input.fromUsername);
+      if (!fromUserId) {
+        throw new Error("User not found");
+      }
+      await ctx.db.transaction(async (tx) => {
+        await createFriendship(tx, ctx.session.user.id, fromUserId);
+        await deleteFriendRequestsBetween(tx, ctx.session.user.id, fromUserId);
+      });
+    }),
 });
 
 const areFriends = async (
