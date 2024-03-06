@@ -58,6 +58,31 @@ function FriendRequestCard({
 function FriendRequestList() {
   const [friendRequests] = api.friend.requests.useSuspenseQuery();
 
+  const utils = api.useUtils();
+
+  const acceptFriendRequest = api.friend.accept.useMutation({
+    onSuccess: async (_data, variables) => {
+      await utils.friend.invalidate();
+      toast.success(`Accepted friend request from ${variables.fromUsername}`);
+    },
+    onError: (_data, variables) => {
+      toast.error(
+        `Failed to accept friend request from ${variables.fromUsername}`,
+      );
+    },
+  });
+  const rejectFriendRequest = api.friend.reject.useMutation({
+    onSuccess: async (_data, variables) => {
+      await utils.friend.invalidate();
+      toast.success(`Rejected friend request from ${variables.fromUsername}`);
+    },
+    onError: (_data, variables) => {
+      toast.error(
+        `Failed to reject friend request from ${variables.fromUsername}`,
+      );
+    },
+  });
+
   if (friendRequests.length === 0) {
     return <p className="text-muted-foreground">No friend requests yet!</p>;
   }
@@ -66,11 +91,18 @@ function FriendRequestList() {
     <div className="flex flex-col gap-4 divide-y-2 [&>*:first-child]:pt-0 [&>div]:items-center [&>div]:pt-4 [&>p]:h-fit">
       {friendRequests.map((friendRequest) => (
         <FriendRequestCard
-          // TODO: add stable identifier to friend requests
           key={friendRequest.fromUsername}
           username={friendRequest.fromUsername}
-          accept={() => undefined}
-          reject={() => undefined}
+          accept={() =>
+            acceptFriendRequest.mutate({
+              fromUsername: friendRequest.fromUsername,
+            })
+          }
+          reject={() =>
+            rejectFriendRequest.mutate({
+              fromUsername: friendRequest.fromUsername,
+            })
+          }
         />
       ))}
     </div>
