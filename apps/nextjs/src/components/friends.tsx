@@ -179,6 +179,7 @@ function AddFriendForm() {
   });
 
   const onSubmit = (data: z.infer<typeof AddFriendFormSchema>) => {
+    if (form.formState.isSubmitting) return;
     sendFriendRequest.mutate(SentFriendRequestSchema.parse(data));
   };
 
