@@ -2,10 +2,13 @@
 
 import { redirect } from "next/navigation";
 
-import { signIn, signOut } from "@restauwants/auth";
+import {
+  signOut as _signOut,
+  signIn as signInWithProvider,
+} from "@restauwants/auth";
 
-export const login = () => signIn("discord");
-export const logout = () => signOut();
+export const signIn = () => signInWithProvider("discord");
+export const signOut = () => _signOut();
 
 export async function navigate(page: string) {
   redirect(page);

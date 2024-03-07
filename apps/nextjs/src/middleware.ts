@@ -6,9 +6,9 @@ import { isCompleteUser } from "@restauwants/validators/server/internal";
 
 import { api } from "~/trpc/server";
 import {
-  loginPage as loginPagePath,
   profileCreationPage as profileCreationPagePath,
   profilePage as profilePagePath,
+  signInPage as signInPagePath,
 } from "./app/paths";
 
 export const config = {
@@ -31,7 +31,7 @@ const buildRedirectUrl = (request: NextRequest, page: string) => {
 };
 
 function handleMissingSession(request: NextRequest) {
-  return restrictToPage(request, loginPagePath);
+  return restrictToPage(request, signInPagePath);
 }
 
 async function handleExistingSession(request: NextRequest) {
@@ -40,7 +40,7 @@ async function handleExistingSession(request: NextRequest) {
     return restrictToPage(request, profileCreationPagePath);
   }
   if (
-    isOnPage(request, loginPagePath) ||
+    isOnPage(request, signInPagePath) ||
     isOnPage(request, profileCreationPagePath)
   ) {
     return NextResponse.redirect(buildRedirectUrl(request, profilePagePath));

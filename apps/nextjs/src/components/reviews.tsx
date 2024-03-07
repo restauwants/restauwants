@@ -64,12 +64,8 @@ export function CreateReviewForm() {
       form.reset();
       await utils.review.invalidate();
     },
-    onError: (err) => {
-      toast.error(
-        err?.data?.code === "UNAUTHORIZED"
-          ? "You must be logged in to add a review"
-          : "Failed to create review",
-      );
+    onError: () => {
+      toast.error("Failed to create review");
     },
   });
 
@@ -179,36 +175,50 @@ export function CreateReviewForm() {
   );
 }
 
-export function ReviewList(props: {
-  reviews: Promise<RouterOutputs["review"]["all"]>;
-}) {
-  // TODO: Make `useSuspenseQuery` work without having to pass a promise from RSC
-  const initialData = use(props.reviews);
-  const { data: reviews } = api.review.all.useQuery(undefined, {
-    initialData,
-  });
+function reviewList() {
+  const useQuery = (
+    initialData: RouterOutputs["review"]["all"],
+    userId?: string,
+  ) => {
+    if (userId) {
+      return () => api.review.byUserId.useQuery({ userId }, { initialData });
+    }
+    return () => api.review.all.useQuery(undefined, { initialData });
+  };
 
-  if (reviews.length === 0) {
-    return (
-      <div className="relative flex w-full flex-col items-center gap-4">
-        <div className="mt-20 max-w-xs">
-          <p className="text-center">
-            Your feed is looking a bit <span className="italic">hungry...</span>{" "}
-            maybe it&apos;s time to find a place to eat!
-          </p>
+  return function ReviewList(props: {
+    reviews: Promise<RouterOutputs["review"]["all"]>;
+    userId?: string;
+  }) {
+    // TODO: Make `useSuspenseQuery` work without having to pass a promise from RSC
+    const initialData = use(props.reviews);
+    const { data: reviews } = useQuery(initialData, props.userId)();
+
+    if (reviews.length === 0) {
+      return (
+        <div className="relative flex w-full flex-col items-center gap-4">
+          <div className="mt-20 max-w-xs">
+            <p className="text-center">
+              Your feed is looking a bit{" "}
+              <span className="italic">hungry...</span> maybe it&apos;s time to
+              find a place to eat!
+            </p>
+          </div>
         </div>
+      );
+    }
+
+    return (
+      <div className="flex w-full flex-col space-y-6">
+        {reviews.map((p) => {
+          return <ReviewCard key={p.id} review={p} />;
+        })}
       </div>
     );
-  }
-
-  return (
-    <div className="flex w-full flex-col space-y-6">
-      {reviews.map((p) => {
-        return <ReviewCard key={p.id} review={p} />;
-      })}
-    </div>
-  );
+  };
 }
+
+export const ReviewList = reviewList();
 
 export function ReviewCard(props: {
   review: RouterOutputs["review"]["all"][number];
