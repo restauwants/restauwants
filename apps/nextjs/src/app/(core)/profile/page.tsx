@@ -1,4 +1,14 @@
 import { Suspense } from "react";
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "node_modules/@restauwants/ui/src/alert-dialog";
 
 import { Button } from "@restauwants/ui/button";
 import {
@@ -15,16 +25,6 @@ import { api } from "~/trpc/server";
 import { ManageFriends } from "../../../components/friends";
 import { ReviewList } from "../../../components/reviews";
 import { SignOut } from "./signOut";
-import {
-  AlertDialog,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "node_modules/@restauwants/ui/src/alert-dialog";
 
 function More() {
   return (
@@ -48,7 +48,7 @@ function More() {
         </DropdownMenu>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Sign Out Confirmation</AlertDialogTitle>
+            <AlertDialogTitle>Sign-Out Confirmation</AlertDialogTitle>
             <AlertDialogDescription>
               Are you sure you want to sign out?
             </AlertDialogDescription>
@@ -78,7 +78,7 @@ export default async function Profile() {
       </div>
       <div className="container pt-4">
         <Suspense fallback={<h4>Loading...</h4>}>
-        <ReviewList reviews={reviews} userId={user.id} />
+          <ReviewList reviews={reviews} userId={user.id} />
         </Suspense>
       </div>
     </div>

@@ -6,9 +6,9 @@ import { isCompleteUser } from "@restauwants/validators/server/internal";
 
 import { api } from "~/trpc/server";
 import {
-  signInPage as signInPagePath,
   profileCreationPage as profileCreationPagePath,
   profilePage as profilePagePath,
+  signInPage as signInPagePath,
 } from "./app/paths";
 
 export const config = {

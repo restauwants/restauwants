@@ -2,7 +2,10 @@
 
 import { redirect } from "next/navigation";
 
-import { signIn as signInWithProvider, signOut as _signOut } from "@restauwants/auth";
+import {
+  signOut as _signOut,
+  signIn as signInWithProvider,
+} from "@restauwants/auth";
 
 export const signIn = () => signInWithProvider("discord");
 export const signOut = () => _signOut();
