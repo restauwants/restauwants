@@ -203,7 +203,7 @@ export function ReviewList(props: {
   }
 
   return (
-    <div className="flex w-full flex-col space-y-4">
+    <div className="flex w-full flex-col space-y-6">
       {reviews.map((p) => {
         return <ReviewCard key={p.id} review={p} />;
       })}
