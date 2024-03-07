@@ -27,8 +27,10 @@ export const users = mySqlTable("user", {
 export const usersRelations = relations(users, ({ one, many }) => ({
   accounts: many(accounts),
   reviews: many(review),
-  userData: one(userData),
+  profile: one(profile),
   comments: many(comment),
+  friends: many(friend),
+  friendRequests: many(friendRequest),
 }));
 
 export const accounts = mySqlTable(
@@ -113,12 +115,12 @@ export const reviewRelations = relations(review, ({ one }) => ({
   restaurant: one(restaurant),
 }));
 
-export const userData = mySqlTable("userData", {
+export const profile = mySqlTable("profile", {
   id: varchar("id", { length: 255 }).notNull().primaryKey(),
-  username: varchar("username", { length: 255 }).notNull(),
+  username: varchar("username", { length: 32 }).notNull(),
 });
 
-export const userDataRelations = relations(userData, ({ one }) => ({
+export const profileRelations = relations(profile, ({ one }) => ({
   user: one(users),
 }));
 
@@ -147,4 +149,52 @@ export const comment = mySqlTable("comment", {
 export const commentRelations = relations(comment, ({ one }) => ({
   user: one(users),
   review: one(review),
+}));
+
+export const friend = mySqlTable(
+  "friend",
+  {
+    fromUserId: varchar("fromUserId", { length: 255 }).notNull(),
+    toUserId: varchar("toUserId", { length: 255 }).notNull(),
+    confirmedAt: timestamp("confirmedAt")
+      .notNull()
+      .default(sql`CURRENT_TIMESTAMP`),
+  },
+  (friend) => ({
+    compoundKey: primaryKey({
+      columns: [friend.fromUserId, friend.toUserId],
+    }),
+  }),
+);
+
+export const friendRelations = relations(friend, ({ one }) => ({
+  fromUser: one(users, { fields: [friend.fromUserId], references: [users.id] }),
+  toUser: one(users, { fields: [friend.toUserId], references: [users.id] }),
+}));
+
+export const friendRequest = mySqlTable(
+  "friendRequest",
+  {
+    fromUserId: varchar("fromUserId", { length: 255 }).notNull(),
+    toUserId: varchar("toUserId", { length: 255 }).notNull(),
+    createdAt: timestamp("createdAt")
+      .notNull()
+      .default(sql`CURRENT_TIMESTAMP`),
+  },
+  (friendRequest) => ({
+    compoundKey: primaryKey({
+      columns: [friendRequest.fromUserId, friendRequest.toUserId],
+    }),
+  }),
+);
+
+export const friendRequestRelations = relations(friendRequest, ({ one }) => ({
+  fromUser: one(users, {
+    fields: [friendRequest.fromUserId],
+    references: [users.id],
+  }),
+  toUser: one(users, {
+    fields: [friendRequest.toUserId],
+    references: [users.id],
+  }),
 }));

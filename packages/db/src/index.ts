@@ -9,6 +9,7 @@ export { schema };
 export { mySqlTable as tableCreator } from "./schema/_table";
 
 export * from "drizzle-orm";
+export { alias } from "drizzle-orm/mysql-core";
 
 const config = isLocal
   ? {
@@ -32,3 +33,5 @@ const config = isLocal
 const connection = connect(config);
 
 export const db = drizzle(connection, { schema });
+
+export type Database = typeof db;

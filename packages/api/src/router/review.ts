@@ -1,8 +1,8 @@
 import { z } from "zod";
 
 import { desc, eq, schema } from "@restauwants/db";
-import { CreateReviewSchema as ClientCreateReviewSchema } from "@restauwants/validators/client";
-import { CreateReviewSchema as ServerCreateReviewSchema } from "@restauwants/validators/server";
+import { ReviewSchema as ReviewSchemaDatabase } from "@restauwants/validators/db";
+import { CreateReviewSchema as CreateReviewSchemaExternal } from "@restauwants/validators/server/external";
 
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 
@@ -23,18 +23,21 @@ export const reviewRouter = createTRPCRouter({
     }),
 
   create: protectedProcedure
-    .input(ClientCreateReviewSchema)
-    .mutation(({ ctx, input }) => {
-      const storable = ServerCreateReviewSchema.parse({
-        ...input,
-        userId: ctx.session.user.id,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      });
-      return ctx.db.insert(schema.review).values(storable);
+    .input(CreateReviewSchemaExternal)
+    .mutation(async ({ ctx, input }) => {
+      await ctx.db.insert(schema.review).values(
+        ReviewSchemaDatabase.parse({
+          ...input,
+          userId: ctx.session.user.id,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        }),
+      );
     }),
 
-  delete: protectedProcedure.input(z.number()).mutation(({ ctx, input }) => {
-    return ctx.db.delete(schema.review).where(eq(schema.review.id, input));
-  }),
+  delete: protectedProcedure
+    .input(z.number())
+    .mutation(async ({ ctx, input }) => {
+      await ctx.db.delete(schema.review).where(eq(schema.review.id, input));
+    }),
 });

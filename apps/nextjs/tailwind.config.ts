@@ -14,6 +14,9 @@ export default {
         sans: ["var(--font-geist-sans)", ...fontFamily.sans],
         mono: ["var(--font-geist-mono)", ...fontFamily.mono],
       },
+      backgroundImage: {
+        "login-background": "url('/vecteezy_crab-stick-salad_2164000.jpg')",
+      },
     },
   },
 } satisfies Config;

@@ -3,12 +3,11 @@ import { GeistMono } from "geist/font/mono";
 import { GeistSans } from "geist/font/sans";
 
 import { cn } from "@restauwants/ui";
-import { ThemeProvider, ThemeToggle } from "@restauwants/ui/theme";
+import { ThemeProvider } from "@restauwants/ui/theme";
 import { Toaster } from "@restauwants/ui/toast";
 
 import { env } from "~/env";
 import { TRPCReactProvider } from "~/trpc/react";
-import { Navigation } from "./_components/navigation";
 
 import "~/app/globals.css";
 
@@ -45,7 +44,7 @@ export default function RootLayout(props: { children: React.ReactNode }) {
     <html lang="en" suppressHydrationWarning>
       <body
         className={cn(
-          "min-h-screen bg-background font-sans text-foreground antialiased",
+          "bg-background font-sans text-foreground antialiased",
           GeistSans.variable,
           GeistMono.variable,
         )}
@@ -54,13 +53,6 @@ export default function RootLayout(props: { children: React.ReactNode }) {
           <TRPCReactProvider>
             <main>{props.children}</main>
           </TRPCReactProvider>
-          <div className="fixed bottom-4 grid w-full grid-cols-3 justify-items-center gap-4">
-            <div />
-            <Navigation />
-            <div className="my-auto ml-auto mr-2">
-              <ThemeToggle />
-            </div>
-          </div>
           <Toaster />
         </ThemeProvider>
       </body>
