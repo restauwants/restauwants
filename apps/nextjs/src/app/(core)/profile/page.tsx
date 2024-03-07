@@ -50,7 +50,7 @@ function More() {
           <AlertDialogHeader>
             <AlertDialogTitle>Sign Out Confirmation</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you absolutely sure you want to sign out?
+              Are you sure you want to sign out?
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
