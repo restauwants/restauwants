@@ -15,6 +15,7 @@
     "./navigation-menu": "./src/navigation-menu.tsx",
     "./scroll-area": "./src/scroll-area.tsx",
     "./table": "./src/table.tsx",
+    "./textarea": "./src/textarea.tsx",
     "./theme": "./src/theme.tsx",
     "./toast": "./src/toast.tsx"
   },

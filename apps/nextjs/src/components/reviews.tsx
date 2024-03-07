@@ -16,6 +16,7 @@ import {
   useForm,
 } from "@restauwants/ui/form";
 import { Input } from "@restauwants/ui/input";
+import { Textarea } from "@restauwants/ui/textarea";
 import { toast } from "@restauwants/ui/toast";
 import {
   CreateReviewFormSchema,
@@ -145,7 +146,7 @@ export function CreateReviewForm() {
           render={({ field }) => (
             <FormItem>
               <FormControl>
-                <Input {...field} placeholder="I had a great time at..." />
+                <Textarea {...field} placeholder="I had a great time at..." />
               </FormControl>
               <FormMessage />
             </FormItem>
