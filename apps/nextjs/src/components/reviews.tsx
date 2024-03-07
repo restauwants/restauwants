@@ -174,7 +174,7 @@ export function ReviewList(props: {
         <div className="mt-20 max-w-xs">
           <p className="text-center">
             Your feed is looking a bit <span className="italic">hungry...</span>{" "}
-            Maybe it is time to find a place to eat!
+            maybe it&apos;s time to find a place to eat!
           </p>
         </div>
       </div>
