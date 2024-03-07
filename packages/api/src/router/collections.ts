@@ -1,10 +1,7 @@
 import { z } from "zod";
 
 import { desc, eq, schema } from "@restauwants/db";
-import {
-  AddRestaurantToCollectionFormSchema as ClientAddRestaurantToCollectionFormSchema,
-  CreateCollectionSchema as ClientCreateCollectionSchema,
-} from "@restauwants/validators/client";
+import { CreateCollectionSchema as ClientCreateCollectionSchema } from "@restauwants/validators/client";
 import {
   AddRestaurantToCollectionSchema as ServerAddRestaurantToCollectionFormSchema,
   CreateCollectionSchema as ServerCreateCollectionSchema,

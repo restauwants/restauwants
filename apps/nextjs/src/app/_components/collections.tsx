@@ -1,9 +1,7 @@
 "use client";
 
-import React, { use, useEffect, useRef, useState } from "react";
-import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
+import React, { use, useEffect, useState } from "react";
 import Autocomplete from "react-google-autocomplete";
-import usePlacesService from "react-google-autocomplete/lib/usePlacesAutocompleteService";
 
 import type { RouterOutputs } from "@restauwants/api";
 import { Button } from "@restauwants/ui/button";
@@ -14,7 +12,6 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-  FormSectionHeader,
   useForm,
 } from "@restauwants/ui/form";
 import { ExitIcon, TrashIcon } from "@restauwants/ui/icons";
@@ -29,8 +26,7 @@ import {
 } from "@restauwants/validators/client";
 
 import { api } from "~/trpc/react";
-
-const APIKEY = process.env.GOOGLE_API_KEY;
+import { PassKey } from "./apiKey";
 
 export function CollectionList(props: {
   collections: Promise<RouterOutputs["collections"]["all"]>;
@@ -50,21 +46,17 @@ export function CollectionList(props: {
   return (
     <div className="grid grid-cols-3 items-center justify-items-center gap-4 md:grid-cols-5 lg:grid-cols-7">
       {collections.map((p) => {
-        return <CollectionCard name={p.name} id={p.id} />;
+        return <CollectionCard name={p.name} id={p.id} key={p.id} />;
       })}
       <NewCollectionCard></NewCollectionCard>
     </div>
   );
 }
 
-interface PlacePrediction {
-  place_id: string;
-  description: string;
-}
-
 export function CollectionCard(props: { name: string; id: number }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedPlaceDetails, setSelectedPlaceDetails] = useState(null); // Set initial value to null
+  const [selectedPlaceDetails, setSelectedPlaceDetails] =
+    useState<google.maps.places.PlaceResult | null>(null); // Set initial value to null
 
   const handleOpen = () => {
     setIsOpen(true);
@@ -75,7 +67,7 @@ export function CollectionCard(props: { name: string; id: number }) {
     setSelectedPlaceDetails(null);
   };
 
-  const savePlaceDetailsToState = (details: any) => {
+  const savePlaceDetailsToState = (details: google.maps.places.PlaceResult) => {
     setSelectedPlaceDetails(details);
   };
 
@@ -85,16 +77,16 @@ export function CollectionCard(props: { name: string; id: number }) {
         <>
           <AddRestaurantToCollectionForm
             CollectionId={props.id}
-            RestaurantId={selectedPlaceDetails["place_id"]}
+            RestaurantId={selectedPlaceDetails.place_id ?? ""}
           ></AddRestaurantToCollectionForm>
           <AddRestaurantRestaurantForm
-            RestaurantID={selectedPlaceDetails["place_id"]}
-            name={selectedPlaceDetails["name"]}
-            website={selectedPlaceDetails["website"]}
+            RestaurantID={selectedPlaceDetails.place_id ?? ""}
+            name={selectedPlaceDetails.name ?? ""}
+            website={selectedPlaceDetails.website ?? ""}
             formatted_phone_number={
-              selectedPlaceDetails["formatted_phone_number"]
+              selectedPlaceDetails.formatted_phone_number ?? ""
             }
-            formatted_address={selectedPlaceDetails["formatted_address"]}
+            formatted_address={selectedPlaceDetails.formatted_address ?? ""}
           ></AddRestaurantRestaurantForm>
         </>
       );
@@ -123,7 +115,14 @@ export function CollectionCard(props: { name: string; id: number }) {
       );
     },
   });
-
+  const [APIkey, setAPIkey] = useState<string>("");
+  PassKey().then((result: string | undefined) => {
+    if (result !== undefined) {
+      setAPIkey(result);
+    } else {
+      setAPIkey("problem");
+    }
+  });
   return (
     <>
       <button
@@ -144,25 +143,26 @@ export function CollectionCard(props: { name: string; id: number }) {
             <h2 className="mb-4 text-center align-top text-lg font-semibold">
               {props.name}
             </h2>
-
-            <Autocomplete
-              className="bg-base w-full min-w-[250px] rounded-sm border border-primary "
-              apiKey="AIzaSyBhu50DXDGivMJJuglSByZVDGew6ZIVohE"
-              onPlaceSelected={(place) => {
-                savePlaceDetailsToState(place);
-              }}
-              options={{
-                types: ["bakery", "bar", "cafe", "restaurant"],
-                fields: [
-                  "place_id",
-                  "name",
-                  "website",
-                  "formatted_phone_number",
-                  "formatted_address",
-                ],
-              }}
-              placeholder={"Search"}
-            ></Autocomplete>
+            {APIkey && (
+              <Autocomplete
+                className="bg-base w-full min-w-[250px] rounded-sm border border-primary "
+                apiKey={APIkey}
+                onPlaceSelected={(place) => {
+                  savePlaceDetailsToState(place);
+                }}
+                options={{
+                  types: ["bakery", "bar", "cafe", "restaurant"],
+                  fields: [
+                    "place_id",
+                    "name",
+                    "website",
+                    "formatted_phone_number",
+                    "formatted_address",
+                  ],
+                }}
+                placeholder={"Search"}
+              ></Autocomplete>
+            )}
             {renderAddRestaurantForm()}
             <CollectionRestaurantList
               collectionId={props.id}
@@ -400,11 +400,17 @@ export function AddRestaurantRestaurantForm(props: {
       await utils.collections.invalidate();
     },
   });
+  //depencency array ([]) after the }, was removed  -- readded
+  /*eslint-disable react-hooks/exhaustive-deps*/
+  /*eslint-disable @typescript-eslint/no-floating-promises*/
   useEffect(() => {
-    form.handleSubmit(async (data) =>
-      addRestaurant.mutate(AddRestaurantFormSchema.parse(data)),
+    form.handleSubmit(
+      async (data) =>
+        void addRestaurant.mutate(AddRestaurantFormSchema.parse(data)),
     )();
   }, []);
+  /*eslint-enable react-hooks/exhaustive-deps*/
+  /*eslint-enable @typescript-eslint/no-floating-promises*/
   return (
     <Form {...form}>
       <form
@@ -487,24 +493,19 @@ export function AddRestaurantRestaurantForm(props: {
 }
 
 export function CollectionRestaurantList(props: { collectionId: number }) {
-  const {
-    data: restaurants,
-    isLoading,
-    isError,
-  } = api.collections.getCollection.useQuery({
+  const { data: restaurants } = api.collections.getCollection.useQuery({
     collectionId: props.collectionId,
   });
 
   return (
     <div className="mx-auto flex h-3/5 max-h-[400px] min-h-[400px] w-5/6 flex-col gap-y-2 overflow-y-auto">
-      {restaurants &&
-        restaurants.map((restaurant) => (
-          <CollectionRestaurantCard
-            key={restaurant.restaurantId}
-            restaurantId={restaurant.restaurantId}
-            collectionId={props.collectionId}
-          />
-        ))}
+      {restaurants?.map((restaurant) => (
+        <CollectionRestaurantCard
+          key={restaurant?.restaurantId}
+          restaurantId={restaurant?.restaurantId}
+          collectionId={props.collectionId}
+        />
+      ))}
     </div>
   );
 }
@@ -515,11 +516,7 @@ interface CollectionRestaurantCardProps {
 }
 
 export function CollectionRestaurantCard(props: CollectionRestaurantCardProps) {
-  const {
-    data: restaurant,
-    isLoading,
-    isError,
-  } = api.collections.getRestaurantName.useQuery({
+  const { data: restaurant } = api.collections.getRestaurantName.useQuery({
     restaurantId: props.restaurantId,
   });
   const utils = api.useUtils();

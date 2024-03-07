@@ -1,11 +1,8 @@
-import { Suspense, useState } from "react";
-
 import { auth } from "@restauwants/auth";
 
 import { api } from "~/trpc/server";
 import { LogoutButton } from "../_components/logoutButton";
 import { Posts_collection } from "../_components/posts_collection";
-import { ReviewList } from "../_components/reviews";
 
 export async function getUserID() {
   const session = await auth();
