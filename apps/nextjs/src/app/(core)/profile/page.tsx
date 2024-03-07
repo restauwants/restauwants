@@ -13,7 +13,7 @@ import { Dialog, DialogTrigger } from "@restauwants/ui/modal";
 
 import { api } from "~/trpc/server";
 import { ManageFriends } from "../../../components/friends";
-import { MyReviewList } from "../../../components/reviews";
+import { ReviewList } from "../../../components/reviews";
 import { SignOut } from "./signOut";
 import {
   AlertDialog,
@@ -66,7 +66,7 @@ function More() {
 
 export default async function Profile() {
   const user = await api.user.current();
-  const reviews = api.review.all();
+  const reviews = api.review.byUserId({ userId: user.id });
 
   return (
     <div className="flex min-h-dvh w-full flex-col items-center space-y-4 divide-y-2 pb-20 pt-12">
@@ -78,7 +78,7 @@ export default async function Profile() {
       </div>
       <div className="container pt-4">
         <Suspense fallback={<h4>Loading...</h4>}>
-        <MyReviewList reviews={reviews} MyUserID={user.id} />
+        <ReviewList reviews={reviews} userId={user.id} />
         </Suspense>
       </div>
     </div>

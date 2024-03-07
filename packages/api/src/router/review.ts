@@ -4,21 +4,31 @@ import { desc, eq, schema } from "@restauwants/db";
 import { ReviewSchema as ReviewSchemaDatabase } from "@restauwants/validators/db";
 import { CreateReviewSchema as CreateReviewSchemaExternal } from "@restauwants/validators/server/external";
 
-import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
+import { createTRPCRouter, protectedProcedure } from "../trpc";
 
 export const reviewRouter = createTRPCRouter({
-  all: publicProcedure.query(({ ctx }) => {
+  all: protectedProcedure.query(({ ctx }) => {
     return ctx.db.query.review.findMany({
       orderBy: desc(schema.review.id),
       limit: 10,
     });
   }),
 
-  byId: publicProcedure
+  byId: protectedProcedure
     .input(z.object({ id: z.number() }))
     .query(({ ctx, input }) => {
       return ctx.db.query.review.findFirst({
         where: eq(schema.review.id, input.id),
+      });
+    }),
+
+  byUserId: protectedProcedure
+    .input(z.object({ userId: z.string() }))
+    .query(({ ctx, input }) => {
+      return ctx.db.query.review.findMany({
+        where: eq(schema.review.userId, input.userId),
+        orderBy: desc(schema.review.id),
+        limit: 10,
       });
     }),
 
