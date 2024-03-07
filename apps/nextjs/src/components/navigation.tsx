@@ -26,21 +26,21 @@ export function Navigation() {
         <NavigationMenuItem>
           <Link href={feedPagePath} legacyBehavior passHref>
             <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-              <HomeIcon />
+              <HomeIcon className="size-5" />
             </NavigationMenuLink>
           </Link>
         </NavigationMenuItem>
         <NavigationMenuItem>
           <Link href={reviewPagePath} legacyBehavior passHref>
             <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-              <PlusCircledIcon />
+              <PlusCircledIcon className="size-5" />
             </NavigationMenuLink>
           </Link>
         </NavigationMenuItem>
         <NavigationMenuItem>
           <Link href={profilePagePath} legacyBehavior passHref>
             <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-              <PersonIcon />
+              <PersonIcon className="size-5" />
             </NavigationMenuLink>
           </Link>
         </NavigationMenuItem>
