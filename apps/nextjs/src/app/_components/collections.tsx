@@ -116,7 +116,7 @@ export function CollectionCard(props: { name: string; id: number }) {
     },
   });
   const [APIkey, setAPIkey] = useState<string>("");
-  PassKey().then((result: string | undefined) => {
+  void PassKey().then((result: string | undefined) => {
     if (result !== undefined) {
       setAPIkey(result);
     } else {
