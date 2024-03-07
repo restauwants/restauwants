@@ -2,19 +2,20 @@
 
 import { Suspense, useState } from "react";
 
+import type { RouterOutputs } from "@restauwants/api";
+
 import { CollectionList } from "../_components/collections";
-import { PostList } from "../_components/posts";
+import { ReviewList } from "../_components/reviews";
 
-interface ButtonProps {
-  onButtonClick: (buttonName: string) => void;
-}
+//types of each field in default - try this
 
-export function Posts_collection(props: any) {
-  const [activeButton, setActiveButton] = useState("posts");
+export function Posts_collection(props: {
+  collections: Promise<RouterOutputs["collections"]["all"]>;
+  reviews: Promise<RouterOutputs["review"]["all"]>;
+}) {
   const [selectedComponent, setSelectedComponent] = useState("posts");
 
   const handleButton = (buttonName: string) => {
-    setActiveButton(buttonName);
     setSelectedComponent(buttonName);
   };
 
@@ -49,9 +50,9 @@ export function Posts_collection(props: any) {
       <div className="flex-grow p-4">
         <Suspense fallback={<h4>Loading...</h4>}>
           {selectedComponent === "posts" ? (
-            <PostList posts={props.posts} />
+            <ReviewList reviews={props.reviews} />
           ) : (
-            <CollectionList />
+            <CollectionList collections={props.collections} />
           )}
         </Suspense>
       </div>

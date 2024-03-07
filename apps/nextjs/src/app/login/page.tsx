@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 
 import { auth } from "@restauwants/auth";
 
-import { AuthShowcase } from "../_components/auth-showcase";
+import { LoginButton } from "../_components/loginButton";
 
 export default async function Login() {
   const session = await auth();
@@ -28,7 +28,7 @@ export default async function Login() {
             <span className="text p-4">RestauWants</span>
           </h1>
           <div className="pt-[16%]">
-            <AuthShowcase />
+            <LoginButton />
           </div>
         </div>
       </div>

@@ -162,6 +162,18 @@ const FormDescription = React.forwardRef<
 });
 FormDescription.displayName = "FormDescription";
 
+const FormSectionHeader = React.forwardRef<
+  React.ElementRef<typeof LabelPrimitive.Root>,
+  React.ComponentPropsWithoutRef<typeof LabelPrimitive.Root>
+>(({ className, ...props }, ref) => {
+  return (
+    <div>
+      <Label ref={ref} className={cn("space-y-2", className)} {...props} />
+    </div>
+  );
+});
+FormSectionHeader.displayName = "FormSectionHeader";
+
 const FormMessage = React.forwardRef<
   HTMLParagraphElement,
   React.HTMLAttributes<HTMLParagraphElement>
@@ -192,6 +204,7 @@ export {
   Form,
   FormItem,
   FormLabel,
+  FormSectionHeader,
   FormControl,
   FormDescription,
   FormMessage,
