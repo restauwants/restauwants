@@ -14,7 +14,7 @@ import { Dialog, DialogTrigger } from "@restauwants/ui/modal";
 import { api } from "~/trpc/server";
 import { ManageFriends } from "../../../components/friends";
 import { MyReviewList } from "../../../components/reviews";
-import { Logout } from "./logout";
+import { SignOut } from "./signOut";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -55,7 +55,7 @@ function More() {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <Logout />
+            <SignOut />
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

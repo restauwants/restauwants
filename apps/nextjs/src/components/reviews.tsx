@@ -64,12 +64,8 @@ export function CreateReviewForm() {
       form.reset();
       await utils.review.invalidate();
     },
-    onError: (err) => {
-      toast.error(
-        err?.data?.code === "UNAUTHORIZED"
-          ? "You must be logged in to add a review"
-          : "Failed to create review",
-      );
+    onError: () => {
+      toast.error("Failed to create review");
     },
   });
 

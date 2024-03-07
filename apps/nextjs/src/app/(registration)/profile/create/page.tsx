@@ -22,7 +22,7 @@ import {
 import { navigate } from "~/app/actions";
 import { profilePage as profilePagePage } from "~/app/paths";
 import { api } from "~/trpc/react";
-import { logout } from "../../../actions";
+import { signOut } from "../../../actions";
 
 export default function CreateProfile() {
   const form = useForm({
@@ -84,7 +84,7 @@ export default function CreateProfile() {
       </Form>
       <div className="flex w-full justify-end gap-2">
         <form>
-          <Button formAction={logout}>Cancel</Button>
+          <Button formAction={signOut}>Cancel</Button>
         </form>
         <Button type="submit" form="create-profile">
           Create Profile
