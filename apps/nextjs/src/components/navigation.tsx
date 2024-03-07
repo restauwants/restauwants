@@ -21,7 +21,7 @@ import {
 
 export function Navigation() {
   return (
-    <NavigationMenu className="rounded-2xl bg-background px-2 py-1">
+    <NavigationMenu className="rounded-2xl border bg-background px-2 py-1">
       <NavigationMenuList>
         <NavigationMenuItem>
           <Link href={feedPagePath} legacyBehavior passHref>
