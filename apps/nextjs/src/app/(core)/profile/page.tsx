@@ -26,7 +26,7 @@ function More() {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
-          <DialogTrigger>
+          <DialogTrigger className="w-full">
             <DropdownMenuItem>Friends</DropdownMenuItem>
           </DialogTrigger>
           <DropdownMenuSeparator />
