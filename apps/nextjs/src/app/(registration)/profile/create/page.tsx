@@ -48,7 +48,6 @@ export default function CreateProfile() {
   });
 
   const onSubmit = (data: z.infer<typeof CreateProfileFormSchema>) => {
-    if (form.formState.isSubmitting) return;
     setIsLoading(true);
     createProfile.mutate(CreateProfileSchema.parse(data));
   };

@@ -78,7 +78,6 @@ export function CreateReviewForm() {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(async (data) => {
-          if (form.formState.isSubmitting) return;
           createReview.mutate(CreateReviewSchema.parse(data));
         })}
         className="space-y-5"
