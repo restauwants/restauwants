@@ -15,7 +15,7 @@ export default async function Feed() {
         <h1 className="text-5xl font-extrabold tracking-tight sm:text-[5rem]">
           Restau<span className="text-primary">Wants</span>
         </h1>
-        <div className="w-full max-w-2xl">
+        <div className="w-full">
           <Suspense fallback={<h4>Loading...</h4>}>
             <ReviewList reviews={reviews} />
           </Suspense>
