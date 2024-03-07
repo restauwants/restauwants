@@ -8,6 +8,7 @@
     "./button": "./src/button.tsx",
     "./dropdown-menu": "./src/dropdown-menu.tsx",
     "./form": "./src/form.tsx",
+    "./icons": "./src/icons.tsx",
     "./input": "./src/input.tsx",
     "./label": "./src/label.tsx",
     "./modal": "./src/modal.tsx",

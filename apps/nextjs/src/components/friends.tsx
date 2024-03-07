@@ -13,12 +13,10 @@ import {
 } from "@restauwants/ui/form";
 import { Input } from "@restauwants/ui/input";
 import {
-  Dialog,
   DialogContent,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@restauwants/ui/modal";
 import { ScrollArea } from "@restauwants/ui/scroll-area";
 import { toast } from "@restauwants/ui/toast";
@@ -213,32 +211,25 @@ function AddFriendForm() {
 
 export function ManageFriends() {
   return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button variant="primary" size="sm">
-          Manage Friends
-        </Button>
-      </DialogTrigger>
-      <DialogContent className="max-h-dvh overflow-auto">
-        <DialogHeader>
-          <DialogTitle>Manage Friends</DialogTitle>
-        </DialogHeader>
-        <AddFriendForm />
-        <h4 className="pt-4 font-medium">Received Friend Requests</h4>
-        <ScrollArea
-          type="always"
-          className="max-h-52 rounded-xl border-2 bg-card p-4"
-        >
-          <FriendRequestList />
-        </ScrollArea>
-        <h4 className="pt-4 font-medium">Your Friends</h4>
-        <ScrollArea
-          type="always"
-          className="max-h-52 rounded-xl border-2 bg-card p-4"
-        >
-          <ExistingFriendList />
-        </ScrollArea>
-      </DialogContent>
-    </Dialog>
+    <DialogContent className="max-h-dvh overflow-auto">
+      <DialogHeader>
+        <DialogTitle>Manage Friends</DialogTitle>
+      </DialogHeader>
+      <AddFriendForm />
+      <h4 className="pt-4 font-medium">Received Friend Requests</h4>
+      <ScrollArea
+        type="always"
+        className="max-h-52 rounded-xl border-2 bg-card p-4"
+      >
+        <FriendRequestList />
+      </ScrollArea>
+      <h4 className="pt-4 font-medium">Your Friends</h4>
+      <ScrollArea
+        type="always"
+        className="max-h-52 rounded-xl border-2 bg-card p-4"
+      >
+        <ExistingFriendList />
+      </ScrollArea>
+    </DialogContent>
   );
 }
