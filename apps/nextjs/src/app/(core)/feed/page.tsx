@@ -1,15 +1,14 @@
 import { Suspense } from "react";
 
 import { api } from "~/trpc/server";
-import { getUserID } from "../../../components/get_user";
 import { ReviewList } from "../../../components/reviews";
 
 export const runtime = "edge";
 
 export default async function Feed() {
-  // You can await this here if you don't want to show Suspense fallback below
+  // TODO: fix suspense
   const reviews = api.review.all();
-  const userId = await getUserID();
+  const user = await api.user.current();
 
   return (
     <div className="container min-h-dvh pb-20 pt-12">
@@ -19,7 +18,7 @@ export default async function Feed() {
         </h1>
         <div className="w-full">
           <Suspense fallback={<h4>Loading...</h4>}>
-            <ReviewList reviews={reviews} curUser={userId} />
+            <ReviewList reviews={reviews} curUser={user.id} />
           </Suspense>
         </div>
       </div>

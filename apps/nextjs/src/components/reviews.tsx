@@ -238,7 +238,14 @@ function reviewList() {
     return (
       <div className="flex w-full flex-col space-y-6">
         {reviews.map((p) => {
-          return <ReviewCard key={p.id} review={p} MyUserID={props.curUser} onEdit={() => handleEditClick(p)}/>;
+          return (
+            <ReviewCard
+              key={p.id}
+              review={p}
+              MyUserID={props.curUser}
+              onEdit={() => handleEditClick(p)}
+            />
+          );
         })}
         {selectedReview && (
           <EditModal
@@ -297,7 +304,9 @@ export function ReviewCard(props: {
                   >
                     Delete
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={props.onEdit}>Edit</DropdownMenuItem>
+                  <DropdownMenuItem onClick={props.onEdit}>
+                    Edit
+                  </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             )}
