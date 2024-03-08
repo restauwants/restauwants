@@ -20,10 +20,10 @@ import {
 } from "@restauwants/ui/dropdown-menu";
 import { DotsVerticalIcon } from "@restauwants/ui/icons";
 import { Dialog, DialogTrigger } from "@restauwants/ui/modal";
-import { Posts_collection } from "../../../components/posts_collection";
 
 import { api } from "~/trpc/server";
 import { ManageFriends } from "../../../components/friends";
+import { Posts_collection } from "../../../components/posts_collection";
 import { SignOut } from "./signOut";
 
 function More() {
@@ -67,6 +67,7 @@ function More() {
 export default async function Profile() {
   const user = await api.user.current();
   const reviews = api.review.byUserId({ userId: user.id });
+  const collections = api.collection.all();
 
   return (
     <div className="flex min-h-dvh w-full flex-col items-center space-y-4 divide-y-2 pb-20 pt-12">
@@ -78,7 +79,11 @@ export default async function Profile() {
       </div>
       <div className="container pt-4">
         <Suspense fallback={<h4>Loading...</h4>}>
-          <Posts_collection reviews={reviews} curUser={user.id}/>
+          <Posts_collection
+            reviews={reviews}
+            curUser={user.id}
+            collections={collections}
+          />
         </Suspense>
       </div>
     </div>

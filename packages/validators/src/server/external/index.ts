@@ -13,7 +13,7 @@ export const RemoveFriendSchema = z.object({
 });
 
 export const CreateReviewSchema = z.object({
-  restaurantId: z.number().int().positive(),
+  restaurantId: z.string(),
   rating: z.number().int().max(5).positive(),
   price: z.number().max(1000000).positive(),
   text: z.string().min(0).max(255),
@@ -61,4 +61,29 @@ export const SentFriendRequestSchema = z.object({
 
 export const CreateProfileSchema = z.object({
   username: username,
+});
+
+export const CreateCollectionSchema = z.object({
+  userId: z.string().min(0).max(255),
+  name: z.string().min(0).max(255),
+  description: z.string().min(0).max(255),
+  createdAt: z.date().refine((d) => d <= new Date(), {
+    message: "createdAt must be in the past",
+  }),
+});
+
+export const AddRestaurantToCollectionSchema = z.object({
+  collectionId: z.number().int(),
+  restaurantId: z.string().min(0).max(255),
+  dateAdded: z.date().refine((d) => d <= new Date(), {
+    message: "createdAt must be in the past",
+  }),
+});
+
+export const AddRestaurantSchema = z.object({
+  id: z.string(),
+  name: z.string().min(0).max(255),
+  website: z.string().min(0).max(255),
+  formatted_phone_number: z.string().min(0).max(255),
+  formatted_address: z.string().min(0).max(255),
 });
