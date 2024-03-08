@@ -8,26 +8,33 @@ import {
 } from "@restauwants/validators/server/external";
 
 import { createTRPCRouter, protectedProcedure } from "../trpc";
+import { areFriends } from "./friend";
 
 export const reviewRouter = createTRPCRouter({
-  all: protectedProcedure.query(({ ctx }) => {
-    return ctx.db.query.review.findMany({
-      orderBy: desc(schema.review.id),
-      limit: 10,
-    });
+  all: protectedProcedure.query(async ({ ctx }) => {
+    return (
+      await ctx.db
+        .select()
+        .from(schema.review)
+        .innerJoin(
+          schema.friend,
+          eq(schema.friend.fromUserId, schema.review.userId),
+        )
+        .where(eq(schema.friend.toUserId, ctx.session.user.id))
+        .orderBy(desc(schema.review.id))
+        .limit(10)
+    ).map((r) => r.review);
   }),
-
-  byId: protectedProcedure
-    .input(z.object({ id: z.number() }))
-    .query(({ ctx, input }) => {
-      return ctx.db.query.review.findFirst({
-        where: eq(schema.review.id, input.id),
-      });
-    }),
 
   byUserId: protectedProcedure
     .input(z.object({ userId: z.string() }))
-    .query(({ ctx, input }) => {
+    .query(async ({ ctx, input }) => {
+      if (
+        ctx.session.user.id !== input.userId &&
+        !(await areFriends(ctx.db, ctx.session.user.id, input.userId))
+      ) {
+        throw new Error("Not friends");
+      }
       return ctx.db.query.review.findMany({
         where: eq(schema.review.userId, input.userId),
         orderBy: desc(schema.review.id),
@@ -51,12 +58,30 @@ export const reviewRouter = createTRPCRouter({
   delete: protectedProcedure
     .input(z.number())
     .mutation(async ({ ctx, input }) => {
+      const review = await ctx.db.query.review.findFirst({
+        where: eq(schema.review.id, input),
+      });
+      if (!review) {
+        throw new Error("Review not found");
+      }
+      if (review.userId !== ctx.session.user.id) {
+        throw new Error("Not authorized");
+      }
       await ctx.db.delete(schema.review).where(eq(schema.review.id, input));
     }),
 
   update: protectedProcedure
     .input(EditReviewSchemaExternal)
-    .mutation(({ ctx, input }) => {
+    .mutation(async ({ ctx, input }) => {
+      const review = await ctx.db.query.review.findFirst({
+        where: eq(schema.review.id, input.id),
+      });
+      if (!review) {
+        throw new Error("Review not found");
+      }
+      if (review.userId !== ctx.session.user.id) {
+        throw new Error("Not authorized");
+      }
       return ctx.db
         .update(schema.review)
         .set({
