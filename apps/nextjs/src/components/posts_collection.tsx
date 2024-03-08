@@ -1,21 +1,22 @@
 "use client";
 
-import type { RouterOutputs } from "@restauwants/api";
-
 import { Suspense, useState } from "react";
 
-import { CollectionList } from "./collections";
-import { ReviewList } from "./reviews";
+import type { RouterOutputs } from "@restauwants/api";
+
+import { CollectionList } from "../components/collections";
+import { ReviewList } from "../components/reviews";
+
+//types of each field in default - try this
 
 export function Posts_collection(props: {
+  collections: Promise<RouterOutputs["collection"]["all"]>;
   reviews: Promise<RouterOutputs["review"]["all"]>;
   byUserId: string;
 }) {
-  const [_activeButton, setActiveButton] = useState("posts");
   const [selectedComponent, setSelectedComponent] = useState("posts");
 
   const handleButton = (buttonName: string) => {
-    setActiveButton(buttonName);
     setSelectedComponent(buttonName);
   };
 
@@ -50,9 +51,9 @@ export function Posts_collection(props: {
       <div className="flex-grow p-4">
         <Suspense fallback={<h4>Loading...</h4>}>
           {selectedComponent === "posts" ? (
-            <ReviewList reviews={props.reviews} byUserId={props.byUserId}/>
+            <ReviewList reviews={props.reviews} byUserId={props.byUserId} />
           ) : (
-            <CollectionList />
+            <CollectionList collections={props.collections} />
           )}
         </Suspense>
       </div>

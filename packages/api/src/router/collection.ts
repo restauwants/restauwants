@@ -5,7 +5,7 @@ import { CreateCollectionSchema as ClientCreateCollectionSchema } from "@restauw
 import {
   AddRestaurantToCollectionSchema as ServerAddRestaurantToCollectionFormSchema,
   CreateCollectionSchema as ServerCreateCollectionSchema,
-} from "@restauwants/validators/server";
+} from "@restauwants/validators/server/external";
 
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 
