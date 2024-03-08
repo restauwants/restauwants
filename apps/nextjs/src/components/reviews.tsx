@@ -282,13 +282,12 @@ export function ReviewCard(props: {
   const myUserVal = String(props.MyUserID);
   const curUserClean: string = myUserVal.replace(/"/g, "");
   // TODO(#37): retrieve the restaurant name for a restaurant ID
-  // TODO(#25): retrieve the user name for a user ID
   return (
     <Card className="p-0">
       <CardContent className="p-0">
         <div className="flex flex-row items-center gap-4 p-4">
           <div className="min-w-0 break-words text-sm text-muted-foreground">
-            {props.review.userId}
+            {props.review.username}
           </div>
           <div className="ml-auto flex items-center gap-2 text-sm text-muted-foreground">
             <CalendarIcon className="h-4 w-4" />

@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { desc, eq, schema } from "@restauwants/db";
+import { alias, desc, eq, schema } from "@restauwants/db";
 import { ReviewSchema as ReviewSchemaDatabase } from "@restauwants/validators/db";
 import {
   CreateReviewSchema as CreateReviewSchemaExternal,
@@ -12,6 +12,7 @@ import { areFriends } from "./friend";
 
 export const reviewRouter = createTRPCRouter({
   all: protectedProcedure.query(async ({ ctx }) => {
+    const friendProfile = alias(schema.profile, "friendProfile");
     return (
       await ctx.db
         .select()
@@ -20,10 +21,14 @@ export const reviewRouter = createTRPCRouter({
           schema.friend,
           eq(schema.friend.fromUserId, schema.review.userId),
         )
+        .innerJoin(friendProfile, eq(friendProfile.id, schema.review.userId))
         .where(eq(schema.friend.toUserId, ctx.session.user.id))
         .orderBy(desc(schema.review.id))
         .limit(10)
-    ).map((r) => r.review);
+    ).map((r) => ({
+      ...r.review,
+      username: r.friendProfile.username,
+    }));
   }),
 
   byUserId: protectedProcedure
@@ -35,11 +40,21 @@ export const reviewRouter = createTRPCRouter({
       ) {
         throw new Error("Not friends");
       }
-      return ctx.db.query.review.findMany({
-        where: eq(schema.review.userId, input.userId),
-        orderBy: desc(schema.review.id),
-        limit: 10,
-      });
+      return (
+        await ctx.db
+          .select()
+          .from(schema.review)
+          .innerJoin(
+            schema.profile,
+            eq(schema.profile.id, schema.review.userId),
+          )
+          .where(eq(schema.review.userId, input.userId))
+          .orderBy(desc(schema.review.id))
+          .limit(10)
+      ).map((r) => ({
+        ...r.review,
+        username: r.profile.username,
+      }));
     }),
 
   create: protectedProcedure
