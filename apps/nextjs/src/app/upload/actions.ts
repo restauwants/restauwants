@@ -26,17 +26,29 @@ export async function getSignedUrl(
   if (origin) {
     console.log(origin);
 
+    // set the cors configuration
     await bucket.setCorsConfiguration([
       {
         maxAgeSeconds: 3600,
         method: ["OPTIONS", "POST", "PUT", "GET"],
-        origin: ["http://localhost:51903"],
+        origin: ["http://localhost:51903"], // might be able to use AUTH_URL env variable here
         responseHeader: ["Access-Control-Allow-Origin", "Content-Type", "Vary"],
       },
     ]);
   } else {
-      return Promise.reject(new Error("No origin header found."));
+    return Promise.reject(new Error("No origin header found."));
   }
+
+  // PUB/SUB notificaitons configuration
+  const topic = 'my-topic';
+  async function createNotification() {
+    // Creates a notification
+    await bucket.createNotification(topic);
+  
+    console.log('Notification subscription created.');
+  }
+    
+  createNotification().catch(console.error);
 
   if (0 >= contentLengthInBytes) {
     return Promise.reject(new Error("No file attached."));
@@ -53,7 +65,7 @@ export async function getSignedUrl(
     action: "write" as const,
     expires: Date.now() + 10 * 60 * 1000, // 10 minutes
     extensionHeaders: { "content-length": contentLengthInBytes },
-    contentType: "image/jpeg",//"application/octet-stream",
+    contentType: "image/jpeg", //"application/octet-stream",
   };
 
   const [url] = await file.getSignedUrl(options);
