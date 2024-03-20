@@ -7,8 +7,6 @@ import { v4 as uuidv4 } from "uuid";
 
 import { getPubSubClient, getStorage } from "./storage";
 
-import { getBaseUrl } from "../../trpc/react"; 
-
 const MAX_FILE_SIZE = 3 * 1024 ** 2; // 3MB
 
 export async function getSignedUrl(
@@ -114,4 +112,9 @@ async function listenForMessages(
     subscription.removeListener("message", messageHandler);
     console.log(`${messageCount} message(s) received.`);
   }, timeout * 1000);
+}
+
+function getBaseUrl() {
+  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
+  return `http://localhost:${process.env.PORT ?? 3000}`;
 }
