@@ -90,7 +90,8 @@ export function CreateReviewForm() {
   return <ReviewForm form={form} onSubmit={onSubmit} />;
 }
 
-function ReviewForm({
+// TODO: make this internal
+export function ReviewForm({
   form,
   onSubmit,
 }: {
