@@ -1,6 +1,11 @@
 "use client";
 
-import { useTransition } from "react";
+import { useState, useTransition } from "react";
+import Image from "next/image";
+
+import { Button } from "@restauwants/ui/button";
+import { Input } from "@restauwants/ui/input";
+import { Label } from "@restauwants/ui/label";
 
 import { getSignedUrl } from "./actions";
 
@@ -26,10 +31,10 @@ export default function Upload() {
           console.log("file size:", file.size);
           //console.log("test post request:", await generateV4UploadSignedUrl());
           const res = await fetch(url, {
-            method: 'PUT',
-            body: file 
-          })
-          console.log(res)
+            method: "PUT",
+            body: file,
+          });
+          console.log(res);
         } catch (e) {
           console.error(e);
         }
@@ -37,15 +42,46 @@ export default function Upload() {
     }
   }
 
+  const [selectedFile, setSelectedFile] = useState(null);
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setSelectedFile(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   return (
     <form action={upload}>
-      <input
-        type="file"
-        name="userFiles"
-        accept="image/x-png,image/jpeg,image/gif"
-        multiple
-      />
-      <button type="submit">Upload</button>
+      <div className="grid w-full max-w-sm items-center gap-1.5">
+        <Label htmlFor="picture">Picture</Label>
+        <Input
+          id="picture"
+          name="userFiles"
+          type="file"
+          accept="image/x-png,image/jpeg,image/gif"
+          multiple
+          onChange={handleFileChange}
+        />
+        {selectedFile && (
+          <div className="mt-2">
+            <Image
+              src={selectedFile}
+              alt="Preview"
+              className="rounded-md"
+              width={500}
+              height={500}
+            />
+            <Button size="sm" type="submit">
+              Upload
+            </Button>
+          </div>
+        )}
+      </div>
     </form>
   );
 }
