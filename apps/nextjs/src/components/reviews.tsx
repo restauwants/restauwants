@@ -35,33 +35,23 @@ import {
   StarIcon,
 } from "@restauwants/ui/icons";
 import { Input } from "@restauwants/ui/input";
+import { Dialog, DialogContent } from "@restauwants/ui/modal";
 import { Textarea } from "@restauwants/ui/textarea";
 import { fromNow } from "@restauwants/ui/time";
 import { toast } from "@restauwants/ui/toast";
 import {
   CreateReviewFormSchema,
   CreateReviewSchema,
+  EditReviewFormSchema,
+  EditReviewSchema,
 } from "@restauwants/validators/client";
 
 import { api } from "~/trpc/react";
-import EditModal from "./EditModal";
-
-interface Review {
-  restaurantId: number;
-  rating: number;
-  price: number;
-  text: string;
-  visitedAt: Date;
-  id: number;
-  userId: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
 
 export function CreateReviewForm() {
   const form = useForm({
     mode: "onBlur",
-    schema: CreateReviewFormSchema,
+    schema: ReviewFormSchema,
     defaultValues: {
       restaurantId: "",
       rating: "",
@@ -83,25 +73,38 @@ export function CreateReviewForm() {
     },
   });
 
-  const onSubmit = (data: z.input<typeof CreateReviewFormSchema>) => {
+  const onSubmit = (data: z.input<typeof ReviewFormSchema>) => {
     createReview.mutate(CreateReviewSchema.parse(data));
   };
 
   return <ReviewForm form={form} onSubmit={onSubmit} />;
 }
 
+const ReviewFormSchema = CreateReviewFormSchema.merge(
+  EditReviewFormSchema.partial({ id: true }),
+);
+
 // TODO: make this internal
 export function ReviewForm({
   form,
   onSubmit,
 }: {
-  form: ReturnType<typeof useForm<typeof CreateReviewFormSchema>>;
-  onSubmit: (data: z.input<typeof CreateReviewFormSchema>) => void;
+  form: ReturnType<typeof useForm<typeof ReviewFormSchema>>;
+  onSubmit: (data: z.input<typeof ReviewFormSchema>) => void;
 }) {
   // TODO(#37): retrieve the restaurant name for a restaurant ID
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+        <FormField
+          control={form.control}
+          name="id"
+          render={({ field }) => (
+            <FormControl>
+              <Input {...field} type="hidden" />
+            </FormControl>
+          )}
+        />
         <FormField
           control={form.control}
           name="restaurantId"
@@ -225,17 +228,34 @@ function reviewList() {
     const { data: currentUser } = api.user.current.useQuery();
     const utils = api.useUtils();
 
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [selectedReview, setSelectedReview] = useState<Review | undefined>(
-      undefined,
-    );
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
-    const handleEditClick = (review: Review) => {
-      setIsModalOpen(true);
-      setSelectedReview(review);
-    };
-    const handleCloseModal = () => {
-      setIsModalOpen(false);
+    const editReviewForm = useForm({
+      mode: "onBlur",
+      schema: ReviewFormSchema,
+      defaultValues: {
+        id: "",
+        restaurantId: "",
+        rating: "",
+        price: "",
+        visitedAt: new Date().toISOString().split("T")[0],
+        text: "",
+      },
+    });
+
+    const openEditModalFor = (
+      review: RouterOutputs["review"]["all"][number],
+    ) => {
+      editReviewForm.setValue("id", review.id.toString());
+      editReviewForm.setValue("restaurantId", review.restaurantId.toString());
+      editReviewForm.setValue("rating", review.rating.toString());
+      editReviewForm.setValue("price", review.price.toString());
+      editReviewForm.setValue("text", review.text);
+      editReviewForm.setValue(
+        "visitedAt",
+        review.visitedAt.toISOString().split("T")[0]!,
+      );
+      setIsEditModalOpen(true);
     };
 
     const deleteReview = api.review.delete.useMutation({
@@ -247,6 +267,21 @@ function reviewList() {
         toast.error("Failed to delete review");
       },
     });
+
+    const updateReview = api.review.update.useMutation({
+      onSuccess: async () => {
+        await utils.review.invalidate();
+        setIsEditModalOpen(false);
+        toast.success("Review updated");
+      },
+      onError: () => {
+        toast.error("Failed to update review");
+      },
+    });
+
+    const onEditSubmit = (data: z.input<typeof ReviewFormSchema>) => {
+      updateReview.mutate(EditReviewSchema.parse(data));
+    };
 
     if (reviews.length === 0) {
       return (
@@ -273,17 +308,15 @@ function reviewList() {
               onDelete={
                 isFromCurrentUser ? () => deleteReview.mutate(p.id) : undefined
               }
-              onEdit={isFromCurrentUser ? () => handleEditClick(p) : undefined}
+              onEdit={isFromCurrentUser ? () => openEditModalFor(p) : undefined}
             />
           );
         })}
-        {selectedReview && (
-          <EditModal
-            isOpen={isModalOpen}
-            onClose={handleCloseModal}
-            review={selectedReview}
-          />
-        )}
+        <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
+          <DialogContent>
+            <ReviewForm form={editReviewForm} onSubmit={onEditSubmit} />
+          </DialogContent>
+        </Dialog>
       </div>
     );
   };
@@ -300,7 +333,7 @@ export function ReviewCard(props: {
   return (
     <Card className="p-0">
       <CardContent className="p-0">
-        <div className="flex flex-row items-center gap-4 p-4">
+        <div className="box-content flex h-5 flex-row items-center gap-4 p-4">
           <div className="min-w-0 break-words text-sm text-muted-foreground">
             {props.review.username}
           </div>
