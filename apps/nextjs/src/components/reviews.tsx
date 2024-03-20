@@ -84,8 +84,7 @@ const ReviewFormSchema = CreateReviewFormSchema.merge(
   EditReviewFormSchema.partial({ id: true }),
 );
 
-// TODO: make this internal
-export function ReviewForm({
+function ReviewForm({
   form,
   onSubmit,
 }: {
