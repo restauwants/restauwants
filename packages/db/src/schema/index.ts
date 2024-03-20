@@ -198,3 +198,19 @@ export const friendRequestRelations = relations(friendRequest, ({ one }) => ({
     references: [users.id],
   }),
 }));
+
+export const photo = mySqlTable("photo", {
+  reviewId: int("reviewId")
+    .notNull()
+    .primaryKey()
+    .references(() => review.id),
+  photoId: varchar("id", { length: 255 }).notNull(),
+  createdAt: timestamp("createdAt")
+    .notNull()
+    .default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const photoRelations = relations(photo, ({ one }) => ({
+  user: one(users),
+  review: one(review),
+}));
