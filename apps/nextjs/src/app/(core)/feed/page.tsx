@@ -6,9 +6,7 @@ import { ReviewList } from "../../../components/reviews";
 export const runtime = "edge";
 
 export default async function Feed() {
-  // TODO: fix suspense
   const reviews = api.review.all();
-  const user = await api.user.current();
 
   return (
     <div className="container min-h-dvh pb-20 pt-12">
@@ -18,7 +16,7 @@ export default async function Feed() {
         </h1>
         <div className="w-full">
           <Suspense fallback={<h4>Loading...</h4>}>
-            <ReviewList reviews={reviews} curUser={user.id} />
+            <ReviewList reviews={reviews} />
           </Suspense>
         </div>
       </div>

@@ -78,7 +78,7 @@ export default async function Profile() {
       </div>
       <div className="container pt-4">
         <Suspense fallback={<h4>Loading...</h4>}>
-          <ReviewList reviews={reviews} userId={user.id} curUser={user.id} />
+          <ReviewList reviews={reviews} byUserId={user.id} />
         </Suspense>
       </div>
     </div>

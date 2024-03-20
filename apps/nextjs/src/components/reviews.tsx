@@ -195,22 +195,24 @@ export function CreateReviewForm() {
 function reviewList() {
   const useQuery = (
     initialData: RouterOutputs["review"]["all"],
-    userId?: string,
+    byUserId?: string,
   ) => {
-    if (userId) {
-      return () => api.review.byUserId.useQuery({ userId }, { initialData });
+    if (byUserId) {
+      return () =>
+        api.review.byUserId.useQuery({ userId: byUserId }, { initialData });
     }
     return () => api.review.all.useQuery(undefined, { initialData });
   };
 
   return function ReviewList(props: {
     reviews: Promise<RouterOutputs["review"]["all"]>;
-    userId?: string;
-    curUser: string;
+    byUserId?: string;
   }) {
     // TODO: Make `useSuspenseQuery` work without having to pass a promise from RSC
     const initialData = use(props.reviews);
-    const { data: reviews } = useQuery(initialData, props.userId)();
+    const { data: reviews } = useQuery(initialData, props.byUserId)();
+    const { data: currentUser } = api.user.current.useQuery();
+    const utils = api.useUtils();
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedReview, setSelectedReview] = useState<Review | undefined>(
@@ -224,6 +226,16 @@ function reviewList() {
     const handleCloseModal = () => {
       setIsModalOpen(false);
     };
+
+    const deleteReview = api.review.delete.useMutation({
+      onSuccess: async () => {
+        await utils.review.invalidate();
+        toast.success("Review deleted");
+      },
+      onError: () => {
+        toast.error("Failed to delete review");
+      },
+    });
 
     if (reviews.length === 0) {
       return (
@@ -242,12 +254,15 @@ function reviewList() {
     return (
       <div className="flex w-full flex-col space-y-6">
         {reviews.map((p) => {
+          const isFromCurrentUser = currentUser?.id === p.userId;
           return (
             <ReviewCard
               key={p.id}
               review={p}
-              MyUserID={props.curUser}
-              onEdit={() => handleEditClick(p)}
+              onDelete={
+                isFromCurrentUser ? () => deleteReview.mutate(p.id) : undefined
+              }
+              onEdit={isFromCurrentUser ? () => handleEditClick(p) : undefined}
             />
           );
         })}
@@ -267,20 +282,9 @@ export const ReviewList = reviewList();
 
 export function ReviewCard(props: {
   review: RouterOutputs["review"]["all"][number];
-  MyUserID: string;
-  onEdit: () => void;
+  onDelete?: () => void;
+  onEdit?: () => void;
 }) {
-  const utils = api.useUtils();
-  const deleteReview = api.review.delete.useMutation({
-    onSuccess: async () => {
-      await utils.review.invalidate();
-    },
-    onError: () => {
-      toast.error("Failed to delete review");
-    },
-  });
-  const myUserVal = String(props.MyUserID);
-  const curUserClean: string = myUserVal.replace(/"/g, "");
   // TODO(#37): retrieve the restaurant name for a restaurant ID
   return (
     <Card className="p-0">
@@ -294,7 +298,7 @@ export function ReviewCard(props: {
             <span className="text-nowrap">
               {fromNow(props.review.createdAt)}
             </span>
-            {props.review.userId === curUserClean && (
+            {(props.onDelete ?? props.onEdit) && (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="icon">
@@ -302,9 +306,7 @@ export function ReviewCard(props: {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
-                  <DropdownMenuItem
-                    onClick={() => deleteReview.mutate(props.review.id)}
-                  >
+                  <DropdownMenuItem onClick={props.onDelete}>
                     Delete
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={props.onEdit}>
