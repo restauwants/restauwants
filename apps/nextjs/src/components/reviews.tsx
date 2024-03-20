@@ -31,7 +31,7 @@ import {
 import {
   CalendarIcon,
   DollarSignIcon,
-  DotsHorizontalIcon,
+  DotsVerticalIcon,
   StarIcon,
 } from "@restauwants/ui/icons";
 import { Input } from "@restauwants/ui/input";
@@ -192,7 +192,11 @@ export function ReviewForm({
           render={({ field }) => (
             <FormItem>
               <FormControl>
-                <Textarea {...field} placeholder="I had a great time at..." />
+                <Textarea
+                  className="h-32 resize-none"
+                  {...field}
+                  placeholder="I had a great time at..."
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -346,7 +350,7 @@ export function ReviewCard(props: {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="icon">
-                    <DotsHorizontalIcon className="size-5" />
+                    <DotsVerticalIcon className="size-5" />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
