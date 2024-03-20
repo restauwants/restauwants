@@ -43,3 +43,11 @@ export const ProfileSchema = z.object({
   id: z.string().min(0).max(255),
   username: username,
 });
+
+export const PhotoSchema = z.object({
+  reviewId: z.number().int(),
+  photoId: z.string().uuid(),
+  createdAt: z.date().refine((d) => d <= new Date(), {
+    message: "createdAt must be in the past",
+  }),
+});
