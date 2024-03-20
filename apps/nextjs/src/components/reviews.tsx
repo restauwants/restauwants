@@ -1,5 +1,6 @@
 "use client";
 
+import type { z } from "zod";
 import { use, useState } from "react";
 
 import type { RouterOutputs } from "@restauwants/api";
@@ -82,15 +83,24 @@ export function CreateReviewForm() {
     },
   });
 
+  const onSubmit = (data: z.input<typeof CreateReviewFormSchema>) => {
+    createReview.mutate(CreateReviewSchema.parse(data));
+  };
+
+  return <ReviewForm form={form} onSubmit={onSubmit} />;
+}
+
+function ReviewForm({
+  form,
+  onSubmit,
+}: {
+  form: ReturnType<typeof useForm<typeof CreateReviewFormSchema>>;
+  onSubmit: (data: z.input<typeof CreateReviewFormSchema>) => void;
+}) {
   // TODO(#37): retrieve the restaurant name for a restaurant ID
   return (
     <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(async (data) => {
-          createReview.mutate(CreateReviewSchema.parse(data));
-        })}
-        className="space-y-5"
-      >
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
         <FormField
           control={form.control}
           name="restaurantId"
