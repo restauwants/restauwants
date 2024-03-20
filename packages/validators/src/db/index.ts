@@ -49,3 +49,11 @@ export const RestaurantSchema = z.object({
   restaurantId: z.string().min(0).max(50),
   name: z.string().min(0).max(255),
 });
+
+export const PhotoSchema = z.object({
+  reviewId: z.number().int(),
+  photoId: z.string().uuid(),
+  createdAt: z.date().refine((d) => d <= new Date(), {
+    message: "createdAt must be in the past",
+  }),
+});
