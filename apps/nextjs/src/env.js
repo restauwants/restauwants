@@ -40,6 +40,7 @@ export const env = createEnv({
     DB_USERNAME: process.env.DB_USERNAME,
     PORT: process.env.PORT,
     VERCEL_URL: process.env.VERCEL_URL,
+    GOOGLE_API_KEY: process.env.GOOGLE_API_KEY,
 
     // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
   },

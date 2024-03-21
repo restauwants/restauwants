@@ -31,6 +31,7 @@ export const usersRelations = relations(users, ({ one, many }) => ({
   comments: many(comment),
   friends: many(friend),
   friendRequests: many(friendRequest),
+  collections: many(collection),
 }));
 
 export const accounts = mySqlTable(
@@ -97,7 +98,7 @@ export const verificationTokens = mySqlTable(
 export const review = mySqlTable("review", {
   id: int("id").autoincrement().notNull().primaryKey(),
   userId: varchar("userId", { length: 255 }).notNull(),
-  restaurantId: int("restaurantId").notNull(),
+  restaurantId: varchar("restaurantId", { length: 255 }).notNull(),
   rating: int("rating").notNull(),
   price: float("price").notNull(),
   text: varchar("text", { length: 255 }).notNull(),
@@ -125,12 +126,16 @@ export const profileRelations = relations(profile, ({ one }) => ({
 }));
 
 export const restaurant = mySqlTable("restaurant", {
-  id: int("id").autoincrement().notNull().primaryKey(),
+  id: varchar("id", { length: 255 }).notNull().primaryKey(),
   name: varchar("name", { length: 255 }).notNull(),
+  website: varchar("website", { length: 255 }),
+  formatted_phone_number: varchar("formatted_phone_number", { length: 255 }),
+  formatted_address: varchar("formatted_address", { length: 255 }),
 });
 
 export const restaurantRelations = relations(restaurant, ({ many }) => ({
   reviews: many(review),
+  collections: many(collectionHasRestaurant),
 }));
 
 export const comment = mySqlTable("comment", {
@@ -198,3 +203,48 @@ export const friendRequestRelations = relations(friendRequest, ({ one }) => ({
     references: [users.id],
   }),
 }));
+
+export const collection = mySqlTable("collection", {
+  id: int("id").autoincrement().notNull().primaryKey(),
+  userId: varchar("userId", { length: 255 }).notNull(),
+  name: varchar("name", { length: 255 }).notNull(),
+  description: varchar("description", { length: 255 }).notNull(),
+  createdAt: timestamp("createdAt")
+    .notNull()
+    .default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const collectionRelations = relations(collection, ({ one, many }) => ({
+  user: one(users),
+  restaurants: many(collectionHasRestaurant),
+}));
+
+export const collectionHasRestaurant = mySqlTable(
+  "collectionHasRestaurant",
+  {
+    collectionId: int("collectionId").notNull(),
+    restaurantId: varchar("restaurantId", { length: 255 }).notNull(),
+    createdAt: timestamp("createdAt")
+      .notNull()
+      .default(sql`CURRENT_TIMESTAMP`),
+  },
+  (table) => ({
+    compoundKey: primaryKey({
+      columns: [table.collectionId, table.restaurantId],
+    }),
+  }),
+);
+
+export const collectionHasRestaurantRelations = relations(
+  collectionHasRestaurant,
+  ({ one }) => ({
+    collection: one(collection, {
+      fields: [collectionHasRestaurant.collectionId],
+      references: [collection.id],
+    }),
+    restaurant: one(restaurant, {
+      fields: [collectionHasRestaurant.restaurantId],
+      references: [restaurant.id],
+    }),
+  }),
+);

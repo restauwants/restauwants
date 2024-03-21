@@ -4,4 +4,6 @@ export {
   StarIcon,
   CalendarIcon,
   DollarSignIcon,
+  XIcon,
+  TrashIcon,
 } from "lucide-react";
