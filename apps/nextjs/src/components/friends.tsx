@@ -86,7 +86,7 @@ function ReceivedFriendRequestList() {
   }
 
   return (
-    <div className="flex flex-col gap-4 divide-y-2 [&>*:first-child]:pt-0 [&>div]:items-center [&>div]:pt-4 [&>p]:h-fit">
+    <FriendCardList>
       {receivedFriendRequests.map((receivedfriendRequest) => (
         <ReceivedFriendRequestCard
           key={receivedfriendRequest.fromUsername}
@@ -103,7 +103,7 @@ function ReceivedFriendRequestList() {
           }
         />
       ))}
-    </div>
+    </FriendCardList>
   );
 }
 
@@ -145,7 +145,7 @@ function ExistingFriendList() {
   }
 
   return (
-    <div className="flex flex-col gap-4 divide-y-2 [&>*:first-child]:pt-0 [&>div]:items-center [&>div]:pt-4 [&>p]:h-fit">
+    <FriendCardList>
       {friends.map((friend) => (
         <ExistingFriendCard
           key={friend.username}
@@ -153,6 +153,18 @@ function ExistingFriendList() {
           remove={() => removeFriend.mutate({ username: friend.username })}
         />
       ))}
+    </FriendCardList>
+  );
+}
+
+interface FriendCardListProps {
+  children: React.ReactNode;
+}
+
+function FriendCardList({ children }: FriendCardListProps) {
+  return (
+    <div className="flex flex-col gap-4 divide-y-2 [&>*:first-child]:pt-0 [&>div]:items-center [&>div]:pt-4 [&>p]:h-fit">
+      {children}
     </div>
   );
 }
