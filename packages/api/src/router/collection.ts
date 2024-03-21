@@ -11,8 +11,8 @@ import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 
 export const collectionRouter = createTRPCRouter({
   all: publicProcedure.query(({ ctx }) => {
-    return ctx.db.query.collections.findMany({
-      orderBy: desc(schema.collections.id),
+    return ctx.db.query.collection.findMany({
+      orderBy: desc(schema.collection.id),
       limit: 10,
     });
   }),
@@ -20,8 +20,8 @@ export const collectionRouter = createTRPCRouter({
   byId: publicProcedure
     .input(z.object({ id: z.number() }))
     .query(({ ctx, input }) => {
-      return ctx.db.query.collections.findFirst({
-        where: eq(schema.collections.id, input.id),
+      return ctx.db.query.collection.findFirst({
+        where: eq(schema.collection.id, input.id),
       });
     }),
 
@@ -34,13 +34,13 @@ export const collectionRouter = createTRPCRouter({
         userId: ctx.session.user.id,
         createdAt: new Date(),
       });
-      return ctx.db.insert(schema.collections).values(storable);
+      return ctx.db.insert(schema.collection).values(storable);
     }),
 
   delete: protectedProcedure.input(z.number()).mutation(({ ctx, input }) => {
     return ctx.db
-      .delete(schema.collections)
-      .where(eq(schema.collections.id, input));
+      .delete(schema.collection)
+      .where(eq(schema.collection.id, input));
   }),
 
   addRestaurant: protectedProcedure

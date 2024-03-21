@@ -203,7 +203,7 @@ export const friendRequestRelations = relations(friendRequest, ({ one }) => ({
   }),
 }));
 
-export const collections = mySqlTable("collection", {
+export const collection = mySqlTable("collection", {
   id: int("id").autoincrement().notNull().primaryKey(),
   userId: varchar("userId", { length: 255 }).notNull(),
   name: varchar("name", { length: 255 }).notNull(),
@@ -213,7 +213,7 @@ export const collections = mySqlTable("collection", {
     .default(sql`CURRENT_TIMESTAMP`),
 });
 
-export const collectionRelations = relations(collections, ({ many }) => ({
+export const collectionRelations = relations(collection, ({ many }) => ({
   collections: many(collectionRestaurant),
 }));
 
