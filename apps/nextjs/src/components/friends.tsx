@@ -54,11 +54,12 @@ function ReceivedFriendRequestCard({
 }
 
 function ReceivedFriendRequestList() {
-  const [receivedFriendRequests] = api.friend.requests.useSuspenseQuery();
+  const [receivedFriendRequests] =
+    api.friend.request.received.useSuspenseQuery();
 
   const utils = api.useUtils();
 
-  const acceptFriendRequest = api.friend.accept.useMutation({
+  const acceptFriendRequest = api.friend.request.accept.useMutation({
     onSuccess: async (_data, variables) => {
       await utils.friend.invalidate();
       toast.success(`Accepted friend request from ${variables.fromUsername}`);
@@ -69,7 +70,7 @@ function ReceivedFriendRequestList() {
       );
     },
   });
-  const rejectFriendRequest = api.friend.reject.useMutation({
+  const rejectFriendRequest = api.friend.request.reject.useMutation({
     onSuccess: async (_data, variables) => {
       await utils.friend.invalidate();
       toast.success(`Rejected friend request from ${variables.fromUsername}`);
@@ -179,7 +180,7 @@ function AddFriendForm() {
 
   const utils = api.useUtils();
 
-  const sendFriendRequest = api.friend.add.useMutation({
+  const sendFriendRequest = api.friend.request.send.useMutation({
     onSuccess: async () => {
       form.reset();
       await utils.friend.invalidate();
