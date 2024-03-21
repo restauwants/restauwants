@@ -134,7 +134,7 @@ export const restaurant = mySqlTable("restaurant", {
 
 export const restaurantRelations = relations(restaurant, ({ many }) => ({
   reviews: many(review),
-  collections: many(collectionRestaurant),
+  collections: many(collectionHasRestaurant),
 }));
 
 export const comment = mySqlTable("comment", {
@@ -214,11 +214,11 @@ export const collection = mySqlTable("collection", {
 });
 
 export const collectionRelations = relations(collection, ({ many }) => ({
-  collections: many(collectionRestaurant),
+  collections: many(collectionHasRestaurant),
 }));
 
-export const collectionRestaurant = mySqlTable(
-  "collection_restaurant",
+export const collectionHasRestaurant = mySqlTable(
+  "collectionHasRestaurant",
   {
     collectionId: int("collectionId").notNull(),
     restaurantId: varchar("restaurantId", { length: 255 }).notNull(),

@@ -55,7 +55,7 @@ export const collectionRouter = createTRPCRouter({
         ...input,
         dateAdded: new Date(),
       });
-      return ctx.db.insert(schema.collectionRestaurant).values(storable);
+      return ctx.db.insert(schema.collectionHasRestaurant).values(storable);
     }),
 
   deleteRestaurant: protectedProcedure
@@ -67,18 +67,21 @@ export const collectionRouter = createTRPCRouter({
     )
     .mutation(({ ctx, input }) => {
       return ctx.db
-        .delete(schema.collectionRestaurant)
+        .delete(schema.collectionHasRestaurant)
         .where(
-          eq(schema.collectionRestaurant.restaurantId, input.restaurantId),
+          eq(schema.collectionHasRestaurant.restaurantId, input.restaurantId),
         );
     }),
 
   getCollection: protectedProcedure
     .input(z.object({ collectionId: z.number() }))
     .query(({ ctx, input }) => {
-      return ctx.db.query.collectionRestaurant.findMany({
-        where: eq(schema.collectionRestaurant.collectionId, input.collectionId),
-        orderBy: desc(schema.collectionRestaurant.dateAdded),
+      return ctx.db.query.collectionHasRestaurant.findMany({
+        where: eq(
+          schema.collectionHasRestaurant.collectionId,
+          input.collectionId,
+        ),
+        orderBy: desc(schema.collectionHasRestaurant.dateAdded),
       });
     }),
 
