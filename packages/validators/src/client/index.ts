@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import { username } from "../common";
+import { CreateCollectionSchema } from "../server/external";
 
 export {
   UserSchemaWithOptionals,
@@ -15,6 +16,8 @@ export {
   CreateProfileSchema,
   AcceptFriendRequestSchema,
   RejectFriendRequestSchema,
+  CreateCollectionSchema,
+  AddRestaurantToCollectionSchema,
 } from "../server/external";
 
 export const CreateReviewFormSchema = z.object({
@@ -50,38 +53,9 @@ export const EditReviewFormSchema = z.object({
   ),
 });
 
-export const AddRestaurantSchema = z.object({
-  id: z.string(),
-  name: z.string().min(0).max(255),
-  website: z.string().min(0).max(255),
-  formatted_phone_number: z.string().min(0).max(255),
-  formatted_address: z.string().min(0).max(255),
-});
-
-export const AddRestaurantFormSchema = z.object({
-  id: z.string(),
-  name: z.string().min(0).max(255),
-  website: z.string().min(0).max(255),
-  formatted_phone_number: z.string().min(0).max(255),
-  formatted_address: z.string().min(0).max(255),
-});
-
-export const CreateCollectionSchema = z.object({
-  name: z.string().min(0).max(255),
-  description: z.string().min(0).max(255),
-});
-
-export const CreateCollectionFormSchema = z.object({
-  name: z.string().min(0).max(255),
-  description: z.string().min(0).max(255),
-});
+export const CreateCollectionFormSchema = CreateCollectionSchema;
 
 export const AddRestaurantToCollectionFormSchema = z.object({
-  restaurantId: z.string().min(0).max(255),
   collectionId: z.string().pipe(z.coerce.number().int().positive()),
-});
-
-export const AddRestaurantToCollectionSchema = z.object({
   restaurantId: z.string().min(0).max(255),
-  collectionId: z.number().int(),
 });
