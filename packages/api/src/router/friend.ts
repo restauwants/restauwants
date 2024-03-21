@@ -44,6 +44,26 @@ export const friendRouter = createTRPCRouter({
       }
     }),
 
+  // sentRequests: protectedProcedure.query(async ({ ctx }) => {
+  //   const toProfile = alias(schema.profile, "toProfile");
+  //   const sentFriendRequests = await ctx.db
+  //     .select()
+  //     .from(schema.friendRequest)
+  //     .where(eq(schema.friendRequest.fromUserId, ctx.session.user.id))
+  //     .orderBy(desc(schema.friendRequest.createdAt))
+  //     .limit(10)
+  //     .innerJoin(
+  //       toProfile,
+  //       eq(toProfile.id, schema.friendRequest.toUserId),
+  //     );
+  //   return sentFriendRequests.map((r) => {
+  //     return SentFriendRequestSchemaExternal.parse({
+  //       toUsername: r.toProfile.username,
+  //       createdAt: r.friendRequest.createdAt,
+  //     })
+  //   })
+  // }),
+
   requests: protectedProcedure.query(async ({ ctx }) => {
     const fromProfile = alias(schema.profile, "fromProfile");
     const receivedFriendRequests = await ctx.db
@@ -96,6 +116,16 @@ export const friendRouter = createTRPCRouter({
       }
       await deleteFriendship(ctx.db, ctx.session.user.id, userId);
     }),
+
+  // cancel: protectedProcedure
+  //   .input(CancelFriendRequestSchemaExternal)
+  //   .mutation(async ({ ctx, input}) => {
+  //     const userId = await usernameToId(ctx.db, input.username);
+  //     if (!userId){
+  //       throw new Error ("User not found");
+  //     }
+  //     await deleteFriendRequest (ctx.db, ctx.session.user.id, userId);
+  //   }),
 
   all: protectedProcedure.query(async ({ ctx }) => {
     const fromProfile = alias(schema.profile, "fromProfile");

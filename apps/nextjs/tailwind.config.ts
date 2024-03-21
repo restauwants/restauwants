@@ -13,6 +13,7 @@ export default {
       fontFamily: {
         sans: ["var(--font-geist-sans)", ...fontFamily.sans],
         mono: ["var(--font-geist-mono)", ...fontFamily.mono],
+        lobster: ["lobstertwo"],
       },
       backgroundImage: {
         "signin-background": "url('/vecteezy_crab-stick-salad_2164000.jpg')",

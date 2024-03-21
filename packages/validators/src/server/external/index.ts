@@ -51,3 +51,7 @@ export const SentFriendRequestSchema = z.object({
 export const CreateProfileSchema = z.object({
   username: username,
 });
+
+// export const CancelFriendRequestSchema = z.object({
+//   username: username,
+// });

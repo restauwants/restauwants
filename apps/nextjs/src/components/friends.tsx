@@ -1,6 +1,16 @@
 "use client";
 
 import type { z } from "zod";
+import { useState } from "react";
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "node_modules/@restauwants/ui/src/alert-dialog";
 
 import { Button } from "@restauwants/ui/button";
 import {
@@ -125,6 +135,55 @@ function ExistingFriendCard({ username, remove }: ExistingFriendCardProps) {
   );
 }
 
+// interface OutgoingFriendRequestsCardProps {
+//   username: string;
+//   cancel: () => void;
+// }
+
+// function OutgoingFriendRCard({username, cancel}: OutgoingFriendRequestsCardProps){
+//   return (
+//     <div className="flex flex-row justify-between">
+//       <p>{username}</p>
+//       <div className="space-x-1">
+//         <Button variant="outline" size="sm" onClick={cancel}>
+//           Cancel
+//         </Button>
+//       </div>
+//     </div>
+//   )
+// }
+// // function OutgoingRequests(){
+//   const [sentfriendrequests] = api.friend.sentRequests.useSuspenseQuery();
+//   const utils = api.useUtils();
+//   //Implement Cancel outgoing requests
+
+//   const cancelRequest = api.friend.cancel.useMutation({
+//     onSuccess: async (_data, variables) => {
+//       await utils.friend.invalidate();
+//       toast.success(`Removed Request for ${variables.username}`);
+//     },
+//     onError: (_data, variables) => {
+//       toast.error(`Failed to cancel request for ${variables.username}`);
+//     },
+//   });
+
+//   if (sentfriendrequests.length == 0){
+//     return <p className="text-muted-foreground">Let's find some fellow foodies!</p>;
+//   }
+
+//   return(
+//     <div className="flex flex-col gap-4 divide-y-2 [&>*:first-child]:pt-0 [&>div]:items-center [&>div]:pt-4 [&>p]:h-fit">
+//       {sentfriendrequests.map((sentfriendrequests) => (
+//         <OutgoingFriendRCard
+//           key={sentfriendrequests.username}
+//           username={sentfriendrequests.username}
+//           cancel={() => cancelRequest.mutate({ username: sentfriendrequests.username })}
+//         />
+//       ))}
+//     </div>
+//   );
+// }
+
 function ExistingFriendList() {
   const [friends] = api.friend.all.useSuspenseQuery();
 
@@ -158,6 +217,9 @@ function ExistingFriendList() {
 }
 
 function AddFriendForm() {
+  const [isSent, setisSent] = useState(false);
+  const [username, setUsername] = useState("");
+  const [friendRequestExists, setFriendRequestExists] = useState(false);
   const form = useForm({
     schema: AddFriendFormSchema,
     defaultValues: {
@@ -167,20 +229,46 @@ function AddFriendForm() {
 
   const utils = api.useUtils();
 
+  const handleCloseModal = () => {
+    setisSent(false);
+  };
+
   const sendFriendRequest = api.friend.add.useMutation({
     onSuccess: async () => {
+      setUsername(form.getValues("username"));
       form.reset();
       await utils.friend.invalidate();
-      toast.success("Friend request sent");
+      setisSent(true);
+      // toast.success("Friend request sent");
     },
     onError: () => {
       toast.error("Failed to send friend request");
     },
   });
 
-  const onSubmit = (data: z.infer<typeof AddFriendFormSchema>) => {
-    sendFriendRequest.mutate(SentFriendRequestSchema.parse(data));
+  const doesExist = (username: string): boolean => {
+    try {
+      SentFriendRequestSchema.parse({ username });
+      return true;
+    } catch (error) {
+      return false;
+    }
   };
+
+  const onSubmit = (data: z.infer<typeof AddFriendFormSchema>) => {
+    const requestExists = doesExist(data.username);
+    if (requestExists) {
+      setUsername(form.getValues("username"));
+      setFriendRequestExists(true);
+    } else {
+      try {
+        sendFriendRequest.mutate(SentFriendRequestSchema.parse(data));
+      } catch (error) {
+        toast.error("failed to send friend request");
+      }
+    }
+  };
+  // sendFriendRequest.mutate(SentFriendRequestSchema.parse(data));
 
   return (
     <Form {...form}>
@@ -204,12 +292,59 @@ function AddFriendForm() {
         <DialogFooter>
           <Button type="submit">Send Request</Button>
         </DialogFooter>
+        {friendRequestExists && (
+          <AlertDialog
+            open={friendRequestExists}
+            onOpenChange={setFriendRequestExists}
+          >
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Request Already Sent</AlertDialogTitle>
+                <AlertDialogDescription>
+                  You already sent friend request to{" "}
+                  <span className="text-[16px] font-bold text-black">
+                    {username}
+                  </span>
+                  !
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>OK</AlertDialogCancel>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        )}
+        {isSent && (
+          <AlertDialog open={isSent} onOpenChange={setisSent}>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>
+                  {" "}
+                  Friend Request Confirmation
+                </AlertDialogTitle>
+                <AlertDialogDescription>
+                  Your friend request to{" "}
+                  <span className="text-[16px] font-bold text-black">
+                    {username}
+                  </span>{" "}
+                  has been successfully sent!
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel onClick={handleCloseModal}>
+                  OK
+                </AlertDialogCancel>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        )}
       </form>
     </Form>
   );
 }
 
 export function ManageFriends() {
+  //Should have Outgoing Requests as well
   return (
     <DialogContent className="max-h-dvh overflow-auto">
       <DialogHeader>

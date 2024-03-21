@@ -1,6 +1,17 @@
 "use client";
 
-import { use } from "react";
+import { use, useState } from "react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "node_modules/@restauwants/ui/src/alert-dialog";
 
 import type { RouterOutputs } from "@restauwants/api";
 import { cn } from "@restauwants/ui";
@@ -34,6 +45,7 @@ import {
   StarIcon,
 } from "@restauwants/ui/icons";
 import { Input } from "@restauwants/ui/input";
+import { Dialog, DialogContent, DialogTrigger } from "@restauwants/ui/modal";
 import { Textarea } from "@restauwants/ui/textarea";
 import { fromNow } from "@restauwants/ui/time";
 import { toast } from "@restauwants/ui/toast";
@@ -45,6 +57,7 @@ import {
 import { api } from "~/trpc/react";
 
 export function CreateReviewForm() {
+  const [isSubmitted, setIsSubmitted] = useState(false);
   const form = useForm({
     mode: "onBlur",
     schema: CreateReviewFormSchema,
@@ -59,10 +72,15 @@ export function CreateReviewForm() {
 
   const utils = api.useUtils();
 
+  const handleCloseModal = () => {
+    setIsSubmitted(false);
+  };
+
   const createReview = api.review.create.useMutation({
     onSuccess: async () => {
       form.reset();
       await utils.review.invalidate();
+      setIsSubmitted(true);
     },
     onError: () => {
       toast.error("Failed to create review");
@@ -171,6 +189,23 @@ export function CreateReviewForm() {
           Submit
         </Button>
       </form>
+      {isSubmitted && (
+        <AlertDialog open={isSubmitted} onOpenChange={setIsSubmitted}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Success</AlertDialogTitle>
+              <AlertDialogDescription>
+                Your experience has been successfully plated!
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel onClick={handleCloseModal}>
+                OK
+              </AlertDialogCancel>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      )}
     </Form>
   );
 }
@@ -247,26 +282,49 @@ export function ReviewCard(props: {
             <span className="text-nowrap">
               {fromNow(props.review.createdAt)}
             </span>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon">
-                  <DotsHorizontalIcon className="size-5" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuItem
-                  onClick={() => deleteReview.mutate(props.review.id)}
-                >
-                  Delete
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <AlertDialog>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon">
+                    <DotsHorizontalIcon className="size-5" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuItem>
+                    <AlertDialogTrigger>Delete</AlertDialogTrigger>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Delete Confirmation</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Are you sure about deleting this post?
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={() => deleteReview.mutate(props.review.id)}
+                  >
+                    Delete
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </div>
         </div>
         <div className="border-t" />
         <CardContent className="p-4">
           <div className="grid gap-1.5">
-            <CardTitle>{props.review.restaurantId}</CardTitle>
+            <Dialog>
+              <DialogTrigger>
+                <CardTitle className="text-left">
+                  {props.review.restaurantId}
+                </CardTitle>
+              </DialogTrigger>
+              <DialogContent></DialogContent>
+            </Dialog>
             <CardDescription className="whitespace-pre-wrap">
               {props.review.text}
             </CardDescription>
