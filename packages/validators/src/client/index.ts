@@ -18,7 +18,7 @@ export {
 } from "../server/external";
 
 export const CreateReviewFormSchema = z.object({
-  restaurantId: z.string(),
+  restaurantId: z.string().min(0).max(255),
   rating: z.string().pipe(z.coerce.number().int().max(5).positive()),
   price: z.string().pipe(z.coerce.number().max(1000000).positive()),
   text: z.string().min(0).max(255),
@@ -39,7 +39,7 @@ export const CreateProfileFormSchema = z.object({
 
 export const EditReviewFormSchema = z.object({
   id: z.string().pipe(z.coerce.number().int().positive()),
-  restaurantId: z.string().pipe(z.coerce.number().int().positive()),
+  restaurantId: z.string().min(0).max(255),
   rating: z.string().pipe(z.coerce.number().int().max(5).positive()),
   price: z.string().pipe(z.coerce.number().max(1000000).positive()),
   text: z.string().min(0).max(255),
