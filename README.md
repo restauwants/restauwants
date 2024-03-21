@@ -7,7 +7,7 @@ Track, review, wishlist, and share restaurants with friends.
 ## Links
 
 - [Documentation](https://restauwants.github.io/restauwants/)
-- [Application](https://restauwants-nextjs.vercel.app/)
+- [Application](https://www.restauwants.com)
 
 ## Project Structure
 
