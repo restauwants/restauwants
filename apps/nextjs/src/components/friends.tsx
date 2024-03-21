@@ -27,17 +27,17 @@ import {
 
 import { api } from "~/trpc/react";
 
-interface FriendRequestCardProps {
+interface ReceivedFriendRequestCardProps {
   username: string;
   accept: () => void;
   reject: () => void;
 }
 
-function FriendRequestCard({
+function ReceivedFriendRequestCard({
   username,
   accept,
   reject,
-}: FriendRequestCardProps) {
+}: ReceivedFriendRequestCardProps) {
   return (
     <div className="flex flex-row justify-between">
       <p>{username}</p>
@@ -53,8 +53,8 @@ function FriendRequestCard({
   );
 }
 
-function FriendRequestList() {
-  const [friendRequests] = api.friend.requests.useSuspenseQuery();
+function ReceivedFriendRequestList() {
+  const [receivedFriendRequests] = api.friend.requests.useSuspenseQuery();
 
   const utils = api.useUtils();
 
@@ -81,24 +81,24 @@ function FriendRequestList() {
     },
   });
 
-  if (friendRequests.length === 0) {
+  if (receivedFriendRequests.length === 0) {
     return <p className="text-muted-foreground">No friend requests yet!</p>;
   }
 
   return (
     <div className="flex flex-col gap-4 divide-y-2 [&>*:first-child]:pt-0 [&>div]:items-center [&>div]:pt-4 [&>p]:h-fit">
-      {friendRequests.map((friendRequest) => (
-        <FriendRequestCard
-          key={friendRequest.fromUsername}
-          username={friendRequest.fromUsername}
+      {receivedFriendRequests.map((receivedfriendRequest) => (
+        <ReceivedFriendRequestCard
+          key={receivedfriendRequest.fromUsername}
+          username={receivedfriendRequest.fromUsername}
           accept={() =>
             acceptFriendRequest.mutate({
-              fromUsername: friendRequest.fromUsername,
+              fromUsername: receivedfriendRequest.fromUsername,
             })
           }
           reject={() =>
             rejectFriendRequest.mutate({
-              fromUsername: friendRequest.fromUsername,
+              fromUsername: receivedfriendRequest.fromUsername,
             })
           }
         />
@@ -221,7 +221,7 @@ export function ManageFriends() {
         type="always"
         className="max-h-52 rounded-xl border-2 bg-card p-4"
       >
-        <FriendRequestList />
+        <ReceivedFriendRequestList />
       </ScrollArea>
       <h4 className="pt-4 font-medium">Your Friends</h4>
       <ScrollArea
