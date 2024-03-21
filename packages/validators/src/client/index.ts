@@ -15,6 +15,7 @@ export {
   CreateProfileSchema,
   AcceptFriendRequestSchema,
   RejectFriendRequestSchema,
+  RevokeFriendRequestSchema,
 } from "../server/external";
 
 export const CreateReviewFormSchema = z.object({

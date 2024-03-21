@@ -22,6 +22,7 @@ import { ScrollArea } from "@restauwants/ui/scroll-area";
 import { toast } from "@restauwants/ui/toast";
 import {
   AddFriendFormSchema,
+  RevokeFriendRequestSchema,
   SentFriendRequestSchema,
 } from "@restauwants/validators/client";
 
@@ -83,7 +84,9 @@ function ReceivedFriendRequestList() {
   });
 
   if (receivedFriendRequests.length === 0) {
-    return <p className="text-muted-foreground">No friend requests yet!</p>;
+    return (
+      <p className="text-muted-foreground">No received friend requests yet!</p>
+    );
   }
 
   return (
@@ -117,11 +120,9 @@ function ExistingFriendCard({ username, remove }: ExistingFriendCardProps) {
   return (
     <div className="flex flex-row justify-between">
       <p>{username}</p>
-      <div className="space-x-1">
-        <Button variant="outline" size="sm" onClick={remove}>
-          Remove
-        </Button>
-      </div>
+      <Button variant="outline" size="sm" onClick={remove}>
+        Remove
+      </Button>
     </div>
   );
 }
@@ -152,6 +153,65 @@ function ExistingFriendList() {
           key={friend.username}
           username={friend.username}
           remove={() => removeFriend.mutate({ username: friend.username })}
+        />
+      ))}
+    </FriendCardList>
+  );
+}
+
+interface SentFriendRequestCardProps {
+  username: string;
+  revoke: () => void;
+}
+
+function SentFriendRequestCard({
+  username,
+  revoke,
+}: SentFriendRequestCardProps) {
+  return (
+    <div className="flex flex-row justify-between">
+      <p>{username}</p>
+      <Button variant="outline" size="sm" onClick={revoke}>
+        Cancel
+      </Button>
+    </div>
+  );
+}
+
+function SentFriendRequestList() {
+  const [sentFriendRequests] = api.friend.request.sent.useSuspenseQuery();
+
+  const utils = api.useUtils();
+
+  const revokeFriendRequest = api.friend.request.revoke.useMutation({
+    onSuccess: async (_data, variables) => {
+      await utils.friend.invalidate();
+      toast.success(`Cancelled friend request to ${variables.toUsername}`);
+    },
+    onError: (_data, variables) => {
+      toast.error(`Failed to cancel friend request to ${variables.toUsername}`);
+    },
+  });
+
+  if (sentFriendRequests.length === 0) {
+    return (
+      <p className="text-muted-foreground">No sent friend requests yet!</p>
+    );
+  }
+
+  return (
+    <FriendCardList>
+      {sentFriendRequests.map((sentFriendRequest) => (
+        <SentFriendRequestCard
+          key={sentFriendRequest.toUsername}
+          username={sentFriendRequest.toUsername}
+          revoke={() =>
+            revokeFriendRequest.mutate(
+              RevokeFriendRequestSchema.parse({
+                toUsername: sentFriendRequest.toUsername,
+              }),
+            )
+          }
         />
       ))}
     </FriendCardList>
@@ -192,7 +252,11 @@ function AddFriendForm() {
   });
 
   const onSubmit = (data: z.infer<typeof AddFriendFormSchema>) => {
-    sendFriendRequest.mutate(SentFriendRequestSchema.parse(data));
+    sendFriendRequest.mutate(
+      SentFriendRequestSchema.parse({
+        toUsername: data.username,
+      }),
+    );
   };
 
   return (
@@ -229,6 +293,13 @@ export function ManageFriends() {
         <DialogTitle>Manage Friends</DialogTitle>
       </DialogHeader>
       <AddFriendForm />
+      <h4 className="pt-4 font-medium">Sent Friend Requests</h4>
+      <ScrollArea
+        type="always"
+        className="max-h-52 rounded-xl border-2 bg-card p-4"
+      >
+        <SentFriendRequestList />
+      </ScrollArea>
       <h4 className="pt-4 font-medium">Received Friend Requests</h4>
       <ScrollArea
         type="always"
