@@ -14,7 +14,7 @@ import "~/app/globals.css";
 export const metadata: Metadata = {
   metadataBase: new URL(
     env.VERCEL_ENV === "production"
-      ? "https://restauwants-nextjs.vercel.app/"
+      ? "https://www.restauwants.com"
       : "http://localhost:3000",
   ),
   title: "RestauWants",
@@ -22,7 +22,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "RestauWants",
     description: "Simple monorepo with shared backend for web & mobile apps",
-    url: "https://restauwants-nextjs.vercel.app/",
+    url: "https://www.restauwants.com",
     siteName: "RestauWants",
   },
   twitter: {
