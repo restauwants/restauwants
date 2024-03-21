@@ -31,7 +31,6 @@ export const usersRelations = relations(users, ({ one, many }) => ({
   comments: many(comment),
   friends: many(friend),
   friendRequests: many(friendRequest),
-  collections: many(userCollection),
 }));
 
 export const accounts = mySqlTable(
@@ -217,19 +216,6 @@ export const collections = mySqlTable("collection", {
 export const collectionRelations = relations(collections, ({ many }) => ({
   collections: many(collectionRestaurant),
 }));
-
-export const userCollection = mySqlTable(
-  "user_collection",
-  {
-    userId: varchar("userId", { length: 255 }).notNull(),
-    collectionId: int("collectionId").notNull(),
-  },
-  (table) => ({
-    primaryKey: primaryKey({ columns: [table.userId, table.collectionId] }),
-    userIdIdx: index("userId_idx").on(table.userId),
-    collectionIdIdx: index("collectionId_idx").on(table.collectionId),
-  }),
-);
 
 export const collectionRestaurant = mySqlTable(
   "collection_restaurant",
