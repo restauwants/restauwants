@@ -36,5 +36,8 @@
     "overrides": {
       "@auth/core": "0.20.0"
     }
+  },
+  "dependencies": {
+    "lucide-react": "^0.344.0"
   }
 }

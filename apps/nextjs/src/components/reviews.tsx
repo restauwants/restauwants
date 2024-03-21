@@ -48,6 +48,48 @@ import {
 
 import { api } from "~/trpc/react";
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@restauwants/ui/alert-dialog";
+
+interface AlertDialogModalProps {
+  onAction?: () => void; // Explicitly defining the type of onAction prop
+}
+
+function AlertDialogModal ({ onAction }: AlertDialogModalProps){
+  const handleAction = () => {
+    if (onAction) {
+      onAction();
+    }
+  };
+
+  return (
+  <AlertDialog>
+    <AlertDialogTrigger>Delete</AlertDialogTrigger>
+    <AlertDialogContent>
+      <AlertDialogHeader>
+        <AlertDialogTitle>Are you sure you want to Delete?</AlertDialogTitle>
+        <AlertDialogDescription>
+          This action cannot be undone. This will permanently delete this post and cannot be undone.
+        </AlertDialogDescription>
+      </AlertDialogHeader>
+      <AlertDialogFooter>
+        <AlertDialogCancel>Cancel</AlertDialogCancel>
+        <AlertDialogAction onClick={handleAction}>Delete</AlertDialogAction>
+      </AlertDialogFooter>
+    </AlertDialogContent>
+  </AlertDialog>
+  );
+}
+
 export function CreateReviewForm() {
   const form = useForm({
     mode: "onBlur",
@@ -353,9 +395,7 @@ export function ReviewCard(props: {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
-                  <DropdownMenuItem onClick={props.onDelete}>
-                    Delete
-                  </DropdownMenuItem>
+                  <AlertDialogModal onAction={props.onDelete} />
                   <DropdownMenuItem onClick={props.onEdit}>
                     Edit
                   </DropdownMenuItem>
