@@ -75,7 +75,7 @@ export const CreateCollectionSchema = z.object({
 export const AddRestaurantToCollectionSchema = z.object({
   collectionId: z.number().int(),
   restaurantId: z.string().min(0).max(255),
-  dateAdded: z.date().refine((d) => d <= new Date(), {
+  createdAt: z.date().refine((d) => d <= new Date(), {
     message: "createdAt must be in the past",
   }),
 });

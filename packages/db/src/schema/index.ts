@@ -222,7 +222,7 @@ export const collectionHasRestaurant = mySqlTable(
   {
     collectionId: int("collectionId").notNull(),
     restaurantId: varchar("restaurantId", { length: 255 }).notNull(),
-    dateAdded: timestamp("createdAt")
+    createdAt: timestamp("createdAt")
       .notNull()
       .default(sql`CURRENT_TIMESTAMP`),
   },

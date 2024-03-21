@@ -53,7 +53,7 @@ export const collectionRouter = createTRPCRouter({
     .mutation(({ ctx, input }) => {
       const storable = ServerAddRestaurantToCollectionFormSchema.parse({
         ...input,
-        dateAdded: new Date(),
+        createdAt: new Date(),
       });
       return ctx.db.insert(schema.collectionHasRestaurant).values(storable);
     }),
@@ -81,7 +81,7 @@ export const collectionRouter = createTRPCRouter({
           schema.collectionHasRestaurant.collectionId,
           input.collectionId,
         ),
-        orderBy: desc(schema.collectionHasRestaurant.dateAdded),
+        orderBy: desc(schema.collectionHasRestaurant.createdAt),
       });
     }),
 
