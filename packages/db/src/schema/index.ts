@@ -31,6 +31,7 @@ export const usersRelations = relations(users, ({ one, many }) => ({
   comments: many(comment),
   friends: many(friend),
   friendRequests: many(friendRequest),
+  collections: many(collection),
 }));
 
 export const accounts = mySqlTable(
@@ -213,8 +214,9 @@ export const collection = mySqlTable("collection", {
     .default(sql`CURRENT_TIMESTAMP`),
 });
 
-export const collectionRelations = relations(collection, ({ many }) => ({
-  collections: many(collectionHasRestaurant),
+export const collectionRelations = relations(collection, ({ one, many }) => ({
+  user: one(users),
+  restaurants: many(collectionHasRestaurant),
 }));
 
 export const collectionHasRestaurant = mySqlTable(
@@ -227,10 +229,22 @@ export const collectionHasRestaurant = mySqlTable(
       .default(sql`CURRENT_TIMESTAMP`),
   },
   (table) => ({
-    primaryKey: primaryKey({
+    compoundKey: primaryKey({
       columns: [table.collectionId, table.restaurantId],
     }),
-    collectionIdIdx: index("collectionId_idx").on(table.collectionId),
-    restaurantIdIdx: index("restaurantId_idx").on(table.restaurantId),
+  }),
+);
+
+export const collectionHasRestaurantRelations = relations(
+  collectionHasRestaurant,
+  ({ one }) => ({
+    collection: one(collection, {
+      fields: [collectionHasRestaurant.collectionId],
+      references: [collection.id],
+    }),
+    restaurant: one(restaurant, {
+      fields: [collectionHasRestaurant.restaurantId],
+      references: [restaurant.id],
+    }),
   }),
 );
