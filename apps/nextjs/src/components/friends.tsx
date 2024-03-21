@@ -28,6 +28,22 @@ import {
 
 import { api } from "~/trpc/react";
 
+const withCardListContainer = (CardList: React.FC) => {
+  const CardListContainer: React.FC = () => {
+    return (
+      <ScrollArea
+        type="always"
+        className="max-h-52 rounded-xl border-2 bg-card p-4"
+      >
+        <div className="flex flex-col gap-4 divide-y-2 [&>*:first-child]:pt-0 [&>div]:items-center [&>div]:pt-4 [&>p]:h-fit">
+          <CardList />
+        </div>
+      </ScrollArea>
+    );
+  };
+  return CardListContainer;
+};
+
 interface ReceivedFriendRequestCardProps {
   username: string;
   accept: () => void;
@@ -54,7 +70,7 @@ function ReceivedFriendRequestCard({
   );
 }
 
-function ReceivedFriendRequestList() {
+const ReceivedFriendRequestList = withCardListContainer(() => {
   const [receivedFriendRequests] =
     api.friend.request.received.useSuspenseQuery();
 
@@ -89,27 +105,23 @@ function ReceivedFriendRequestList() {
     );
   }
 
-  return (
-    <FriendCardList>
-      {receivedFriendRequests.map((receivedfriendRequest) => (
-        <ReceivedFriendRequestCard
-          key={receivedfriendRequest.fromUsername}
-          username={receivedfriendRequest.fromUsername}
-          accept={() =>
-            acceptFriendRequest.mutate({
-              fromUsername: receivedfriendRequest.fromUsername,
-            })
-          }
-          reject={() =>
-            rejectFriendRequest.mutate({
-              fromUsername: receivedfriendRequest.fromUsername,
-            })
-          }
-        />
-      ))}
-    </FriendCardList>
-  );
-}
+  return receivedFriendRequests.map((receivedfriendRequest) => (
+    <ReceivedFriendRequestCard
+      key={receivedfriendRequest.fromUsername}
+      username={receivedfriendRequest.fromUsername}
+      accept={() =>
+        acceptFriendRequest.mutate({
+          fromUsername: receivedfriendRequest.fromUsername,
+        })
+      }
+      reject={() =>
+        rejectFriendRequest.mutate({
+          fromUsername: receivedfriendRequest.fromUsername,
+        })
+      }
+    />
+  ));
+});
 
 interface ExistingFriendCardProps {
   username: string;
@@ -127,7 +139,7 @@ function ExistingFriendCard({ username, remove }: ExistingFriendCardProps) {
   );
 }
 
-function ExistingFriendList() {
+const ExistingFriendList = withCardListContainer(() => {
   const [friends] = api.friend.all.useSuspenseQuery();
 
   const utils = api.useUtils();
@@ -146,18 +158,14 @@ function ExistingFriendList() {
     return <p className="text-muted-foreground">No friends yet!</p>;
   }
 
-  return (
-    <FriendCardList>
-      {friends.map((friend) => (
-        <ExistingFriendCard
-          key={friend.username}
-          username={friend.username}
-          remove={() => removeFriend.mutate({ username: friend.username })}
-        />
-      ))}
-    </FriendCardList>
-  );
-}
+  return friends.map((friend) => (
+    <ExistingFriendCard
+      key={friend.username}
+      username={friend.username}
+      remove={() => removeFriend.mutate({ username: friend.username })}
+    />
+  ));
+});
 
 interface SentFriendRequestCardProps {
   username: string;
@@ -178,7 +186,7 @@ function SentFriendRequestCard({
   );
 }
 
-function SentFriendRequestList() {
+const SentFriendRequestList = withCardListContainer(() => {
   const [sentFriendRequests] = api.friend.request.sent.useSuspenseQuery();
 
   const utils = api.useUtils();
@@ -199,36 +207,20 @@ function SentFriendRequestList() {
     );
   }
 
-  return (
-    <FriendCardList>
-      {sentFriendRequests.map((sentFriendRequest) => (
-        <SentFriendRequestCard
-          key={sentFriendRequest.toUsername}
-          username={sentFriendRequest.toUsername}
-          revoke={() =>
-            revokeFriendRequest.mutate(
-              RevokeFriendRequestSchema.parse({
-                toUsername: sentFriendRequest.toUsername,
-              }),
-            )
-          }
-        />
-      ))}
-    </FriendCardList>
-  );
-}
-
-interface FriendCardListProps {
-  children: React.ReactNode;
-}
-
-function FriendCardList({ children }: FriendCardListProps) {
-  return (
-    <div className="flex flex-col gap-4 divide-y-2 [&>*:first-child]:pt-0 [&>div]:items-center [&>div]:pt-4 [&>p]:h-fit">
-      {children}
-    </div>
-  );
-}
+  return sentFriendRequests.map((sentFriendRequest) => (
+    <SentFriendRequestCard
+      key={sentFriendRequest.toUsername}
+      username={sentFriendRequest.toUsername}
+      revoke={() =>
+        revokeFriendRequest.mutate(
+          RevokeFriendRequestSchema.parse({
+            toUsername: sentFriendRequest.toUsername,
+          }),
+        )
+      }
+    />
+  ));
+});
 
 function AddFriendForm() {
   const form = useForm({
@@ -294,26 +286,11 @@ export function ManageFriends() {
       </DialogHeader>
       <AddFriendForm />
       <h4 className="pt-4 font-medium">Sent Friend Requests</h4>
-      <ScrollArea
-        type="always"
-        className="max-h-52 rounded-xl border-2 bg-card p-4"
-      >
-        <SentFriendRequestList />
-      </ScrollArea>
+      <SentFriendRequestList />
       <h4 className="pt-4 font-medium">Received Friend Requests</h4>
-      <ScrollArea
-        type="always"
-        className="max-h-52 rounded-xl border-2 bg-card p-4"
-      >
-        <ReceivedFriendRequestList />
-      </ScrollArea>
+      <ReceivedFriendRequestList />
       <h4 className="pt-4 font-medium">Your Friends</h4>
-      <ScrollArea
-        type="always"
-        className="max-h-52 rounded-xl border-2 bg-card p-4"
-      >
-        <ExistingFriendList />
-      </ScrollArea>
+      <ExistingFriendList />
     </DialogContent>
   );
 }
