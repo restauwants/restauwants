@@ -116,7 +116,7 @@ export const friendRouter = createTRPCRouter({
   }),
 });
 
-const areFriends = async (
+export const areFriends = async (
   db: Database,
   userIdA: string,
   userIdB: string,

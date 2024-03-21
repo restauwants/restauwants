@@ -1,6 +1,6 @@
 export {
+  SettingsIcon,
   MoreVerticalIcon as DotsVerticalIcon,
-  MoreHorizontalIcon as DotsHorizontalIcon,
   StarIcon,
   CalendarIcon,
   DollarSignIcon,

@@ -18,7 +18,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@restauwants/ui/dropdown-menu";
-import { DotsVerticalIcon } from "@restauwants/ui/icons";
+import { SettingsIcon } from "@restauwants/ui/icons";
 import { Dialog, DialogTrigger } from "@restauwants/ui/modal";
 
 import { api } from "~/trpc/server";
@@ -33,7 +33,7 @@ function More() {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon">
-              <DotsVerticalIcon className="size-5" />
+              <SettingsIcon className="size-5" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
@@ -78,7 +78,7 @@ export default async function Profile() {
       </div>
       <div className="container pt-4">
         <Suspense fallback={<h4>Loading...</h4>}>
-          <ReviewList reviews={reviews} userId={user.id} />
+          <ReviewList reviews={reviews} byUserId={user.id} />
         </Suspense>
       </div>
     </div>

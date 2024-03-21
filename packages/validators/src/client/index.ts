@@ -8,6 +8,7 @@ export {
   isCompleteUser,
   RemoveFriendSchema,
   CreateReviewSchema,
+  EditReviewSchema,
   FriendSchema,
   ReceivedFriendRequestSchema,
   SentFriendRequestSchema,
@@ -34,4 +35,17 @@ export const AddFriendFormSchema = z.object({
 
 export const CreateProfileFormSchema = z.object({
   username: username,
+});
+
+export const EditReviewFormSchema = z.object({
+  id: z.string().pipe(z.coerce.number().int().positive()),
+  restaurantId: z.string().pipe(z.coerce.number().int().positive()),
+  rating: z.string().pipe(z.coerce.number().int().max(5).positive()),
+  price: z.string().pipe(z.coerce.number().max(1000000).positive()),
+  text: z.string().min(0).max(255),
+  visitedAt: z.string().pipe(
+    z.coerce.date().refine((d) => d <= new Date(), {
+      message: "visitedAt must be in the past",
+    }),
+  ),
 });

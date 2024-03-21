@@ -211,7 +211,7 @@ function AddFriendForm() {
 
 export function ManageFriends() {
   return (
-    <DialogContent className="max-h-dvh overflow-auto">
+    <DialogContent>
       <DialogHeader>
         <DialogTitle>Manage Friends</DialogTitle>
       </DialogHeader>

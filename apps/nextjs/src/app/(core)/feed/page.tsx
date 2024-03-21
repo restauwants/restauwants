@@ -6,7 +6,6 @@ import { ReviewList } from "../../../components/reviews";
 export const runtime = "edge";
 
 export default async function Feed() {
-  // You can await this here if you don't want to show Suspense fallback below
   const reviews = api.review.all();
 
   return (
