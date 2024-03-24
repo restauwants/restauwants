@@ -18,7 +18,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@restauwants/ui/modal";
-import { ScrollArea } from "@restauwants/ui/scroll-area";
 import { toast } from "@restauwants/ui/toast";
 import {
   AddFriendFormSchema,
@@ -28,17 +27,36 @@ import {
 
 import { api } from "~/trpc/react";
 
+interface CardProps {
+  children: React.ReactNode;
+}
+
+const Card = ({ children }: CardProps) => {
+  return (
+    <div className="flex h-16 flex-row items-center justify-between p-4">
+      {children}
+    </div>
+  );
+};
+
+interface PlaceholderCardProps {
+  message: string;
+}
+
+const PlaceholderCard = ({ message }: PlaceholderCardProps) => {
+  return (
+    <Card>
+      <p className="text-muted-foreground">{message}</p>
+    </Card>
+  );
+};
+
 const withCardListContainer = (CardList: React.FC) => {
   const CardListContainer: React.FC = () => {
     return (
-      <ScrollArea
-        type="always"
-        className="max-h-52 rounded-xl border-2 bg-card p-4"
-      >
-        <div className="flex flex-col gap-4 divide-y-2 [&>*:first-child]:pt-0 [&>div]:items-center [&>div]:pt-4 [&>p]:h-fit">
-          <CardList />
-        </div>
-      </ScrollArea>
+      <div className="flex flex-col divide-y rounded-xl border bg-card">
+        <CardList />
+      </div>
     );
   };
   return CardListContainer;
@@ -56,7 +74,7 @@ function ReceivedFriendRequestCard({
   reject,
 }: ReceivedFriendRequestCardProps) {
   return (
-    <div className="flex flex-row justify-between">
+    <Card>
       <p>{username}</p>
       <div className="space-x-1">
         <Button variant="outline" size="sm" onClick={accept}>
@@ -66,7 +84,7 @@ function ReceivedFriendRequestCard({
           Reject
         </Button>
       </div>
-    </div>
+    </Card>
   );
 }
 
@@ -100,7 +118,7 @@ const ReceivedFriendRequestList = withCardListContainer(() => {
   });
 
   if (receivedFriendRequests.length === 0) {
-    return <p className="text-muted-foreground">None yet! Check back later.</p>;
+    return <PlaceholderCard message="None yet! Check back later." />;
   }
 
   return receivedFriendRequests.map((receivedfriendRequest) => (
@@ -128,12 +146,12 @@ interface ExistingFriendCardProps {
 
 function ExistingFriendCard({ username, remove }: ExistingFriendCardProps) {
   return (
-    <div className="flex flex-row justify-between">
+    <Card>
       <p>{username}</p>
       <Button variant="outline" size="sm" onClick={remove}>
         Remove
       </Button>
-    </div>
+    </Card>
   );
 }
 
@@ -153,9 +171,7 @@ const ExistingFriendList = withCardListContainer(() => {
   });
 
   if (friends.length === 0) {
-    return (
-      <p className="text-muted-foreground">It&apos;s just you here for now!</p>
-    );
+    return <PlaceholderCard message="It's just you here for now!" />;
   }
 
   return friends.map((friend) => (
@@ -177,12 +193,12 @@ function SentFriendRequestCard({
   revoke,
 }: SentFriendRequestCardProps) {
   return (
-    <div className="flex flex-row justify-between">
+    <Card>
       <p>{username}</p>
       <Button variant="outline" size="sm" onClick={revoke}>
         Cancel
       </Button>
-    </div>
+    </Card>
   );
 }
 
@@ -202,7 +218,7 @@ const SentFriendRequestList = withCardListContainer(() => {
   });
 
   if (sentFriendRequests.length === 0) {
-    return <p className="text-muted-foreground">Try adding a friend!</p>;
+    return <PlaceholderCard message="Try adding a friend!" />;
   }
 
   return sentFriendRequests.map((sentFriendRequest) => (
@@ -252,12 +268,11 @@ function AddFriendForm() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
-        <h4 className="font-medium">Add a Friend</h4>
         <FormField
           control={form.control}
           name="username"
           render={({ field }) => (
-            <FormItem className="pt-4">
+            <FormItem>
               <FormControl>
                 <Input
                   placeholder="Enter the username of your friend"
@@ -282,6 +297,7 @@ export function ManageFriends() {
       <DialogHeader>
         <DialogTitle>Manage Friends</DialogTitle>
       </DialogHeader>
+      <h4 className="font-medium">Add a Friend</h4>
       <AddFriendForm />
       <h4 className="pt-4 font-medium">Sent Friend Requests</h4>
       <SentFriendRequestList />
