@@ -27,11 +27,11 @@ import {
 
 import { api } from "~/trpc/react";
 
-interface CardProps {
+interface FriendCardProps {
   children: React.ReactNode;
 }
 
-const Card = ({ children }: CardProps) => {
+const FriendCard = ({ children }: FriendCardProps) => {
   return (
     <div className="flex h-16 flex-row items-center justify-between p-4">
       {children}
@@ -39,27 +39,27 @@ const Card = ({ children }: CardProps) => {
   );
 };
 
-interface PlaceholderCardProps {
+interface PlaceholderFriendCardProps {
   message: string;
 }
 
-const PlaceholderCard = ({ message }: PlaceholderCardProps) => {
+const PlaceholderFriendCard = ({ message }: PlaceholderFriendCardProps) => {
   return (
-    <Card>
+    <FriendCard>
       <p className="text-muted-foreground">{message}</p>
-    </Card>
+    </FriendCard>
   );
 };
 
-const withCardListContainer = (CardList: React.FC) => {
-  const CardListContainer: React.FC = () => {
+const withFriendCardListContainer = (FriendCardList: React.FC) => {
+  const FriendCardListContainer: React.FC = () => {
     return (
       <div className="flex flex-col divide-y rounded-xl border bg-card">
-        <CardList />
+        <FriendCardList />
       </div>
     );
   };
-  return CardListContainer;
+  return FriendCardListContainer;
 };
 
 interface ReceivedFriendRequestCardProps {
@@ -74,7 +74,7 @@ function ReceivedFriendRequestCard({
   reject,
 }: ReceivedFriendRequestCardProps) {
   return (
-    <Card>
+    <FriendCard>
       <p>{username}</p>
       <div className="space-x-1">
         <Button variant="outline" size="sm" onClick={accept}>
@@ -84,11 +84,11 @@ function ReceivedFriendRequestCard({
           Reject
         </Button>
       </div>
-    </Card>
+    </FriendCard>
   );
 }
 
-const ReceivedFriendRequestList = withCardListContainer(() => {
+const ReceivedFriendRequestList = withFriendCardListContainer(() => {
   const [receivedFriendRequests] =
     api.friend.request.received.useSuspenseQuery();
 
@@ -118,7 +118,7 @@ const ReceivedFriendRequestList = withCardListContainer(() => {
   });
 
   if (receivedFriendRequests.length === 0) {
-    return <PlaceholderCard message="None yet! Check back later." />;
+    return <PlaceholderFriendCard message="None yet! Check back later." />;
   }
 
   return receivedFriendRequests.map((receivedfriendRequest) => (
@@ -146,16 +146,16 @@ interface ExistingFriendCardProps {
 
 function ExistingFriendCard({ username, remove }: ExistingFriendCardProps) {
   return (
-    <Card>
+    <FriendCard>
       <p>{username}</p>
       <Button variant="outline" size="sm" onClick={remove}>
         Remove
       </Button>
-    </Card>
+    </FriendCard>
   );
 }
 
-const ExistingFriendList = withCardListContainer(() => {
+const ExistingFriendList = withFriendCardListContainer(() => {
   const [friends] = api.friend.all.useSuspenseQuery();
 
   const utils = api.useUtils();
@@ -171,7 +171,7 @@ const ExistingFriendList = withCardListContainer(() => {
   });
 
   if (friends.length === 0) {
-    return <PlaceholderCard message="It's just you here for now!" />;
+    return <PlaceholderFriendCard message="It's just you here for now!" />;
   }
 
   return friends.map((friend) => (
@@ -193,16 +193,16 @@ function SentFriendRequestCard({
   revoke,
 }: SentFriendRequestCardProps) {
   return (
-    <Card>
+    <FriendCard>
       <p>{username}</p>
       <Button variant="outline" size="sm" onClick={revoke}>
         Cancel
       </Button>
-    </Card>
+    </FriendCard>
   );
 }
 
-const SentFriendRequestList = withCardListContainer(() => {
+const SentFriendRequestList = withFriendCardListContainer(() => {
   const [sentFriendRequests] = api.friend.request.sent.useSuspenseQuery();
 
   const utils = api.useUtils();
@@ -218,7 +218,7 @@ const SentFriendRequestList = withCardListContainer(() => {
   });
 
   if (sentFriendRequests.length === 0) {
-    return <PlaceholderCard message="Try adding a friend!" />;
+    return <PlaceholderFriendCard message="Try adding a friend!" />;
   }
 
   return sentFriendRequests.map((sentFriendRequest) => (
