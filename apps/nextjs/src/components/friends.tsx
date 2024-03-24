@@ -100,9 +100,7 @@ const ReceivedFriendRequestList = withCardListContainer(() => {
   });
 
   if (receivedFriendRequests.length === 0) {
-    return (
-      <p className="text-muted-foreground">No received friend requests yet!</p>
-    );
+    return <p className="text-muted-foreground">None yet! Check back later.</p>;
   }
 
   return receivedFriendRequests.map((receivedfriendRequest) => (
@@ -155,7 +153,9 @@ const ExistingFriendList = withCardListContainer(() => {
   });
 
   if (friends.length === 0) {
-    return <p className="text-muted-foreground">No friends yet!</p>;
+    return (
+      <p className="text-muted-foreground">It&apos;s just you here for now!</p>
+    );
   }
 
   return friends.map((friend) => (
@@ -202,9 +202,7 @@ const SentFriendRequestList = withCardListContainer(() => {
   });
 
   if (sentFriendRequests.length === 0) {
-    return (
-      <p className="text-muted-foreground">No sent friend requests yet!</p>
-    );
+    return <p className="text-muted-foreground">Try adding a friend!</p>;
   }
 
   return sentFriendRequests.map((sentFriendRequest) => (
