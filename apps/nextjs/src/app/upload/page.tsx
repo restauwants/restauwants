@@ -1,5 +1,6 @@
 "use client";
 
+import type { ChangeEvent, FormEvent } from "react";
 import { useState, useTransition } from "react";
 import Image from "next/image";
 
@@ -42,18 +43,24 @@ export default function Upload() {
     }
   }
 
-  const [selectedFile, setSelectedFile] = useState(null);
+  const [selectedFiles, setSelectedFiles] = useState([] as string[]);
 
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
+  function handleFileChange(event: ChangeEvent<HTMLInputElement>) {
+    setSelectedFiles([]);
+    const files = event.target.files;
+    if (!files) return;
+    for (let i = 0; i < files.length && i < 7; i++) {
+      const file: File = files[i]!;
       const reader = new FileReader();
       reader.onloadend = () => {
-        setSelectedFile(reader.result);
+        if (typeof reader.result === "string") {
+          const result = reader.result;
+          setSelectedFiles((prevFiles) => [...prevFiles, result]);
+        }
       };
       reader.readAsDataURL(file);
     }
-  };
+  }
 
   return (
     <form action={upload}>
@@ -67,15 +74,21 @@ export default function Upload() {
           multiple
           onChange={handleFileChange}
         />
-        {selectedFile && (
-          <div className="mt-2">
-            <Image
-              src={selectedFile}
-              alt="Preview"
-              className="rounded-md"
-              width={500}
-              height={500}
-            />
+        {selectedFiles.length > 0 && (
+          <div className="flex flex-col gap-1">
+            <div className="grid grid-cols-3 gap-1">
+              {selectedFiles.map((image: string, i: number) => (
+                <div className="black relative h-16 w-16" key={i}>
+                  <Image
+                    src={image}
+                    alt="Preview"
+                    className="rounded-md"
+                    layout="fill"
+                    objectFit="cover"
+                  />
+                </div>
+              ))}
+            </div>
             <Button size="sm" type="submit">
               Upload
             </Button>

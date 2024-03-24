@@ -15,7 +15,7 @@ export async function getSignedUrl(
   "use server";
 
   const storage = await getStorage();
-  const bucket = storage.bucket("restauwants");
+  const bucket = storage.bucket("restauwants_staging");
 
   const origin = headers().get("host");
   if (origin) {
@@ -26,25 +26,13 @@ export async function getSignedUrl(
       {
         maxAgeSeconds: 3600,
         method: ["OPTIONS", "POST", "PUT", "GET"],
-        origin: [getBaseUrl()], 
+        origin: [getBaseUrl()],
         responseHeader: ["Access-Control-Allow-Origin", "Content-Type", "Vary"],
       },
     ]);
   } else {
     return Promise.reject(new Error("No origin header found."));
   }
-
-  /*
-  // PUB/SUB notificaitons configuration
-  const topic = 'my-topic';
-  async function createNotification() {
-    // Creates a notification
-    await bucket.createNotification(topic);
-  
-    console.log('Notification subscription created.');
-  }
-  createNotification().catch(console.error);
-  */
 
   if (0 >= contentLengthInBytes) {
     return Promise.reject(new Error("No file attached."));
@@ -66,9 +54,11 @@ export async function getSignedUrl(
 
   const [url] = await file.getSignedUrl(options);
 
+  /*
   const subscriptionNameOrId = "uploadedphotos-sub";
   const timeout = 60;
   void listenForMessages(subscriptionNameOrId, timeout, filename);
+  */
 
   return [url, filename];
 }
@@ -97,9 +87,6 @@ async function listenForMessages(
 
     if (message.attributes.objectId === expectedFilename) {
       // Add photo id to photos table
-
-
-
     }
   };
 
