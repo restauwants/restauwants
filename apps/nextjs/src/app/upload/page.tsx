@@ -16,6 +16,7 @@ export default function Upload() {
   const [isPending, startTransition] = useTransition();
 
   function upload(formData: FormData) {
+    const uploadUrls: string[] = [];
     console.log("max upload size:", MAX_FILE_SIZE);
     console.log(formData);
     const files = formData.getAll("userFiles");
@@ -35,12 +36,14 @@ export default function Upload() {
             method: "PUT",
             body: file,
           });
+          uploadUrls.push(url);
           console.log(res);
         } catch (e) {
           console.error(e);
         }
       });
     }
+    return uploadUrls;
   }
 
   const [selectedFiles, setSelectedFiles] = useState([] as string[]);
