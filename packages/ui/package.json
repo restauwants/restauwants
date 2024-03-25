@@ -9,6 +9,7 @@
     "./button": "./src/button.tsx",
     "./card": "./src/card.tsx",
     "./dropdown-menu": "./src/dropdown-menu.tsx",
+    "./drawer": "./src/drawer.tsx",
     "./form": "./src/form.tsx",
     "./icons": "./src/icons.tsx",
     "./input": "./src/input.tsx",
