@@ -17,12 +17,14 @@ export async function verifySignedUrl(
 ): Promise<boolean> {
   const url = new URL(checkUrlString);
   const storage = await getStorage();
-  const bucket = storage.bucket("restauwants_staging");
 
   // valid pathname is of the form "/restauwants_staging/{uuid}"
   const pathname_subdirs = url.pathname.split("/");
-  if (pathname_subdirs.length == 0) return false; // TODO: fail, invalid url
+  if (pathname_subdirs.length != 3) return false; // TODO: fail, invalid url
+  const bucketName = pathname_subdirs[1]!;
   const filename: string = pathname_subdirs[pathname_subdirs.length - 1]!;
+
+  const bucket = storage.bucket(bucketName);
   const file = bucket.file(filename);
 
   // xGoogDate is the date the signed url was created, xGoogExpires is number of seconds until the url expires
