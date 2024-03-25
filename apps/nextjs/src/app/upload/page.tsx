@@ -8,15 +8,20 @@ import { Button } from "@restauwants/ui/button";
 import { Input } from "@restauwants/ui/input";
 import { Label } from "@restauwants/ui/label";
 
-import { getSignedUrl } from "./actions";
+import { getSignedUrl, verifySignedUrl } from "./actions";
 
 const MAX_FILE_SIZE = 3 * 1024 ** 2; // 3MB
+
+interface url_and_size {
+  url: string;
+  size: number;
+}
 
 export default function Upload() {
   const [isPending, startTransition] = useTransition();
 
   function upload(formData: FormData) {
-    const uploadUrls: string[] = [];
+    const uploadUrls: url_and_size[] = [];
     console.log("max upload size:", MAX_FILE_SIZE);
     console.log(formData);
     const files = formData.getAll("userFiles");
@@ -28,6 +33,14 @@ export default function Upload() {
       startTransition(async () => {
         try {
           const [url, filename] = await getSignedUrl(file.size);
+          console.log(
+            "verification (url should be verified): ",
+            await verifySignedUrl(url, file.size),
+          );
+          console.log(
+            "verification (bad url):",
+            await verifySignedUrl(url, file.size + 1),
+          );
           console.log("url:", url);
           console.log("filename:", filename);
           console.log("file size:", file.size);
@@ -36,7 +49,7 @@ export default function Upload() {
             method: "PUT",
             body: file,
           });
-          uploadUrls.push(url);
+          uploadUrls.push({ url: url, size: file.size });
           console.log(res);
         } catch (e) {
           console.error(e);
