@@ -13,6 +13,7 @@ import {
   CardDescription,
   CardTitle,
 } from "@restauwants/ui/card";
+import { Dialog, DialogContent } from "@restauwants/ui/dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -36,7 +37,6 @@ import {
   StarIcon,
 } from "@restauwants/ui/icons";
 import { Input } from "@restauwants/ui/input";
-import { Dialog, DialogContent } from "@restauwants/ui/modal";
 import { Textarea } from "@restauwants/ui/textarea";
 import { fromNow } from "@restauwants/ui/time";
 import { toast } from "@restauwants/ui/toast";

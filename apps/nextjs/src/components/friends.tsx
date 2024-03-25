@@ -4,6 +4,12 @@ import type { z } from "zod";
 
 import { Button } from "@restauwants/ui/button";
 import {
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@restauwants/ui/dialog";
+import {
   Form,
   FormControl,
   FormField,
@@ -12,12 +18,6 @@ import {
   useForm,
 } from "@restauwants/ui/form";
 import { Input } from "@restauwants/ui/input";
-import {
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@restauwants/ui/modal";
 import { Table, TableBody, TableCell, TableRow } from "@restauwants/ui/table";
 import { toast } from "@restauwants/ui/toast";
 import {

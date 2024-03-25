@@ -13,7 +13,7 @@
     "./icons": "./src/icons.tsx",
     "./input": "./src/input.tsx",
     "./label": "./src/label.tsx",
-    "./modal": "./src/modal.tsx",
+    "./dialog": "./src/dialog.tsx",
     "./navigation-menu": "./src/navigation-menu.tsx",
     "./scroll-area": "./src/scroll-area.tsx",
     "./table": "./src/table.tsx",

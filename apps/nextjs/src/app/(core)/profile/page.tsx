@@ -11,6 +11,7 @@ import {
 } from "node_modules/@restauwants/ui/src/alert-dialog";
 
 import { Button } from "@restauwants/ui/button";
+import { Dialog, DialogTrigger } from "@restauwants/ui/dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,7 +20,6 @@ import {
   DropdownMenuTrigger,
 } from "@restauwants/ui/dropdown-menu";
 import { SettingsIcon } from "@restauwants/ui/icons";
-import { Dialog, DialogTrigger } from "@restauwants/ui/modal";
 
 import { api } from "~/trpc/server";
 import { ManageFriends } from "../../../components/friends";
