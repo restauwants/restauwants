@@ -23,7 +23,7 @@ import { Dialog, DialogTrigger } from "@restauwants/ui/modal";
 
 import { api } from "~/trpc/server";
 import { ManageFriends } from "../../../components/friends";
-import { ReviewList } from "../../../components/reviews";
+import { ReviewList, ReviewListSkeleton } from "../../../components/reviews";
 import { SignOut } from "./signOut";
 
 function More() {
@@ -77,7 +77,7 @@ export default async function Profile() {
         <More />
       </div>
       <div className="container pt-4">
-        <Suspense fallback={<h4>Loading...</h4>}>
+        <Suspense fallback={<ReviewListSkeleton count={3} />}>
           <ReviewList reviews={reviews} byUserId={user.id} />
         </Suspense>
       </div>
