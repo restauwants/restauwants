@@ -18,6 +18,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@restauwants/ui/modal";
+import { Table, TableBody, TableCell, TableRow } from "@restauwants/ui/table";
 import { toast } from "@restauwants/ui/toast";
 import {
   AddFriendFormSchema,
@@ -27,55 +28,67 @@ import {
 
 import { api } from "~/trpc/react";
 
-interface FriendCardProps {
+interface FriendTableRowProps {
   children: React.ReactNode;
 }
 
-const FriendCard = ({ children }: FriendCardProps) => {
+const FriendTableRow = ({ children }: FriendTableRowProps) => {
   return (
-    <div className="flex h-16 flex-row items-center justify-between p-4">
-      {children}
-    </div>
+    <TableRow>
+      <TableCell>
+        <div className="flex flex-row items-center justify-between">
+          {children}
+        </div>
+      </TableCell>
+    </TableRow>
   );
 };
 
-interface PlaceholderFriendCardProps {
+interface PlaceholderFriendTableRowProps {
   message: string;
 }
 
-const PlaceholderFriendCard = ({ message }: PlaceholderFriendCardProps) => {
+const PlaceholderFriendTableRow = ({
+  message,
+}: PlaceholderFriendTableRowProps) => {
   return (
-    <FriendCard>
-      <p className="text-muted-foreground">{message}</p>
-    </FriendCard>
+    <TableRow>
+      <TableCell>
+        <div className="flex h-8 flex-row items-center text-muted-foreground">
+          {message}
+        </div>
+      </TableCell>
+    </TableRow>
   );
 };
 
-const withFriendCardListContainer = (FriendCardList: React.FC) => {
-  const FriendCardListContainer: React.FC = () => {
+const withFriendTable = (FriendTableRows: React.FC) => {
+  const FriendTable: React.FC = () => {
     return (
-      <div className="flex flex-col divide-y rounded-xl border bg-card">
-        <FriendCardList />
-      </div>
+      <Table>
+        <TableBody>
+          <FriendTableRows />
+        </TableBody>
+      </Table>
     );
   };
-  return FriendCardListContainer;
+  return FriendTable;
 };
 
-interface ReceivedFriendRequestCardProps {
+interface ReceivedFriendRequestTableRowProps {
   username: string;
   accept: () => void;
   reject: () => void;
 }
 
-function ReceivedFriendRequestCard({
+function ReceivedFriendRequestTableRow({
   username,
   accept,
   reject,
-}: ReceivedFriendRequestCardProps) {
+}: ReceivedFriendRequestTableRowProps) {
   return (
-    <FriendCard>
-      <p>{username}</p>
+    <FriendTableRow>
+      {username}
       <div className="space-x-1">
         <Button variant="outline" size="sm" onClick={accept}>
           Accept
@@ -84,11 +97,11 @@ function ReceivedFriendRequestCard({
           Reject
         </Button>
       </div>
-    </FriendCard>
+    </FriendTableRow>
   );
 }
 
-const ReceivedFriendRequestList = withFriendCardListContainer(() => {
+const ReceivedFriendRequestsTable = withFriendTable(() => {
   const [receivedFriendRequests] =
     api.friend.request.received.useSuspenseQuery();
 
@@ -118,11 +131,11 @@ const ReceivedFriendRequestList = withFriendCardListContainer(() => {
   });
 
   if (receivedFriendRequests.length === 0) {
-    return <PlaceholderFriendCard message="None yet! Check back later." />;
+    return <PlaceholderFriendTableRow message="None yet! Check back later." />;
   }
 
   return receivedFriendRequests.map((receivedfriendRequest) => (
-    <ReceivedFriendRequestCard
+    <ReceivedFriendRequestTableRow
       key={receivedfriendRequest.fromUsername}
       username={receivedfriendRequest.fromUsername}
       accept={() =>
@@ -139,23 +152,26 @@ const ReceivedFriendRequestList = withFriendCardListContainer(() => {
   ));
 });
 
-interface ExistingFriendCardProps {
+interface ExistingFriendTableRowProps {
   username: string;
   remove: () => void;
 }
 
-function ExistingFriendCard({ username, remove }: ExistingFriendCardProps) {
+function ExistingFriendTableRow({
+  username,
+  remove,
+}: ExistingFriendTableRowProps) {
   return (
-    <FriendCard>
-      <p>{username}</p>
+    <FriendTableRow>
+      {username}
       <Button variant="outline" size="sm" onClick={remove}>
         Remove
       </Button>
-    </FriendCard>
+    </FriendTableRow>
   );
 }
 
-const ExistingFriendList = withFriendCardListContainer(() => {
+const ExistingFriendsTable = withFriendTable(() => {
   const [friends] = api.friend.all.useSuspenseQuery();
 
   const utils = api.useUtils();
@@ -171,11 +187,11 @@ const ExistingFriendList = withFriendCardListContainer(() => {
   });
 
   if (friends.length === 0) {
-    return <PlaceholderFriendCard message="It's just you here for now!" />;
+    return <PlaceholderFriendTableRow message="It's just you here for now!" />;
   }
 
   return friends.map((friend) => (
-    <ExistingFriendCard
+    <ExistingFriendTableRow
       key={friend.username}
       username={friend.username}
       remove={() => removeFriend.mutate({ username: friend.username })}
@@ -183,26 +199,26 @@ const ExistingFriendList = withFriendCardListContainer(() => {
   ));
 });
 
-interface SentFriendRequestCardProps {
+interface SentFriendRequestTableRowProps {
   username: string;
   revoke: () => void;
 }
 
-function SentFriendRequestCard({
+function SentFriendRequestTableRow({
   username,
   revoke,
-}: SentFriendRequestCardProps) {
+}: SentFriendRequestTableRowProps) {
   return (
-    <FriendCard>
-      <p>{username}</p>
+    <FriendTableRow>
+      {username}
       <Button variant="outline" size="sm" onClick={revoke}>
         Cancel
       </Button>
-    </FriendCard>
+    </FriendTableRow>
   );
 }
 
-const SentFriendRequestList = withFriendCardListContainer(() => {
+const SentFriendRequestsTable = withFriendTable(() => {
   const [sentFriendRequests] = api.friend.request.sent.useSuspenseQuery();
 
   const utils = api.useUtils();
@@ -218,11 +234,11 @@ const SentFriendRequestList = withFriendCardListContainer(() => {
   });
 
   if (sentFriendRequests.length === 0) {
-    return <PlaceholderFriendCard message="Try adding a friend!" />;
+    return <PlaceholderFriendTableRow message="Try adding a friend!" />;
   }
 
   return sentFriendRequests.map((sentFriendRequest) => (
-    <SentFriendRequestCard
+    <SentFriendRequestTableRow
       key={sentFriendRequest.toUsername}
       username={sentFriendRequest.toUsername}
       revoke={() =>
@@ -300,11 +316,11 @@ export function ManageFriends() {
       <h4 className="font-medium">Add a Friend</h4>
       <AddFriendForm />
       <h4 className="pt-4 font-medium">Sent Friend Requests</h4>
-      <SentFriendRequestList />
+      <SentFriendRequestsTable />
       <h4 className="pt-4 font-medium">Received Friend Requests</h4>
-      <ReceivedFriendRequestList />
+      <ReceivedFriendRequestsTable />
       <h4 className="pt-4 font-medium">Your Friends</h4>
-      <ExistingFriendList />
+      <ExistingFriendsTable />
     </DialogContent>
   );
 }
