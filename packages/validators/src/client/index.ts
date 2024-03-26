@@ -8,6 +8,7 @@ export {
   isCompleteUser,
   RemoveFriendSchema,
   CreateReviewSchema,
+  CreatePhotosSchema,
   EditReviewSchema,
   FriendSchema,
   ReceivedFriendRequestSchema,
@@ -27,6 +28,24 @@ export const CreateReviewFormSchema = z.object({
       message: "visitedAt must be in the past",
     }),
   ),
+  files: z
+    .custom<FileList>((value) => value instanceof FileList, {
+      message: "files must be a FileList",
+    })
+    .refine((files) => files.length < 8, {
+      message: "only between 0 and 7 files can be uploaded",
+    })
+    .refine(
+      (files) => {
+        for (const file of files) {
+          if (file.size === 0 || file.size > 5 * 1024 * 1024) {
+            return false;
+          }
+        }
+        return true;
+      },
+      { message: "file size must be a postive number less than 5MB" },
+    ),
 });
 
 export const AddFriendFormSchema = z.object({

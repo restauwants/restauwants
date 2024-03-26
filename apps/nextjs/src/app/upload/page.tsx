@@ -7,7 +7,9 @@ import Image from "next/image";
 import { Button } from "@restauwants/ui/button";
 import { Input } from "@restauwants/ui/input";
 import { Label } from "@restauwants/ui/label";
+import { toast } from "@restauwants/ui/toast";
 
+import { api } from "~/trpc/react";
 import { getSignedUrl, verifySignedUrl } from "./actions";
 
 const MAX_FILE_SIZE = 3 * 1024 ** 2; // 3MB
@@ -113,4 +115,17 @@ export default function Upload() {
       </div>
     </form>
   );
+}
+
+export async function uploadFile(file: File) {
+  const [url, filename] = await getSignedUrl(file.size);
+  console.log("url:", url);
+  console.log("filename:", filename);
+  console.log("file size:", file.size);
+  const res = await fetch(url, {
+    method: "PUT",
+    body: file,
+  });
+  console.log(res);
+  return res;
 }

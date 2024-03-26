@@ -46,7 +46,7 @@ export const ProfileSchema = z.object({
 
 export const PhotoSchema = z.object({
   reviewId: z.number().int(),
-  photoId: z.string().uuid(),
+  id: z.string().uuid(),
   createdAt: z.date().refine((d) => d <= new Date(), {
     message: "createdAt must be in the past",
   }),

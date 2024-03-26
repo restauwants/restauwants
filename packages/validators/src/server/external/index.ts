@@ -62,3 +62,8 @@ export const SentFriendRequestSchema = z.object({
 export const CreateProfileSchema = z.object({
   username: username,
 });
+
+export const CreatePhotosSchema = z.object({
+  reviewId: z.number().int().positive(),
+  ids: z.string().uuid().array(),
+});

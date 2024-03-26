@@ -40,12 +40,15 @@ import { Textarea } from "@restauwants/ui/textarea";
 import { fromNow } from "@restauwants/ui/time";
 import { toast } from "@restauwants/ui/toast";
 import {
+  CreatePhotosSchema,
   CreateReviewFormSchema,
   CreateReviewSchema,
   EditReviewFormSchema,
   EditReviewSchema,
 } from "@restauwants/validators/client";
 
+import { moveFileIfVerified, verifySignedUrl } from "~/app/upload/actions";
+import { uploadFile } from "~/app/upload/page";
 import { api } from "~/trpc/react";
 
 export function CreateReviewForm() {
@@ -63,6 +66,60 @@ export function CreateReviewForm() {
 
   const utils = api.useUtils();
 
+  const createPhotos = api.photo.multiCreate.useMutation({
+    onSuccess: async () => {
+      await utils.photo.invalidate();
+    },
+    onError: () => {
+      toast.error("Failed to upload photo");
+    },
+  });
+
+  const addPhotosToReview = async (
+    urls: string[],
+    sizes: number[],
+    reviewId: number,
+  ) => {
+    // 1. Validate lengths of imageUrls and imageSizes
+    if (urls.length !== sizes.length) {
+      throw new Error("Image urls and sizes must be the same length");
+    }
+    const num_uploaded_images = urls.length;
+
+    console.log("num_uploaded_images:", num_uploaded_images);
+    // 2. Verify the user's signed urls are legitimate
+    // TODO: there's probably an issue if a user gives another user their signed url after they've already created a review...
+    const uploadedImageNames: string[] = [];
+    for (let i = 0; i < num_uploaded_images; i++) {
+      console.log("this is the url marked as invalid:", urls[i]!);
+      console.log("this is its size:", sizes[i]!);
+      const verified = await verifySignedUrl(urls[i]!, sizes[i]!);
+      if (!verified) {
+        throw new Error("Invalid signed URL");
+      }
+
+      // 3. Move the images referred to by the signed urls to the restauwants bucket (if they exist)
+      // this should fail if the image doesn't exist in the staging bucket?
+      void (await moveFileIfVerified(
+        urls[i]!,
+        sizes[i]!,
+        "restauwants_staging",
+        "restauwants",
+      ));
+      // Get the image name
+      const url = new URL(urls[i]!);
+      const imageName = url.pathname.split("/").pop()!;
+      uploadedImageNames.push(imageName);
+    }
+    const photo_data = {
+      reviewId: reviewId,
+      ids: uploadedImageNames,
+    };
+    // 4. Insert the image into the photos table
+    console.log("trying to insert");
+    createPhotos.mutate(CreatePhotosSchema.parse(photo_data));
+  };
+
   const createReview = api.review.create.useMutation({
     onSuccess: async () => {
       form.reset();
@@ -73,8 +130,27 @@ export function CreateReviewForm() {
     },
   });
 
-  const onSubmit = (data: z.input<typeof ReviewFormSchema>) => {
-    createReview.mutate(CreateReviewSchema.parse(data));
+  const onSubmit = async (data: z.input<typeof ReviewFormSchema>) => {
+    const files: FileList = data.files;
+    const urls: string[] = [];
+    const sizes: number[] = [];
+    for (const file of files) {
+      const res = await uploadFile(file);
+      urls.push(res.url);
+      sizes.push(file.size);
+    }
+
+    // add the review
+    try {
+      const reviewId = await createReview.mutateAsync(
+        CreateReviewSchema.parse(data),
+      );
+      await addPhotosToReview(urls, sizes, reviewId);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      console.log("done");
+    }
   };
 
   return <ReviewForm form={form} onSubmit={onSubmit} />;
@@ -195,6 +271,25 @@ function ReviewForm({
                   className="h-32 resize-none"
                   {...field}
                   placeholder="I had a great time at..."
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="files"
+          render={() => (
+            <FormItem>
+              <FormControl>
+                <Input
+                  type="file"
+                  accept="image/x-png,image/jpeg,image/gif"
+                  multiple
+                  onChange={(e) => {
+                    if (e.target.files) form.setValue("files", e.target.files);
+                  }}
                 />
               </FormControl>
               <FormMessage />
