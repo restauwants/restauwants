@@ -1,6 +1,7 @@
 import { authRouter } from "./router/auth";
 import { friendRouter } from "./router/friend";
 import { restaurantRouter } from "./router/restaurant";
+import { photoRouter } from "./router/photo";
 import { reviewRouter } from "./router/review";
 import { userRouter } from "./router/user";
 import { createTRPCRouter } from "./trpc";
@@ -11,6 +12,7 @@ export const appRouter = createTRPCRouter({
   friend: friendRouter,
   user: userRouter,
   restaurant: restaurantRouter,
+  photo: photoRouter,
 });
 
 // export type definition of API
