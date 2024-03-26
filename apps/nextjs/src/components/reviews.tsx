@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useState } from "react";
+import { use } from "react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -57,7 +57,7 @@ import {
 import { api } from "~/trpc/react";
 
 export function CreateReviewForm() {
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  // const [isSubmitted, setIsSubmitted] = useState(false);
   const form = useForm({
     mode: "onBlur",
     schema: CreateReviewFormSchema,
@@ -72,15 +72,16 @@ export function CreateReviewForm() {
 
   const utils = api.useUtils();
 
-  const handleCloseModal = () => {
-    setIsSubmitted(false);
-  };
+  // const handleCloseModal = () => {
+  //   setIsSubmitted(false);
+  // };
 
   const createReview = api.review.create.useMutation({
     onSuccess: async () => {
       form.reset();
       await utils.review.invalidate();
-      setIsSubmitted(true);
+      toast.success(`Review was successfully posted!`);
+      // setIsSubmitted(true);
     },
     onError: () => {
       toast.error("Failed to create review");
@@ -189,23 +190,6 @@ export function CreateReviewForm() {
           Submit
         </Button>
       </form>
-      {isSubmitted && (
-        <AlertDialog open={isSubmitted} onOpenChange={setIsSubmitted}>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Success</AlertDialogTitle>
-              <AlertDialogDescription>
-                Your experience has been successfully plated!
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel onClick={handleCloseModal}>
-                OK
-              </AlertDialogCancel>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-      )}
     </Form>
   );
 }

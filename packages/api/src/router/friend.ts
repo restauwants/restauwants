@@ -34,6 +34,10 @@ export const friendRouter = createTRPCRouter({
         throw new Error("Already friends");
       }
 
+      if (await hasSentFriendRequest(ctx.db, ctx.session.user.id, toUserId)) {
+        throw new Error("Already Sent a Friend Request to " + input.username);
+      }
+
       if (await hasSentFriendRequest(ctx.db, toUserId, ctx.session.user.id)) {
         await ctx.db.transaction(async (tx) => {
           await createFriendship(tx, ctx.session.user.id, toUserId);
@@ -43,26 +47,6 @@ export const friendRouter = createTRPCRouter({
         await sendFriendRequest(ctx.db, ctx.session.user.id, toUserId);
       }
     }),
-
-  // sentRequests: protectedProcedure.query(async ({ ctx }) => {
-  //   const toProfile = alias(schema.profile, "toProfile");
-  //   const sentFriendRequests = await ctx.db
-  //     .select()
-  //     .from(schema.friendRequest)
-  //     .where(eq(schema.friendRequest.fromUserId, ctx.session.user.id))
-  //     .orderBy(desc(schema.friendRequest.createdAt))
-  //     .limit(10)
-  //     .innerJoin(
-  //       toProfile,
-  //       eq(toProfile.id, schema.friendRequest.toUserId),
-  //     );
-  //   return sentFriendRequests.map((r) => {
-  //     return SentFriendRequestSchemaExternal.parse({
-  //       toUsername: r.toProfile.username,
-  //       createdAt: r.friendRequest.createdAt,
-  //     })
-  //   })
-  // }),
 
   requests: protectedProcedure.query(async ({ ctx }) => {
     const fromProfile = alias(schema.profile, "fromProfile");
@@ -116,16 +100,6 @@ export const friendRouter = createTRPCRouter({
       }
       await deleteFriendship(ctx.db, ctx.session.user.id, userId);
     }),
-
-  // cancel: protectedProcedure
-  //   .input(CancelFriendRequestSchemaExternal)
-  //   .mutation(async ({ ctx, input}) => {
-  //     const userId = await usernameToId(ctx.db, input.username);
-  //     if (!userId){
-  //       throw new Error ("User not found");
-  //     }
-  //     await deleteFriendRequest (ctx.db, ctx.session.user.id, userId);
-  //   }),
 
   all: protectedProcedure.query(async ({ ctx }) => {
     const fromProfile = alias(schema.profile, "fromProfile");
