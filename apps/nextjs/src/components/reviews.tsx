@@ -1,8 +1,9 @@
 "use client";
 
-import type { z } from "zod";
+import Image from "next/image";
 import { use, useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
+import type { z } from "zod";
 
 import type { RouterOutputs } from "@restauwants/api";
 import { cn } from "@restauwants/ui";
@@ -285,7 +286,7 @@ function ReviewForm({
         <FormField
           control={form.control}
           name="files"
-          render={() => (
+          render={({ field }) => (
             <FormItem>
               <FormControl>
                 <Input
@@ -298,6 +299,21 @@ function ReviewForm({
                 />
               </FormControl>
               <FormMessage />
+              {field.value && (
+                <div className="flex flex-wrap justify-center gap-1">
+                  {Array.from(field.value).map((image: File, i: number) => (
+                    <div className="relative h-16 w-16" key={i}>
+                      <Image
+                        src={URL.createObjectURL(image)}
+                        alt="Preview"
+                        className="rounded-md"
+                        layout="fill"
+                        objectFit="cover"
+                      />
+                    </div>
+                  ))}
+                </div>
+              )}
             </FormItem>
           )}
         />
