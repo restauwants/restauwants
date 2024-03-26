@@ -73,3 +73,8 @@ export const AddRestaurantSchema = z.object({
   restaurantId: z.string(),
   name: z.string(),
 });
+
+export const CreatePhotosSchema = z.object({
+  reviewId: z.number().int().positive(),
+  ids: z.string().uuid().array(),
+});

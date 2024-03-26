@@ -105,7 +105,8 @@ export const reviewRouter = createTRPCRouter({
   create: protectedProcedure
     .input(CreateReviewSchemaExternal)
     .mutation(async ({ ctx, input }) => {
-      await ctx.db.insert(schema.review).values(
+      // create the review
+      const reviewTable = await ctx.db.insert(schema.review).values(
         ReviewSchemaDatabase.parse({
           ...input,
           userId: ctx.session.user.id,
@@ -113,6 +114,8 @@ export const reviewRouter = createTRPCRouter({
           updatedAt: new Date(),
         }),
       );
+
+      return parseInt(reviewTable.insertId);
     }),
 
   delete: protectedProcedure
