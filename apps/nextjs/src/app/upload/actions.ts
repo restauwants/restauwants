@@ -1,16 +1,12 @@
 "use server";
 
-// Imports the Google Cloud client library
-import path from "path";
-import type { Message } from "@google-cloud/pubsub";
 import { headers } from "next/headers";
 import { v4 as uuidv4 } from "uuid";
 
-import { getPubSubClient, getStorage } from "./storage";
+import { getStorage } from "./storage";
 
 const MAX_FILE_SIZE = 3 * 1024 ** 2; // 3MB
 
-// https://storage.googleapis.com/restauwants_staging/d271021f-240f-4e6b-b4c7-682f5473c156?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=restauwants-test%40nifty-edge-415820.iam.gserviceaccount.com%2F20240325%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20240325T033444Z&X-Goog-Expires=600&X-Goog-SignedHeaders=content-length%3Bcontent-type%3Bhost&X-Goog-Signature=2d5eb29615dc58433b8d58de9dcb466b159a5c892c7c089d5b49e8a2e2af2dc713649342be78451a0e0f78a6a8ce73e876d3e9075911d4257779b509b3723425137c9a5ec624ac2fab81a201ebd5aa373248182e40c9c82618420efc9ede35913eec39c3552806c329defa65eaa6e3a59ced7645dd35041659da26673505c317a641514057d90320a38bfa56e87255bd8624f1836e821c427b78f41187f3518f6db18e256d95e580c825ff3efd40ff48b5ae44914d43a26b245610202f66c1ba384ebab92ebcfe9f75c373ad2d42823a1c486dc3c0814f58fc3bb294a151141f609ffd7384adafe6fc65d78fdc5b518e6365bf265bedffd6629dca5b7f941279
 export async function verifySignedUrl(
   checkUrlString: string,
   fileSize: number,
@@ -52,6 +48,7 @@ export async function verifySignedUrl(
   const options = {
     version: "v4" as const,
     action: "write" as const,
+    accessibleAt: new Date(xGoogDate_formatted),
     expires: expiry,
     extensionHeaders: { "content-length": fileSize },
     contentType: "image/jpeg", //"application/octet-stream",
@@ -59,6 +56,8 @@ export async function verifySignedUrl(
 
   const [signedUrlString] = await file.getSignedUrl(options);
 
+  console.log("signedUrlString (in verifySignedUrl):", signedUrlString);
+  console.log("checkUrlString (in verifySignedUrl):", checkUrlString);
   return signedUrlString === checkUrlString;
 }
 
@@ -107,54 +106,33 @@ export async function getSignedUrl(
 
   const [url] = await file.getSignedUrl(options);
 
-  /*
-  const subscriptionNameOrId = "uploadedphotos-sub";
-  const timeout = 60;
-  void listenForMessages(subscriptionNameOrId, timeout, filename);
-  */
-
   return [url, filename];
-}
-
-// Creates a client; cache this for further use
-
-async function listenForMessages(
-  subscriptionNameOrId: string,
-  timeout: number,
-  expectedFilename: string,
-) {
-  // References an existing subscription
-  const pubSubClient = await getPubSubClient();
-  const subscription = pubSubClient.subscription(subscriptionNameOrId);
-
-  // Create an event handler to handle messages
-  let messageCount = 0;
-  const messageHandler = (message: Message) => {
-    console.log(`Received message ${message.id}:`);
-    console.log(`\tData: ${message.data}`);
-    console.log("\tAttributes: ", message.attributes);
-    messageCount += 1;
-
-    // "Ack" (acknowledge receipt of) the message
-    message.ack();
-
-    if (message.attributes.objectId === expectedFilename) {
-      // Add photo id to photos table
-    }
-  };
-
-  // Listen for new messages until timeout is hit
-
-  subscription.on("message", messageHandler);
-
-  // Wait a while for the subscription to run. (Part of the sample only.)
-  setTimeout(() => {
-    subscription.removeListener("message", messageHandler);
-    console.log(`${messageCount} message(s) received.`);
-  }, timeout * 1000);
 }
 
 function getBaseUrl() {
   if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
   return `http://localhost:${process.env.PORT ?? 3000}`;
+}
+
+export async function moveFileIfVerified(
+  signedUrl: string,
+  fileSize: number,
+  srcBucketName: string,
+  destBucketName: string,
+) {
+  const verified = await verifySignedUrl(signedUrl, fileSize);
+  if (!verified) {
+    throw new Error("Invalid signed URL");
+  }
+  // Get the image name (signed URL must be valid)
+  // TODO: Need to check if the file is already in the dest bucket before moving
+  // TODO: What happens if the signedUrl is empty?
+  const url = new URL(signedUrl);
+  const filename = url.pathname.split("/").pop()!;
+
+  const storage = await getStorage();
+  const srcBucket = storage.bucket(srcBucketName);
+  const destBucket = storage.bucket(destBucketName);
+
+  await srcBucket.file(filename).move(destBucket.file(filename));
 }
