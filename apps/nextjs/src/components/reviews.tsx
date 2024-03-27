@@ -379,11 +379,11 @@ export function ReviewCard(props: {
                   <AlertDialogContent>
                     <AlertDialogHeader>
                       <AlertDialogTitle>
-                        Are you sure you want to Delete?
+                        Are you sure you want to delete your post?
                       </AlertDialogTitle>
                       <AlertDialogDescription>
                         This action cannot be undone. This will permanently
-                        delete this post and cannot be undone.
+                        delete your post.
                       </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
