@@ -100,6 +100,7 @@ hugo serve --source ./docs
 - [Devin Frioud](https://github.com/DevinFrioud)
 - [Nicklaus Badyal](https://github.com/Nebula5102)
 - [Rebecca Jeon](https://github.com/rebecca-jeon)
+- [Cam Rohwer](https://github.com/camrohwer)
 
 ## References
 
