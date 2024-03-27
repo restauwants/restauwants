@@ -1,7 +1,7 @@
 export {
-  SettingsIcon,
-  MoreVerticalIcon as DotsVerticalIcon,
-  StarIcon,
   CalendarIcon,
   DollarSignIcon,
+  MoreVerticalIcon as DotsVerticalIcon,
+  SettingsIcon,
+  StarIcon,
 } from "lucide-react";
