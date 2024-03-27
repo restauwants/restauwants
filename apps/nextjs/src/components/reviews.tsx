@@ -5,6 +5,17 @@ import { use, useState } from "react";
 
 import type { RouterOutputs } from "@restauwants/api";
 import { cn } from "@restauwants/ui";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@restauwants/ui/alert-dialog";
 import { Button } from "@restauwants/ui/button";
 import {
   Card,
@@ -47,48 +58,6 @@ import {
 } from "@restauwants/validators/client";
 
 import { api } from "~/trpc/react";
-
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@restauwants/ui/alert-dialog";
-
-interface AlertDialogModalProps {
-  onAction?: () => void; // Explicitly defining the type of onAction prop
-}
-
-function AlertDialogModal ({ onAction }: AlertDialogModalProps){
-  const handleAction = () => {
-    if (onAction) {
-      onAction();
-    }
-  };
-
-  return (
-  <AlertDialog>
-    <AlertDialogTrigger>Delete</AlertDialogTrigger>
-    <AlertDialogContent>
-      <AlertDialogHeader>
-        <AlertDialogTitle>Are you sure you want to Delete?</AlertDialogTitle>
-        <AlertDialogDescription>
-          This action cannot be undone. This will permanently delete this post and cannot be undone.
-        </AlertDialogDescription>
-      </AlertDialogHeader>
-      <AlertDialogFooter>
-        <AlertDialogCancel>Cancel</AlertDialogCancel>
-        <AlertDialogAction onClick={handleAction}>Delete</AlertDialogAction>
-      </AlertDialogFooter>
-    </AlertDialogContent>
-  </AlertDialog>
-  );
-}
 
 export function CreateReviewForm() {
   const form = useForm({
@@ -388,19 +357,44 @@ export function ReviewCard(props: {
               {fromNow(props.review.createdAt)}
             </span>
             {(props.onDelete ?? props.onEdit) && (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon">
-                    <DotsVerticalIcon className="size-5" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent>
-                  <AlertDialogModal onAction={props.onDelete} />
-                  <DropdownMenuItem onClick={props.onEdit}>
-                    Edit
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              <Dialog>
+                <AlertDialog>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="icon">
+                        <DotsVerticalIcon className="size-5" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                      <DropdownMenuItem onClick={props.onEdit}>
+                        Edit
+                      </DropdownMenuItem>
+
+                      <AlertDialogTrigger className="w-full">
+                        <DropdownMenuItem>Delete</DropdownMenuItem>
+                      </AlertDialogTrigger>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>
+                        Are you sure you want to Delete?
+                      </AlertDialogTitle>
+                      <AlertDialogDescription>
+                        This action cannot be undone. This will permanently
+                        delete this post and cannot be undone.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction onClick={props.onDelete}>
+                        Delete
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </Dialog>
             )}
           </div>
         </div>

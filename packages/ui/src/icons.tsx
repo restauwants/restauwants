@@ -1,15 +1,15 @@
 import {
-  SettingsIcon,
-  MoreVerticalIcon as DotsVerticalIcon,
-  StarIcon,
   CalendarIcon,
   DollarSignIcon,
- } from 'lucide-react';
- 
- export {
+  MoreVerticalIcon as DotsVerticalIcon,
+  SettingsIcon,
+  StarIcon,
+} from "lucide-react";
+
+export {
   SettingsIcon,
   DotsVerticalIcon,
   StarIcon,
   CalendarIcon,
   DollarSignIcon,
- };
+};
