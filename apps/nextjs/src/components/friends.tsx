@@ -12,12 +12,6 @@ import {
   useForm,
 } from "@restauwants/ui/form";
 import { Input } from "@restauwants/ui/input";
-import {
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@restauwants/ui/modal";
 import { Table, TableBody, TableCell, TableRow } from "@restauwants/ui/table";
 import { toast } from "@restauwants/ui/toast";
 import {
@@ -252,7 +246,9 @@ const SentFriendRequestsTable = withFriendTable(() => {
   ));
 });
 
-function AddFriendForm() {
+function AddFriendForm(props: {
+  Footer: React.ComponentType<{ children: React.ReactNode }>;
+}) {
   const form = useForm({
     schema: AddFriendFormSchema,
     defaultValues: {
@@ -299,28 +295,33 @@ function AddFriendForm() {
             </FormItem>
           )}
         />
-        <DialogFooter>
+        <props.Footer>
           <Button type="submit">Send Request</Button>
-        </DialogFooter>
+        </props.Footer>
       </form>
     </Form>
   );
 }
 
-export function ManageFriends() {
+export function ManageFriends(props: {
+  Content: React.ComponentType<{ children: React.ReactNode }>;
+  Header: React.ComponentType<{ children: React.ReactNode }>;
+  Title: React.ComponentType<{ children: React.ReactNode }>;
+  Footer: React.ComponentType<{ children: React.ReactNode }>;
+}) {
   return (
-    <DialogContent>
-      <DialogHeader>
-        <DialogTitle>Manage Friends</DialogTitle>
-      </DialogHeader>
+    <props.Content>
+      <props.Header>
+        <props.Title>Manage Friends</props.Title>
+      </props.Header>
       <h4 className="font-medium">Add a Friend</h4>
-      <AddFriendForm />
+      <AddFriendForm Footer={props.Footer} />
       <h4 className="pt-4 font-medium">Sent Friend Requests</h4>
       <SentFriendRequestsTable />
       <h4 className="pt-4 font-medium">Received Friend Requests</h4>
       <ReceivedFriendRequestsTable />
       <h4 className="pt-4 font-medium">Your Friends</h4>
       <ExistingFriendsTable />
-    </DialogContent>
+    </props.Content>
   );
 }

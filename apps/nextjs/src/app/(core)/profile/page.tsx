@@ -1,68 +1,8 @@
 import { Suspense } from "react";
-import {
-  AlertDialog,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "node_modules/@restauwants/ui/src/alert-dialog";
-
-import { Button } from "@restauwants/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@restauwants/ui/dropdown-menu";
-import { SettingsIcon } from "@restauwants/ui/icons";
-import { Dialog, DialogTrigger } from "@restauwants/ui/modal";
 
 import { api } from "~/trpc/server";
-import { ManageFriends } from "../../../components/friends";
 import { ReviewList, ReviewListSkeleton } from "../../../components/reviews";
-import { SignOut } from "./signOut";
-
-function More() {
-  return (
-    <Dialog>
-      <AlertDialog>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon">
-              <SettingsIcon className="size-5" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DialogTrigger className="w-full">
-              <DropdownMenuItem>Friends</DropdownMenuItem>
-            </DialogTrigger>
-            <DropdownMenuSeparator />
-            <AlertDialogTrigger className="w-full">
-              <DropdownMenuItem>Sign Out</DropdownMenuItem>
-            </AlertDialogTrigger>
-          </DropdownMenuContent>
-        </DropdownMenu>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Sign-Out Confirmation</AlertDialogTitle>
-            <AlertDialogDescription>
-              Are you sure you want to sign out?
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <SignOut />
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-      <ManageFriends />
-    </Dialog>
-  );
-}
+import { Settings } from "./settings";
 
 export default async function Profile() {
   const user = await api.user.current();
@@ -74,7 +14,7 @@ export default async function Profile() {
         <p className="min-w-0 break-words text-2xl font-bold text-primary">
           {user.username}
         </p>
-        <More />
+        <Settings />
       </div>
       <div className="container pt-4">
         <Suspense fallback={<ReviewListSkeleton count={3} />}>

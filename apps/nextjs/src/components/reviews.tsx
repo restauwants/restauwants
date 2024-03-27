@@ -36,7 +36,6 @@ import {
   StarIcon,
 } from "@restauwants/ui/icons";
 import { Input } from "@restauwants/ui/input";
-import { Dialog, DialogContent } from "@restauwants/ui/modal";
 import { Textarea } from "@restauwants/ui/textarea";
 import { fromNow } from "@restauwants/ui/time";
 import { toast } from "@restauwants/ui/toast";
@@ -47,6 +46,7 @@ import {
   EditReviewSchema,
 } from "@restauwants/validators/client";
 
+import { useDialogOrDrawer } from "~/hooks/dialogOrDrawer";
 import { api } from "~/trpc/react";
 
 export function CreateReviewForm() {
@@ -242,6 +242,7 @@ function reviewList() {
       infiniteReviewsQuery.data?.pages.flatMap((page) => page.reviews) ?? [];
     const { data: currentUser } = api.user.current.useQuery();
     const utils = api.useUtils();
+    const dialogOrDrawer = useDialogOrDrawer();
 
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
@@ -339,11 +340,14 @@ function reviewList() {
             );
           })}
         </InfiniteScroll>
-        <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
-          <DialogContent>
+        <dialogOrDrawer.Root
+          open={isEditModalOpen}
+          onOpenChange={setIsEditModalOpen}
+        >
+          <dialogOrDrawer.Content>
             <ReviewForm form={editReviewForm} onSubmit={onEditSubmit} />
-          </DialogContent>
-        </Dialog>
+          </dialogOrDrawer.Content>
+        </dialogOrDrawer.Root>
       </>
     );
   };
