@@ -18,29 +18,77 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@restauwants/ui/modal";
-import { ScrollArea } from "@restauwants/ui/scroll-area";
+import { Table, TableBody, TableCell, TableRow } from "@restauwants/ui/table";
 import { toast } from "@restauwants/ui/toast";
 import {
   AddFriendFormSchema,
+  RevokeFriendRequestSchema,
   SentFriendRequestSchema,
 } from "@restauwants/validators/client";
 
 import { api } from "~/trpc/react";
 
-interface FriendRequestCardProps {
+interface FriendTableRowProps {
+  children: React.ReactNode;
+}
+
+const FriendTableRow = ({ children }: FriendTableRowProps) => {
+  return (
+    <TableRow>
+      <TableCell>
+        <div className="flex flex-row items-center justify-between">
+          {children}
+        </div>
+      </TableCell>
+    </TableRow>
+  );
+};
+
+interface PlaceholderFriendTableRowProps {
+  message: string;
+}
+
+const PlaceholderFriendTableRow = ({
+  message,
+}: PlaceholderFriendTableRowProps) => {
+  return (
+    <TableRow>
+      <TableCell>
+        <div className="flex h-8 flex-row items-center text-muted-foreground">
+          {message}
+        </div>
+      </TableCell>
+    </TableRow>
+  );
+};
+
+const withFriendTable = (FriendTableRows: React.FC) => {
+  const FriendTable: React.FC = () => {
+    return (
+      <Table>
+        <TableBody>
+          <FriendTableRows />
+        </TableBody>
+      </Table>
+    );
+  };
+  return FriendTable;
+};
+
+interface ReceivedFriendRequestTableRowProps {
   username: string;
   accept: () => void;
   reject: () => void;
 }
 
-function FriendRequestCard({
+function ReceivedFriendRequestTableRow({
   username,
   accept,
   reject,
-}: FriendRequestCardProps) {
+}: ReceivedFriendRequestTableRowProps) {
   return (
-    <div className="flex flex-row justify-between">
-      <p>{username}</p>
+    <FriendTableRow>
+      {username}
       <div className="space-x-1">
         <Button variant="outline" size="sm" onClick={accept}>
           Accept
@@ -49,16 +97,17 @@ function FriendRequestCard({
           Reject
         </Button>
       </div>
-    </div>
+    </FriendTableRow>
   );
 }
 
-function FriendRequestList() {
-  const [friendRequests] = api.friend.requests.useSuspenseQuery();
+const ReceivedFriendRequestsTable = withFriendTable(() => {
+  const [receivedFriendRequests] =
+    api.friend.request.received.useSuspenseQuery();
 
   const utils = api.useUtils();
 
-  const acceptFriendRequest = api.friend.accept.useMutation({
+  const acceptFriendRequest = api.friend.request.accept.useMutation({
     onSuccess: async (_data, variables) => {
       await utils.friend.invalidate();
       toast.success(`Accepted friend request from ${variables.fromUsername}`);
@@ -69,7 +118,7 @@ function FriendRequestList() {
       );
     },
   });
-  const rejectFriendRequest = api.friend.reject.useMutation({
+  const rejectFriendRequest = api.friend.request.reject.useMutation({
     onSuccess: async (_data, variables) => {
       await utils.friend.invalidate();
       toast.success(`Rejected friend request from ${variables.fromUsername}`);
@@ -81,51 +130,48 @@ function FriendRequestList() {
     },
   });
 
-  if (friendRequests.length === 0) {
-    return <p className="text-muted-foreground">No friend requests yet!</p>;
+  if (receivedFriendRequests.length === 0) {
+    return <PlaceholderFriendTableRow message="None yet! Check back later." />;
   }
 
-  return (
-    <div className="flex flex-col gap-4 divide-y-2 [&>*:first-child]:pt-0 [&>div]:items-center [&>div]:pt-4 [&>p]:h-fit">
-      {friendRequests.map((friendRequest) => (
-        <FriendRequestCard
-          key={friendRequest.fromUsername}
-          username={friendRequest.fromUsername}
-          accept={() =>
-            acceptFriendRequest.mutate({
-              fromUsername: friendRequest.fromUsername,
-            })
-          }
-          reject={() =>
-            rejectFriendRequest.mutate({
-              fromUsername: friendRequest.fromUsername,
-            })
-          }
-        />
-      ))}
-    </div>
-  );
-}
+  return receivedFriendRequests.map((receivedfriendRequest) => (
+    <ReceivedFriendRequestTableRow
+      key={receivedfriendRequest.fromUsername}
+      username={receivedfriendRequest.fromUsername}
+      accept={() =>
+        acceptFriendRequest.mutate({
+          fromUsername: receivedfriendRequest.fromUsername,
+        })
+      }
+      reject={() =>
+        rejectFriendRequest.mutate({
+          fromUsername: receivedfriendRequest.fromUsername,
+        })
+      }
+    />
+  ));
+});
 
-interface ExistingFriendCardProps {
+interface ExistingFriendTableRowProps {
   username: string;
   remove: () => void;
 }
 
-function ExistingFriendCard({ username, remove }: ExistingFriendCardProps) {
+function ExistingFriendTableRow({
+  username,
+  remove,
+}: ExistingFriendTableRowProps) {
   return (
-    <div className="flex flex-row justify-between">
-      <p>{username}</p>
-      <div className="space-x-1">
-        <Button variant="outline" size="sm" onClick={remove}>
-          Remove
-        </Button>
-      </div>
-    </div>
+    <FriendTableRow>
+      {username}
+      <Button variant="outline" size="sm" onClick={remove}>
+        Remove
+      </Button>
+    </FriendTableRow>
   );
 }
 
-function ExistingFriendList() {
+const ExistingFriendsTable = withFriendTable(() => {
   const [friends] = api.friend.all.useSuspenseQuery();
 
   const utils = api.useUtils();
@@ -141,21 +187,70 @@ function ExistingFriendList() {
   });
 
   if (friends.length === 0) {
-    return <p className="text-muted-foreground">No friends yet!</p>;
+    return <PlaceholderFriendTableRow message="It's just you here for now!" />;
   }
 
+  return friends.map((friend) => (
+    <ExistingFriendTableRow
+      key={friend.username}
+      username={friend.username}
+      remove={() => removeFriend.mutate({ username: friend.username })}
+    />
+  ));
+});
+
+interface SentFriendRequestTableRowProps {
+  username: string;
+  revoke: () => void;
+}
+
+function SentFriendRequestTableRow({
+  username,
+  revoke,
+}: SentFriendRequestTableRowProps) {
   return (
-    <div className="flex flex-col gap-4 divide-y-2 [&>*:first-child]:pt-0 [&>div]:items-center [&>div]:pt-4 [&>p]:h-fit">
-      {friends.map((friend) => (
-        <ExistingFriendCard
-          key={friend.username}
-          username={friend.username}
-          remove={() => removeFriend.mutate({ username: friend.username })}
-        />
-      ))}
-    </div>
+    <FriendTableRow>
+      {username}
+      <Button variant="outline" size="sm" onClick={revoke}>
+        Cancel
+      </Button>
+    </FriendTableRow>
   );
 }
+
+const SentFriendRequestsTable = withFriendTable(() => {
+  const [sentFriendRequests] = api.friend.request.sent.useSuspenseQuery();
+
+  const utils = api.useUtils();
+
+  const revokeFriendRequest = api.friend.request.revoke.useMutation({
+    onSuccess: async (_data, variables) => {
+      await utils.friend.invalidate();
+      toast.success(`Cancelled friend request to ${variables.toUsername}`);
+    },
+    onError: (_data, variables) => {
+      toast.error(`Failed to cancel friend request to ${variables.toUsername}`);
+    },
+  });
+
+  if (sentFriendRequests.length === 0) {
+    return <PlaceholderFriendTableRow message="Try adding a friend!" />;
+  }
+
+  return sentFriendRequests.map((sentFriendRequest) => (
+    <SentFriendRequestTableRow
+      key={sentFriendRequest.toUsername}
+      username={sentFriendRequest.toUsername}
+      revoke={() =>
+        revokeFriendRequest.mutate(
+          RevokeFriendRequestSchema.parse({
+            toUsername: sentFriendRequest.toUsername,
+          }),
+        )
+      }
+    />
+  ));
+});
 
 function AddFriendForm() {
   const form = useForm({
@@ -167,7 +262,7 @@ function AddFriendForm() {
 
   const utils = api.useUtils();
 
-  const sendFriendRequest = api.friend.add.useMutation({
+  const sendFriendRequest = api.friend.request.send.useMutation({
     onSuccess: async () => {
       form.reset();
       await utils.friend.invalidate();
@@ -179,18 +274,21 @@ function AddFriendForm() {
   });
 
   const onSubmit = (data: z.infer<typeof AddFriendFormSchema>) => {
-    sendFriendRequest.mutate(SentFriendRequestSchema.parse(data));
+    sendFriendRequest.mutate(
+      SentFriendRequestSchema.parse({
+        toUsername: data.username,
+      }),
+    );
   };
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
-        <h4 className="font-medium">Add a Friend</h4>
         <FormField
           control={form.control}
           name="username"
           render={({ field }) => (
-            <FormItem className="pt-4">
+            <FormItem>
               <FormControl>
                 <Input
                   placeholder="Enter the username of your friend"
@@ -215,21 +313,14 @@ export function ManageFriends() {
       <DialogHeader>
         <DialogTitle>Manage Friends</DialogTitle>
       </DialogHeader>
+      <h4 className="font-medium">Add a Friend</h4>
       <AddFriendForm />
+      <h4 className="pt-4 font-medium">Sent Friend Requests</h4>
+      <SentFriendRequestsTable />
       <h4 className="pt-4 font-medium">Received Friend Requests</h4>
-      <ScrollArea
-        type="always"
-        className="max-h-52 rounded-xl border-2 bg-card p-4"
-      >
-        <FriendRequestList />
-      </ScrollArea>
+      <ReceivedFriendRequestsTable />
       <h4 className="pt-4 font-medium">Your Friends</h4>
-      <ScrollArea
-        type="always"
-        className="max-h-52 rounded-xl border-2 bg-card p-4"
-      >
-        <ExistingFriendList />
-      </ScrollArea>
+      <ExistingFriendsTable />
     </DialogContent>
   );
 }

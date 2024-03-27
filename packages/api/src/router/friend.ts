@@ -11,81 +11,124 @@ import {
   ReceivedFriendRequestSchema as ReceivedFriendRequestSchemaExternal,
   RejectFriendRequestSchema as RejectFriendRequestSchemaExternal,
   RemoveFriendSchema as RemoveFriendSchemaExternal,
+  RevokeFriendRequestSchema as RevokeFriendRequestSchemaExternal,
   SentFriendRequestSchema as SentFriendRequestSchemaExternal,
 } from "@restauwants/validators/server/external";
 
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 
 export const friendRouter = createTRPCRouter({
-  add: protectedProcedure
-    .input(SentFriendRequestSchemaExternal)
-    .mutation(async ({ ctx, input }) => {
-      const toUserId = await usernameToId(ctx.db, input.username);
+  request: createTRPCRouter({
+    send: protectedProcedure
+      .input(SentFriendRequestSchemaExternal)
+      .mutation(async ({ ctx, input }) => {
+        const toUserId = await usernameToId(ctx.db, input.toUsername);
 
-      if (ctx.session.user.id === toUserId) {
-        throw new Error("Cannot add yourself as a friend");
-      }
+        if (ctx.session.user.id === toUserId) {
+          throw new Error("Cannot add yourself as a friend");
+        }
 
-      if (!toUserId) {
-        throw new Error("Recipient not found");
-      }
+        if (!toUserId) {
+          throw new Error("Recipient not found");
+        }
 
-      if (await areFriends(ctx.db, ctx.session.user.id, toUserId)) {
-        throw new Error("Already friends");
-      }
+        if (await areFriends(ctx.db, ctx.session.user.id, toUserId)) {
+          throw new Error("Already friends");
+        }
 
-      if (await hasSentFriendRequest(ctx.db, toUserId, ctx.session.user.id)) {
-        await ctx.db.transaction(async (tx) => {
-          await createFriendship(tx, ctx.session.user.id, toUserId);
-          await deleteFriendRequestsBetween(tx, ctx.session.user.id, toUserId);
+        if (await hasSentFriendRequest(ctx.db, toUserId, ctx.session.user.id)) {
+          await ctx.db.transaction(async (tx) => {
+            await createFriendship(tx, ctx.session.user.id, toUserId);
+            await deleteFriendRequestsBetween(
+              tx,
+              ctx.session.user.id,
+              toUserId,
+            );
+          });
+        } else {
+          await sendFriendRequest(ctx.db, ctx.session.user.id, toUserId);
+        }
+      }),
+
+    sent: protectedProcedure.query(async ({ ctx }) => {
+      const toProfile = alias(schema.profile, "toProfile");
+      const sentFriendRequests = await ctx.db
+        .select()
+        .from(schema.friendRequest)
+        .where(eq(schema.friendRequest.fromUserId, ctx.session.user.id))
+        .orderBy(desc(schema.friendRequest.createdAt))
+        .limit(10)
+        .innerJoin(toProfile, eq(toProfile.id, schema.friendRequest.toUserId));
+      return sentFriendRequests.map((r) => {
+        return SentFriendRequestSchemaExternal.parse({
+          toUsername: r.toProfile.username,
+          createdAt: r.friendRequest.createdAt,
         });
-      } else {
-        await sendFriendRequest(ctx.db, ctx.session.user.id, toUserId);
-      }
+      });
     }),
 
-  requests: protectedProcedure.query(async ({ ctx }) => {
-    const fromProfile = alias(schema.profile, "fromProfile");
-    const receivedFriendRequests = await ctx.db
-      .select()
-      .from(schema.friendRequest)
-      .where(eq(schema.friendRequest.toUserId, ctx.session.user.id))
-      .orderBy(desc(schema.friendRequest.createdAt))
-      .limit(10)
-      .innerJoin(
-        fromProfile,
-        eq(fromProfile.id, schema.friendRequest.fromUserId),
-      );
-    return receivedFriendRequests.map((r) => {
-      return ReceivedFriendRequestSchemaExternal.parse({
-        fromUsername: r.fromProfile.username,
-        createdAt: r.friendRequest.createdAt,
+    received: protectedProcedure.query(async ({ ctx }) => {
+      const fromProfile = alias(schema.profile, "fromProfile");
+      const receivedFriendRequests = await ctx.db
+        .select()
+        .from(schema.friendRequest)
+        .where(eq(schema.friendRequest.toUserId, ctx.session.user.id))
+        .orderBy(desc(schema.friendRequest.createdAt))
+        .limit(10)
+        .innerJoin(
+          fromProfile,
+          eq(fromProfile.id, schema.friendRequest.fromUserId),
+        );
+      return receivedFriendRequests.map((r) => {
+        return ReceivedFriendRequestSchemaExternal.parse({
+          fromUsername: r.fromProfile.username,
+          createdAt: r.friendRequest.createdAt,
+        });
       });
-    });
+    }),
+
+    accept: protectedProcedure
+      .input(AcceptFriendRequestSchemaExternal)
+      .mutation(async ({ ctx, input }) => {
+        const fromUserId = await usernameToId(ctx.db, input.fromUsername);
+        if (!fromUserId) {
+          throw new Error("User not found");
+        }
+        if (
+          !(await hasSentFriendRequest(ctx.db, fromUserId, ctx.session.user.id))
+        ) {
+          throw new Error("No friend request found");
+        }
+        await ctx.db.transaction(async (tx) => {
+          await createFriendship(tx, ctx.session.user.id, fromUserId);
+          await deleteFriendRequestsBetween(
+            tx,
+            ctx.session.user.id,
+            fromUserId,
+          );
+        });
+      }),
+
+    reject: protectedProcedure
+      .input(RejectFriendRequestSchemaExternal)
+      .mutation(async ({ ctx, input }) => {
+        const fromUserId = await usernameToId(ctx.db, input.fromUsername);
+        if (!fromUserId) {
+          throw new Error("User not found");
+        }
+        await deleteFriendRequest(ctx.db, fromUserId, ctx.session.user.id);
+      }),
+
+    revoke: protectedProcedure
+      .input(RevokeFriendRequestSchemaExternal)
+      .mutation(async ({ ctx, input }) => {
+        const toUserId = await usernameToId(ctx.db, input.toUsername);
+        if (!toUserId) {
+          throw new Error("User not found");
+        }
+        await deleteFriendRequest(ctx.db, ctx.session.user.id, toUserId);
+      }),
   }),
-
-  accept: protectedProcedure
-    .input(AcceptFriendRequestSchemaExternal)
-    .mutation(async ({ ctx, input }) => {
-      const fromUserId = await usernameToId(ctx.db, input.fromUsername);
-      if (!fromUserId) {
-        throw new Error("User not found");
-      }
-      await ctx.db.transaction(async (tx) => {
-        await createFriendship(tx, ctx.session.user.id, fromUserId);
-        await deleteFriendRequestsBetween(tx, ctx.session.user.id, fromUserId);
-      });
-    }),
-
-  reject: protectedProcedure
-    .input(RejectFriendRequestSchemaExternal)
-    .mutation(async ({ ctx, input }) => {
-      const fromUserId = await usernameToId(ctx.db, input.fromUsername);
-      if (!fromUserId) {
-        throw new Error("User not found");
-      }
-      await deleteFriendRequest(ctx.db, fromUserId, ctx.session.user.id);
-    }),
 
   remove: protectedProcedure
     .input(RemoveFriendSchemaExternal)
