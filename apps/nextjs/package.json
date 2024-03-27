@@ -14,7 +14,6 @@
     "with-env": "dotenv -e ../../.env --"
   },
   "dependencies": {
-    "@google-cloud/pubsub": "^4.3.3",
     "@google-cloud/storage": "^7.7.0",
     "@restauwants/api": "workspace:^0.1.0",
     "@restauwants/auth": "workspace:^0.1.0",
