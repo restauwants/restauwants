@@ -25,7 +25,7 @@ import { useDialogOrDrawer } from "~/hooks/dialogOrDrawer";
 import { ManageFriends } from "../../../components/friends";
 import { signOut } from "../../actions";
 
-export function More() {
+export function Settings() {
   const dialogOrDrawer = useDialogOrDrawer();
   return (
     <dialogOrDrawer.Root>

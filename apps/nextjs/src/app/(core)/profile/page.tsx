@@ -2,7 +2,7 @@ import { Suspense } from "react";
 
 import { api } from "~/trpc/server";
 import { ReviewList, ReviewListSkeleton } from "../../../components/reviews";
-import { More } from "./more";
+import { Settings } from "./settings";
 
 export default async function Profile() {
   const user = await api.user.current();
@@ -14,7 +14,7 @@ export default async function Profile() {
         <p className="min-w-0 break-words text-2xl font-bold text-primary">
           {user.username}
         </p>
-        <More />
+        <Settings />
       </div>
       <div className="container pt-4">
         <Suspense fallback={<ReviewListSkeleton count={3} />}>
