@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import { api } from "~/trpc/server";
 import { ReviewList } from "../../../components/reviews";
 
-export const runtime = "edge";
+export const runtime = "nodejs";
 
 export default async function Feed() {
   const reviews = api.review.all();

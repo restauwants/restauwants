@@ -178,6 +178,9 @@ importers:
 
   packages/api:
     dependencies:
+      '@google-cloud/storage':
+        specifier: ^7.7.0
+        version: 7.7.0
       '@restauwants/auth':
         specifier: workspace:^0.1.0
         version: link:../auth
