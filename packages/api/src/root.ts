@@ -1,19 +1,7 @@
-import { authRouter } from "./router/auth";
-import { friendRouter } from "./router/friend";
-import { photoRouter } from "./router/photo";
-import { reviewRouter } from "./router/review";
-import { testRouter } from "./router/test";
-import { userRouter } from "./router/user";
-import { createTRPCRouter } from "./trpc";
+import { edgeRouter } from "./edge";
+import { nodejsRouter } from "./nodejs";
+import { mergeRouters } from "./trpc";
 
-export const appRouter = createTRPCRouter({
-  auth: authRouter,
-  review: reviewRouter,
-  friend: friendRouter,
-  user: userRouter,
-  photo: photoRouter,
-  test: testRouter,
-});
-
+export const appRouter = mergeRouters(edgeRouter, nodejsRouter);
 // export type definition of API
 export type AppRouter = typeof appRouter;

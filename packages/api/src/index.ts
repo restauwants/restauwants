@@ -4,6 +4,9 @@ import type { AppRouter } from "./root";
 import { appRouter } from "./root";
 import { createCallerFactory, createTRPCContext } from "./trpc";
 
+export { edgeRouter } from "./edge";
+export { nodejsRouter } from "./nodejs";
+
 /**
  * Create a server-side caller for the tRPC API
  * @example

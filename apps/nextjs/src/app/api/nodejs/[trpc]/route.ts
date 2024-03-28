@@ -1,9 +1,9 @@
 import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
 
-import { appRouter, createTRPCContext } from "@restauwants/api";
+import { createTRPCContext, nodejsRouter } from "@restauwants/api";
 import { auth } from "@restauwants/auth";
 
-export const runtime = "nodejs";
+export const runtime = "edge";
 
 /**
  * Configure basic CORS headers
@@ -26,8 +26,8 @@ export function OPTIONS() {
 
 const handler = auth(async (req) => {
   const response = await fetchRequestHandler({
-    endpoint: "/api/trpc",
-    router: appRouter,
+    endpoint: "/api/trpc/nodejs",
+    router: nodejsRouter,
     req,
     createContext: () =>
       createTRPCContext({
