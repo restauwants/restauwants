@@ -258,7 +258,7 @@ function reviewList() {
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [reviewToDelete, setReviewToDelete] = useState<
-      RouterOutputs["review"]["all"][number] | null
+      RouterOutputs["review"]["all"]["reviews"][number] | null
     >(null);
 
     const editReviewForm = useForm({
@@ -302,7 +302,7 @@ function reviewList() {
     });
 
     const openDeleteModalFor = (
-      review: RouterOutputs["review"]["all"][number],
+      review: RouterOutputs["review"]["all"]["reviews"][number],
     ) => {
       setIsDeleteModalOpen(true);
       setReviewToDelete(review);
@@ -353,7 +353,7 @@ function reviewList() {
                 key={r.id}
                 review={r}
                 onDelete={
-                isFromCurrentUser ? () => openDeleteModalFor(p) : undefined
+                  isFromCurrentUser ? () => openDeleteModalFor(r) : undefined
                 }
                 onEdit={
                   isFromCurrentUser ? () => openEditModalFor(r) : undefined
@@ -370,8 +370,8 @@ function reviewList() {
             <ReviewForm form={editReviewForm} onSubmit={onEditSubmit} />
           </dialogOrDrawer.Content>
         </dialogOrDrawer.Root>
-        
-         <AlertDialog
+
+        <AlertDialog
           open={isDeleteModalOpen}
           onOpenChange={setIsDeleteModalOpen}
         >
