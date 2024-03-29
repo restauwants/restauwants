@@ -1,8 +1,9 @@
 "use server";
 
-import { Storage } from "@google-cloud/storage";
+//import { Storage } from "@google-cloud/storage";
 
 export async function getStorage() {
+  /*
   return new Storage({
     projectId: "nifty-edge-415820",
     credentials: {
@@ -12,4 +13,5 @@ export async function getStorage() {
       ),
     },
   });
+  */
 }
