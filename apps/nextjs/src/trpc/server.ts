@@ -1,21 +1,23 @@
-import { cache } from "react";
 import { headers } from "next/headers";
+import { createTRPCClient } from "@trpc/client";
 
-import { createCaller, createTRPCContext } from "@restauwants/api";
-import { auth } from "@restauwants/auth";
+import type { AppRouter } from "@restauwants/api";
 
-/**
- * This wraps the `createTRPCContext` helper and provides the required context for the tRPC API when
- * handling a tRPC call from a React Server Component.
- */
-const createContext = async () => {
-  const heads = new Headers(headers());
-  heads.set("x-trpc-source", "rsc");
+import { endingLink  } from "./shared";
 
-  return createTRPCContext({
-    session: await auth(),
-    headers: heads,
-  });
-};
+import superjson from "superjson";
 
-export const api = createCaller(cache ? cache(createContext) : createContext);
+export const api = createTRPCClient<AppRouter>({
+  transformer: superjson,
+  links: [
+    endingLink({
+      headers: () => {
+        const h = new Map(headers());
+        h.set("x-trpc-source", "src");
+        return Object.fromEntries(h.entries());
+      },
+    }),
+  ],
+});
+
+export { type RouterInputs, type RouterOutputs } from "@restauwants/api";
