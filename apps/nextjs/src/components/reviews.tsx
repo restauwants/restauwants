@@ -2,6 +2,7 @@
 
 import type { z } from "zod";
 import { use, useState } from "react";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 import type { RouterOutputs } from "@restauwants/api";
 import { cn } from "@restauwants/ui";
@@ -46,7 +47,6 @@ import {
   StarIcon,
 } from "@restauwants/ui/icons";
 import { Input } from "@restauwants/ui/input";
-import { Dialog, DialogContent } from "@restauwants/ui/modal";
 import { Textarea } from "@restauwants/ui/textarea";
 import { fromNow } from "@restauwants/ui/time";
 import { toast } from "@restauwants/ui/toast";
@@ -57,6 +57,7 @@ import {
   EditReviewSchema,
 } from "@restauwants/validators/client";
 
+import { useDialogOrDrawer } from "~/hooks/dialogOrDrawer";
 import { api } from "~/trpc/react";
 
 export function CreateReviewForm() {
@@ -225,22 +226,34 @@ function reviewList() {
     initialData: RouterOutputs["review"]["all"],
     byUserId?: string,
   ) => {
+    const options = {
+      getNextPageParam: (lastPage: RouterOutputs["review"]["all"]) =>
+        lastPage.hasMore
+          ? lastPage.reviews[lastPage.reviews.length - 1]!.id
+          : undefined,
+      initialData: {
+        pages: [initialData],
+        pageParams: [],
+      },
+    };
     if (byUserId) {
       return () =>
-        api.review.byUserId.useQuery({ userId: byUserId }, { initialData });
+        api.review.byUserId.useInfiniteQuery({ userId: byUserId }, options);
     }
-    return () => api.review.all.useQuery(undefined, { initialData });
+    return () => api.review.all.useInfiniteQuery({}, options);
   };
 
   return function ReviewList(props: {
     reviews: Promise<RouterOutputs["review"]["all"]>;
     byUserId?: string;
   }) {
-    // TODO: Make `useSuspenseQuery` work without having to pass a promise from RSC
     const initialData = use(props.reviews);
-    const { data: reviews } = useQuery(initialData, props.byUserId)();
+    const infiniteReviewsQuery = useQuery(initialData, props.byUserId)();
+    const reviews =
+      infiniteReviewsQuery.data?.pages.flatMap((page) => page.reviews) ?? [];
     const { data: currentUser } = api.user.current.useQuery();
     const utils = api.useUtils();
+    const dialogOrDrawer = useDialogOrDrawer();
 
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -262,7 +275,7 @@ function reviewList() {
     });
 
     const openEditModalFor = (
-      review: RouterOutputs["review"]["all"][number],
+      review: RouterOutputs["review"]["all"]["reviews"][number],
     ) => {
       editReviewForm.setValue("id", review.id.toString());
       editReviewForm.setValue("restaurantId", review.restaurantId.toString());
@@ -325,27 +338,40 @@ function reviewList() {
     }
 
     return (
-      <div className="flex w-full flex-col space-y-6">
-        {reviews.map((p) => {
-          const isFromCurrentUser = currentUser?.id === p.userId;
-          return (
-            <ReviewCard
-              key={p.id}
-              review={p}
-              onDelete={
+      <>
+        <InfiniteScroll
+          dataLength={reviews.length}
+          next={infiniteReviewsQuery.fetchNextPage}
+          hasMore={infiniteReviewsQuery.hasNextPage}
+          loader={ReviewCardSkeletons(1)}
+          className="flex w-full flex-col space-y-6"
+        >
+          {reviews.map((r) => {
+            const isFromCurrentUser = currentUser?.id === r.userId;
+            return (
+              <ReviewCard
+                key={r.id}
+                review={r}
+                onDelete={
                 isFromCurrentUser ? () => openDeleteModalFor(p) : undefined
-              }
-              onEdit={isFromCurrentUser ? () => openEditModalFor(p) : undefined}
-            />
-          );
-        })}
-        <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
-          <DialogContent>
+                }
+                onEdit={
+                  isFromCurrentUser ? () => openEditModalFor(r) : undefined
+                }
+              />
+            );
+          })}
+        </InfiniteScroll>
+        <dialogOrDrawer.Root
+          open={isEditModalOpen}
+          onOpenChange={setIsEditModalOpen}
+        >
+          <dialogOrDrawer.Content>
             <ReviewForm form={editReviewForm} onSubmit={onEditSubmit} />
-          </DialogContent>
-        </Dialog>
-
-        <AlertDialog
+          </dialogOrDrawer.Content>
+        </dialogOrDrawer.Root>
+        
+         <AlertDialog
           open={isDeleteModalOpen}
           onOpenChange={setIsDeleteModalOpen}
         >
@@ -370,7 +396,7 @@ function reviewList() {
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
-      </div>
+      </>
     );
   };
 }
@@ -378,7 +404,7 @@ function reviewList() {
 export const ReviewList = reviewList();
 
 export function ReviewCard(props: {
-  review: RouterOutputs["review"]["all"][number];
+  review: RouterOutputs["review"]["all"]["reviews"][number];
   onDelete?: () => void;
   onEdit?: () => void;
 }) {
@@ -439,25 +465,65 @@ export function ReviewCard(props: {
 export function ReviewCardSkeleton(props: { pulse?: boolean }) {
   const { pulse = true } = props;
   return (
-    <div className="flex flex-row rounded-lg bg-muted p-4">
-      <div className="flex-grow">
-        <h2
-          className={cn(
-            "w-1/4 rounded bg-primary text-2xl font-bold",
-            pulse && "animate-pulse",
-          )}
-        >
-          &nbsp;
-        </h2>
-        <p
-          className={cn(
-            "mt-2 w-1/3 rounded bg-current text-sm",
-            pulse && "animate-pulse",
-          )}
-        >
-          &nbsp;
-        </p>
-      </div>
-    </div>
+    <Card className="p-0">
+      <CardContent className="p-0">
+        <div className="box-content h-5 items-center p-4">
+          <div
+            className={cn(
+              "w-20 rounded bg-muted text-sm",
+              pulse && "animate-pulse",
+            )}
+          >
+            &nbsp;
+          </div>
+        </div>
+        <div className="border-t" />
+        <CardContent className="p-4">
+          <div className="grid gap-1.5">
+            <CardTitle
+              className={cn(
+                "w-32 rounded bg-primary",
+                pulse && "animate-pulse",
+              )}
+            >
+              &nbsp;
+            </CardTitle>
+            <CardDescription
+              className={cn(
+                "w-full rounded bg-muted",
+                pulse && "animate-pulse",
+              )}
+            >
+              <br />
+              <br />
+              <br />
+            </CardDescription>
+          </div>
+          <div
+            className={cn(
+              "mt-4 flex items-center gap-2",
+              pulse && "animate-pulse",
+            )}
+          >
+            <div className="w-16 rounded bg-primary text-3xl">&nbsp;</div>
+            <div className="ml-auto flex items-center gap-2">
+              <span className="w-20 rounded bg-primary">&nbsp;</span>
+            </div>
+          </div>
+        </CardContent>
+      </CardContent>
+    </Card>
   );
 }
+
+const ReviewCardSkeletons = (count: number) => {
+  return Array.from({ length: count }).map((_, index) => (
+    <ReviewCardSkeleton key={index} />
+  ));
+};
+
+export const ReviewListSkeleton = (props: { count: number }) => (
+  <div className="flex w-full flex-col space-y-6">
+    {ReviewCardSkeletons(props.count)}
+  </div>
+);
