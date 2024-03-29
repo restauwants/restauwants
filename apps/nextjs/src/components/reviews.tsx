@@ -2,11 +2,13 @@
 
 import type { z } from "zod";
 import { use, useState } from "react";
+import { format } from "date-fns";
 import InfiniteScroll from "react-infinite-scroll-component";
 
 import type { RouterOutputs } from "@restauwants/api";
 import { cn } from "@restauwants/ui";
 import { Button } from "@restauwants/ui/button";
+import { Calendar } from "@restauwants/ui/calendar";
 import {
   Card,
   CardContent,
@@ -36,6 +38,11 @@ import {
   StarIcon,
 } from "@restauwants/ui/icons";
 import { Input } from "@restauwants/ui/input";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@restauwants/ui/popover";
 import { Textarea } from "@restauwants/ui/textarea";
 import { fromNow } from "@restauwants/ui/time";
 import { toast } from "@restauwants/ui/toast";
@@ -57,7 +64,8 @@ export function CreateReviewForm() {
       restaurantId: "",
       rating: "",
       price: "",
-      visitedAt: new Date().toISOString().split("T")[0],
+      visitedAt: new Date(),
+      // .toISOString().split("T")[0]
       text: "",
     },
   });
@@ -122,11 +130,36 @@ function ReviewForm({
           control={form.control}
           name="visitedAt"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="flex flex-col">
               <FormLabel>Date of Visit</FormLabel>
-              <FormControl>
-                <Input {...field} type="date" />
-              </FormControl>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <FormControl>
+                    <Button
+                      variant={"outline"}
+                      className={cn(
+                        "w-[240px] pl-3 text-left font-normal",
+                        !field.value && "text-muted-foreground",
+                      )}
+                    >
+                      {field.value ? (
+                        format(field.value, "PPP")
+                      ) : (
+                        <span>Pick a date</span>
+                      )}
+                      <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                    </Button>
+                  </FormControl>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={field.value}
+                    onSelect={field.onChange}
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
               <FormMessage />
             </FormItem>
           )}
@@ -254,7 +287,7 @@ function reviewList() {
         restaurantId: "",
         rating: "",
         price: "",
-        visitedAt: new Date().toISOString().split("T")[0],
+        visitedAt: new Date(),
         text: "",
       },
     });
@@ -267,10 +300,7 @@ function reviewList() {
       editReviewForm.setValue("rating", review.rating.toString());
       editReviewForm.setValue("price", review.price.toString());
       editReviewForm.setValue("text", review.text);
-      editReviewForm.setValue(
-        "visitedAt",
-        review.visitedAt.toISOString().split("T")[0]!,
-      );
+      editReviewForm.setValue("visitedAt", review.visitedAt);
       setIsEditModalOpen(true);
     };
 
