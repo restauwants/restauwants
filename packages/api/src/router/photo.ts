@@ -15,11 +15,31 @@ export const photoRouter = createTRPCRouter({
         .lt(3 * 1024 * 1024),
     )
     .query(async ({ ctx, input }) => {
-      const res = await fetch(getBaseUrl() + `/api/upload?size=${input}`);
+      const res = await fetch(
+        getBaseUrl() + `/api/photo?action=upload&size=${input}`,
+      );
       const { presignedUrl } = (await res.json()) as { presignedUrl: string };
       return presignedUrl;
     }),
 
+  move: protectedProcedure
+    .input(
+      z.object({
+        signedUrl: z.string(),
+        size: z.string().pipe(
+          z.coerce
+            .number()
+            .nonnegative()
+            .lt(3 * 1024 * 1024),
+        ),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const res = await fetch(
+        getBaseUrl() +
+          `/api/photo?action=move&signedUrl=${input.signedUrl}&size=${input.size}`,
+      );
+    }),
   /*
   create: protectedProcedure
     .input(CreatePhotoSchemaExternal)
