@@ -1,4 +1,4 @@
-//import { z } from "zod";
+import { z } from "zod";
 
 import { /*eq,*/ schema } from "@restauwants/db";
 import { PhotoSchema as PhotoSchemaDatabase } from "@restauwants/validators/db";
@@ -7,6 +7,19 @@ import { CreatePhotosSchema as CreatePhotosSchemaExternal } from "@restauwants/v
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 
 export const photoRouter = createTRPCRouter({
+  getSignedUrl: protectedProcedure
+    .input(
+      z
+        .number()
+        .nonnegative()
+        .lt(3 * 1024 * 1024),
+    )
+    .query(async ({ ctx, input }) => {
+      const res = await fetch(getBaseUrl() + `/api/upload?size=${input}`);
+      const { presignedUrl } = (await res.json()) as { presignedUrl: string };
+      return presignedUrl;
+    }),
+
   /*
   create: protectedProcedure
     .input(CreatePhotoSchemaExternal)
@@ -46,3 +59,9 @@ export const photoRouter = createTRPCRouter({
     }),
   */
 });
+
+function getBaseUrl() {
+  if (typeof window !== "undefined") return window.location.origin;
+  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
+  return `http://localhost:${process.env.PORT ?? 3000}`;
+}
