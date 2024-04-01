@@ -69,5 +69,11 @@ export const CreateProfileSchema = z.object({
 
 export const CreatePhotosSchema = z.object({
   reviewId: z.number().int().positive(),
-  ids: z.string().uuid().array(),
+  signedUrls: z.string().array(),
+  sizes: z
+    .number()
+    .int()
+    .positive()
+    .lte(3 * 1024 * 1024)
+    .array(),
 });
