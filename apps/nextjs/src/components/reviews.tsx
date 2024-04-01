@@ -86,6 +86,28 @@ export function CreateReviewForm() {
     },
   });
 
+  const uploadPhotos = api.photo.getSignedUrl.useMutation({
+    onSuccess: async () => {
+      await utils.photo.invalidate();
+    },
+    onError: () => {
+      toast.error("Failed to upload photo");
+    },
+  });
+
+  // TODO: These things need to move into their own file...
+  async function uploadFile(file: File) {
+    const presignedUrl = await uploadPhotos.mutateAsync(file.size);
+    if (!presignedUrl) {
+      throw new Error("Failed to obtain a presigned upload url");
+    }
+    const res = await fetch(presignedUrl, {
+      method: "PUT",
+      body: file,
+    });
+    return res;
+  }
+
   const addPhotosToReview = async (
     urls: string[],
     sizes: number[],
