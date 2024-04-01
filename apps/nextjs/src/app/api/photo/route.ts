@@ -53,12 +53,23 @@ async function move(searchParams: URLSearchParams) {
     sizeInt,
     "restauwants_staging",
     "restauwants_production",
-  );
+  ).catch(() => Response.json({ success: false }));
   return Response.json({ success: true });
 }
 
 async function download(searchParams: URLSearchParams) {
-  return null;
+  const reviewId = searchParams.get("reviewId");
+  if (!reviewId) {
+    return Response.json(
+      { error: "reviewId query parameter is required" },
+      { status: 400 },
+    );
+  }
+  // look up the review in the database
+  // get the photoIds from the database
+  // get the signed urls using the photoIds
+  // return the signed urls
+  return Response.json({ error: "Not implemented" }, { status: 501 });
 }
 
 async function upload(searchParams: URLSearchParams) {
@@ -81,9 +92,7 @@ async function upload(searchParams: URLSearchParams) {
   return Response.json({ presignedUrl: url });
 }
 
-async function getSignedUrl(
-  contentLengthInBytes: number,
-): Promise<[string, string]> {
+async function getSignedUrl(contentLengthInBytes: number): Promise<string> {
   const storage = await getStorage();
   const bucket = storage.bucket("restauwants_staging");
 
@@ -124,7 +133,7 @@ async function getSignedUrl(
 
   const [url] = await file.getSignedUrl(options);
 
-  return [url, filename];
+  return url;
 }
 
 async function verifySignedUrl(

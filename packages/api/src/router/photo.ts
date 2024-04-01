@@ -15,7 +15,7 @@ export const photoRouter = createTRPCRouter({
         .nonnegative()
         .lt(3 * 1024 * 1024),
     )
-    .query(async ({ ctx, input }) => {
+    .mutation(async ({ input }) => {
       const res = await fetch(
         getBaseUrl() + `/api/photo?action=upload&size=${input}`,
       );
@@ -77,7 +77,9 @@ export const photoRouter = createTRPCRouter({
           }
         }
       }
-      addPhotosToReviewInDB(ctx, input.reviewId, filenames);
+      addPhotosToReviewInDB(ctx, input.reviewId, filenames).catch((e) => {
+        throw e;
+      });
     }),
 
   // TODO: needs to also delete the files from the production storage bucket
