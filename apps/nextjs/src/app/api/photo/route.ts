@@ -136,7 +136,7 @@ async function verifySignedUrl(
 
   // valid pathname is of the form "/restauwants_staging/{uuid}"
   const pathname_subdirs = url.pathname.split("/");
-  if (pathname_subdirs.length != 3) return false; // TODO: fail, invalid url
+  if (pathname_subdirs.length != 3) return false;
   const bucketName = pathname_subdirs[1]!;
   const filename: string = pathname_subdirs[pathname_subdirs.length - 1]!;
 
@@ -148,7 +148,7 @@ async function verifySignedUrl(
   const xGoogExpires = url.searchParams.get("X-Goog-Expires");
   if (xGoogDate == null || xGoogExpires == null) return false;
 
-  if (xGoogDate.length != 16) return false; // TODO: fail, invalid date
+  if (xGoogDate.length != 16) return false;
   // xGoogDate is in the format "YYYYMMDDTHHMMSSZ"
   // we want it formatted as "YYYY-MM-DDTHH:MM:SSZ"
   const xGoogDate_formatted =
@@ -162,14 +162,12 @@ async function verifySignedUrl(
     ":" +
     xGoogDate.substring(13, 16);
 
-  const expiry =
-    new Date(xGoogDate_formatted).getTime() + parseInt(xGoogExpires) * 1000;
-
   const options = {
     version: "v4" as const,
     action: "write" as const,
     accessibleAt: new Date(xGoogDate_formatted),
-    expires: expiry,
+    expires:
+      new Date(xGoogDate_formatted).getTime() + parseInt(xGoogExpires) * 1000,
     extensionHeaders: { "content-length": fileSize },
     contentType: "image/jpeg", //"application/octet-stream",
   };
@@ -190,8 +188,10 @@ async function moveFileIfVerified(
     throw new Error("Invalid signed URL");
   }
   // Get the image name (signed URL must be valid)
-  // TODO: Need to check if the file is already in the dest bucket before moving
-  // TODO: What happens if the signedUrl is empty?
+  // TODO: Edge cases that have not been checked-
+  // - File is already in dest bucket before moving
+  // - signedUrl is empty
+  // - Maybe others?
   const url = new URL(signedUrl);
   const filename = url.pathname.split("/").pop()!;
 
