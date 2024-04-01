@@ -54,6 +54,7 @@ async function move(searchParams: URLSearchParams) {
     "restauwants_staging",
     "restauwants_production",
   );
+  return Response.json({ success: true });
 }
 
 async function download(searchParams: URLSearchParams) {
@@ -88,7 +89,7 @@ async function getSignedUrl(
 
   const origin = headers().get("host");
   if (origin) {
-    console.log(origin);
+    console.log("origin (in getSignedUrl):", origin);
 
     // set the cors configuration
     await bucket.setCorsConfiguration([
@@ -175,8 +176,6 @@ async function verifySignedUrl(
 
   const [signedUrlString] = await file.getSignedUrl(options);
 
-  console.log("signedUrlString (in verifySignedUrl):", signedUrlString);
-  console.log("checkUrlString (in verifySignedUrl):", checkUrlString);
   return signedUrlString === checkUrlString;
 }
 

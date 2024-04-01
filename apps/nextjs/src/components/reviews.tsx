@@ -79,7 +79,7 @@ export function CreateReviewForm() {
 
   const utils = api.useUtils();
 
-  const createPhotos = api.photo.multiCreate.useMutation({
+  const createPhotos = api.photo.addPhotosToReview.useMutation({
     onSuccess: async () => {
       await utils.photo.invalidate();
     },
@@ -93,43 +93,20 @@ export function CreateReviewForm() {
     sizes: number[],
     reviewId: number,
   ) => {
-    // 1. Validate lengths of imageUrls and imageSizes
+    // 1. Validate lengths of imageUrls and imageSizes clientside?
     if (urls.length !== sizes.length) {
       throw new Error("Image urls and sizes must be the same length");
     }
     const num_uploaded_images = urls.length;
 
     console.log("num_uploaded_images:", num_uploaded_images);
-    // 2. Verify the user's signed urls are legitimate
     // TODO: there's probably an issue if a user gives another user their signed url after they've already created a review...
-    const uploadedImageNames: string[] = [];
-    for (let i = 0; i < num_uploaded_images; i++) {
-      console.log("this is the url marked as invalid:", urls[i]!);
-      console.log("this is its size:", sizes[i]!);
-      const verified = await verifySignedUrl(urls[i]!, sizes[i]!);
-      if (!verified) {
-        throw new Error("Invalid signed URL");
-      }
-
-      // 3. Move the images referred to by the signed urls to the restauwants bucket (if they exist)
-      // this should fail if the image doesn't exist in the staging bucket?
-      void (await moveFileIfVerified(
-        urls[i]!,
-        sizes[i]!,
-        "restauwants_staging",
-        "restauwants",
-      ));
-      // Get the image name
-      const url = new URL(urls[i]!);
-      const imageName = url.pathname.split("/").pop()!;
-      uploadedImageNames.push(imageName);
-    }
     const photo_data = {
       reviewId: reviewId,
-      ids: uploadedImageNames,
+      signedUrls: urls,
+      sizes: sizes,
     };
-    // 4. Insert the image into the photos table
-    console.log("trying to insert");
+    // 2. Insert the image into the photos table
     createPhotos.mutate(CreatePhotosSchema.parse(photo_data));
   };
 
@@ -147,6 +124,7 @@ export function CreateReviewForm() {
     const files: FileList = data.files;
     const urls: string[] = [];
     const sizes: number[] = [];
+    // Upload every file from the form
     for (const file of files) {
       const res = await uploadFile(file);
       urls.push(res.url);

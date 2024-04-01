@@ -119,9 +119,6 @@ export default function Upload() {
 
 export async function uploadFile(file: File) {
   const [url, filename] = await getSignedUrl(file.size);
-  console.log("url:", url);
-  console.log("filename:", filename);
-  console.log("file size:", file.size);
   const res = await fetch(url, {
     method: "PUT",
     body: file,
