@@ -26,12 +26,13 @@ export async function GET(request: NextRequest) {
   if (action === "upload") {
     return upload(searchParams);
   } else if (action === "download") {
-    return download(searchParams); // TODO
+    return download(searchParams);
   } else if (action === "move") {
     return move(searchParams);
   }
 }
 
+// TODO: Only the server itself should be able to access this route.
 async function move(searchParams: URLSearchParams) {
   const signedUrl = searchParams.get("signedUrl");
   const size = searchParams.get("size");
@@ -57,19 +58,18 @@ async function move(searchParams: URLSearchParams) {
   return Response.json({ success: true });
 }
 
+// TODO: Only the server should be able to access this route.
 async function download(searchParams: URLSearchParams) {
-  const reviewId = searchParams.get("reviewId");
-  if (!reviewId) {
+  const photoId = searchParams.get("photoId");
+  if (!photoId) {
     return Response.json(
-      { error: "reviewId query parameter is required" },
+      { error: "photoId query parameter is required" },
       { status: 400 },
     );
   }
-  // look up the review in the database
-  // get the photoIds from the database
-  // get the signed urls using the photoIds
-  // return the signed urls
-  return Response.json({ error: "Not implemented" }, { status: 501 });
+  const url = await getSignedDownloadUrl(photoId);
+
+  return Response.json({ presignedUrl: url });
 }
 
 async function upload(searchParams: URLSearchParams) {
@@ -87,14 +87,52 @@ async function upload(searchParams: URLSearchParams) {
     )
     .parse(size);
 
-  const url = await getSignedUrl(sizeInt);
+  const url = await getSignedUploadUrl(sizeInt);
 
   return Response.json({ presignedUrl: url });
 }
 
-async function getSignedUrl(contentLengthInBytes: number): Promise<string> {
+// TODO: Validation is all messed up because the route handler is not typed :(
+async function getSignedDownloadUrl(filename: string) {
+  const options = {
+    action: "read" as const,
+  };
+
+  const prodBucket = "restauwants_production";
+
+  return getSignedUrl(prodBucket, filename, options);
+}
+
+async function getSignedUploadUrl(fileSize: number) {
+  if (0 >= fileSize) {
+    return Promise.reject(new Error("No file attached."));
+  } else if (fileSize > MAX_FILE_SIZE) {
+    return Promise.reject(new Error("File size too large."));
+  }
+
+  const stagingBucket = "restauwants_staging";
+  // Filenames should be generated with uuids to avoid overwrite conflicts in the bucket
+  const filename = uuidv4();
+
+  const options = {
+    action: "write" as const,
+    extensionHeaders: { "content-length": fileSize },
+  };
+
+  return getSignedUrl(stagingBucket, filename, options);
+}
+
+async function getSignedUrl(
+  bucketName: string,
+  filename: string,
+  inputOptions: {
+    action: "write" | "read";
+    extensionHeaders?: { "content-length": number };
+  },
+): Promise<string> {
   const storage = await getStorage();
-  const bucket = storage.bucket("restauwants_staging");
+  const bucket = storage.bucket(bucketName);
+  const file = bucket.file(filename);
 
   const origin = headers().get("host");
   if (origin) {
@@ -113,22 +151,11 @@ async function getSignedUrl(contentLengthInBytes: number): Promise<string> {
     return Promise.reject(new Error("No origin header found."));
   }
 
-  if (0 >= contentLengthInBytes) {
-    return Promise.reject(new Error("No file attached."));
-  } else if (contentLengthInBytes > MAX_FILE_SIZE) {
-    return Promise.reject(new Error("File size too large."));
-  }
-
-  // Filenames should be generated with uuids to avoid overwrite conflicts in the bucket
-  const filename = uuidv4();
-  const file = bucket.file(filename);
-
   const options = {
     version: "v4" as const,
-    action: "write" as const,
     expires: Date.now() + 10 * 60 * 1000, // 10 minutes
-    extensionHeaders: { "content-length": contentLengthInBytes },
     contentType: "image/jpeg", //"application/octet-stream",
+    ...inputOptions,
   };
 
   const [url] = await file.getSignedUrl(options);
