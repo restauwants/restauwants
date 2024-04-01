@@ -6,9 +6,10 @@ import { PhotoSchema as PhotoSchemaDatabase } from "@restauwants/validators/db";
 import { CreatePhotosSchema as CreatePhotosSchemaExternal } from "@restauwants/validators/server/external";
 
 import { createTRPCRouter, protectedProcedure } from "../trpc";
+import { areFriends } from "./friend";
 
 export const photoRouter = createTRPCRouter({
-  getSignedUrl: protectedProcedure
+  getSignedUploadUrl: protectedProcedure
     .input(
       z
         .number()
@@ -21,6 +22,36 @@ export const photoRouter = createTRPCRouter({
       );
       const { presignedUrl } = (await res.json()) as { presignedUrl: string };
       return presignedUrl;
+    }),
+  byReviewId: protectedProcedure
+    .input(z.number())
+    .query(async ({ ctx, input }) => {
+      const review = await ctx.db.query.review.findFirst({
+        where: eq(schema.review.id, input),
+      });
+      if (!review) {
+        throw new Error("Review not found");
+      }
+
+      // Can't view images from reviews you don't own unless you're friends
+      if (
+        ctx.session.user.id !== review.userId &&
+        !(await areFriends(ctx.db, ctx.session.user.id, review.userId))
+      ) {
+        throw new Error("Not friends");
+      }
+
+      const photos = await ctx.db.query.photo.findMany({
+        where: eq(schema.photo.reviewId, input),
+      });
+      // get the signed urls for the photos
+      return photos.map(async (photo) => {
+        const res = await fetch(
+          getBaseUrl() + `/api/photo?action=download&photoId=${photo.id}`,
+        );
+        const { presignedUrl } = (await res.json()) as { presignedUrl: string };
+        return presignedUrl;
+      });
     }),
 
   /*
