@@ -1,6 +1,7 @@
 import { z } from "zod";
 
-import { /*eq,*/ schema } from "@restauwants/db";
+import type { Database } from "@restauwants/db";
+import { eq, schema } from "@restauwants/db";
 import { PhotoSchema as PhotoSchemaDatabase } from "@restauwants/validators/db";
 import { CreatePhotosSchema as CreatePhotosSchemaExternal } from "@restauwants/validators/server/external";
 
@@ -38,8 +39,21 @@ export const photoRouter = createTRPCRouter({
   addPhotosToReview: protectedProcedure
     .input(CreatePhotosSchemaExternal)
     .mutation(async ({ ctx, input }) => {
-      // verify signedUrls and size are same length
+      // If the user does not own the review, or the review does not exist,
+      // do not move their file to the prod bucket
+      const review = await ctx.db.query.review.findFirst({
+        where: eq(schema.review.id, input.reviewId),
+      });
+      if (!review) {
+        throw new Error("Review not found");
+      }
+      if (review.userId !== ctx.session.user.id) {
+        throw new Error("Not authorized");
+      }
+
       const filenames = [] as string[];
+      // Move every file to prod bucket
+      // TODO: verify signedUrls and size are same length
       for (let i = 0; i < input.signedUrls.length; i++) {
         const signedUrl = input.signedUrls[i];
         const size = input.sizes[i];
@@ -55,7 +69,7 @@ export const photoRouter = createTRPCRouter({
 
         const { success } = (await res.json()) as { success: boolean };
         if (success) {
-          // We are safe here because the url was verified by move in the fetch above
+          // This is safe as long as the "move" action in the above fetch verifies the URL
           const url = new URL(signedUrl);
           const filename = url.pathname.split("/").pop();
           if (filename) {
@@ -66,17 +80,40 @@ export const photoRouter = createTRPCRouter({
       addPhotosToReviewInDB(ctx, input.reviewId, filenames);
     }),
 
-  /* TODO: needs to also delete the files from the storage bucket
+  // TODO: needs to also delete the files from the production storage bucket
   delete: protectedProcedure
-    .input(z.number())
+    .input(z.string().uuid())
     .mutation(async ({ ctx, input }) => {
+      const photo = await ctx.db.query.photo.findFirst({
+        where: eq(schema.photo.id, input),
+      });
+      if (!photo) {
+        throw new Error("Photo not found");
+      }
+      const review = await ctx.db.query.review.findFirst({
+        where: eq(schema.review.id, photo.reviewId),
+      });
+      if (!review) {
+        // This would be really bad...
+        throw new Error("Review not found");
+      } else if (review.userId !== ctx.session.user.id) {
+        throw new Error("Not authorized");
+      }
       await ctx.db.delete(schema.photo).where(eq(schema.photo.id, input));
     }),
-  */
 });
 
+// PRECONDITION: The user must own the review
 async function addPhotosToReviewInDB(
-  ctx,
+  ctx: {
+    session: {
+      user: {
+        id: string;
+      };
+      expires: string;
+    };
+    db: Database;
+  },
   reviewId: number,
   photoIds: string[],
 ) {
@@ -90,7 +127,8 @@ async function addPhotosToReviewInDB(
       }),
     );
   }
-  await ctx.db.insert(schema.photo).values(rows);
+
+  return ctx.db.insert(schema.photo).values(rows);
 }
 
 function getBaseUrl() {

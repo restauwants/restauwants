@@ -3,8 +3,8 @@ import { z } from "zod";
 import { username } from "../../common";
 
 export {
-  UserSchemaWithOptionals,
   UserSchema,
+  UserSchemaWithOptionals,
   isCompleteUser,
 } from "../internal";
 
