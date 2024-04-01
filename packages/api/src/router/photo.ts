@@ -22,24 +22,6 @@ export const photoRouter = createTRPCRouter({
       return presignedUrl;
     }),
 
-  move: protectedProcedure
-    .input(
-      z.object({
-        signedUrl: z.string(),
-        size: z.string().pipe(
-          z.coerce
-            .number()
-            .nonnegative()
-            .lt(3 * 1024 * 1024),
-        ),
-      }),
-    )
-    .query(async ({ ctx, input }) => {
-      const res = await fetch(
-        getBaseUrl() +
-          `/api/photo?action=move&signedUrl=${input.signedUrl}&size=${input.size}`,
-      );
-    }),
   /*
   create: protectedProcedure
     .input(CreatePhotoSchemaExternal)
@@ -53,22 +35,35 @@ export const photoRouter = createTRPCRouter({
       }),
       */
 
-  multiCreate: protectedProcedure
+  addPhotosToReview: protectedProcedure
     .input(CreatePhotosSchemaExternal)
     .mutation(async ({ ctx, input }) => {
-      input.ids;
-      input.reviewId;
-      const rows = [];
-      for (const id of input.ids) {
-        rows.push(
-          PhotoSchemaDatabase.parse({
-            reviewId: input.reviewId,
-            id,
-            createdAt: new Date(),
-          }),
+      // verify signedUrls and size are same length
+      const filenames = [] as string[];
+      for (let i = 0; i < input.signedUrls.length; i++) {
+        const signedUrl = input.signedUrls[i];
+        const size = input.sizes[i];
+        if (!signedUrl || !size) {
+          throw new Error("signedUrl and size query parameters are required");
+        }
+        const res = await fetch(
+          getBaseUrl() +
+            `/api/photo?action=move&signedUrl=${encodeURIComponent(
+              signedUrl,
+            )}&size=${size}`,
         );
+
+        const { success } = (await res.json()) as { success: boolean };
+        if (success) {
+          // We are safe here because the url was verified by move in the fetch above
+          const url = new URL(signedUrl);
+          const filename = url.pathname.split("/").pop();
+          if (filename) {
+            filenames.push(filename);
+          }
+        }
       }
-      await ctx.db.insert(schema.photo).values(rows);
+      addPhotosToReviewInDB(ctx, input.reviewId, filenames);
     }),
 
   /* TODO: needs to also delete the files from the storage bucket
@@ -79,6 +74,24 @@ export const photoRouter = createTRPCRouter({
     }),
   */
 });
+
+async function addPhotosToReviewInDB(
+  ctx,
+  reviewId: number,
+  photoIds: string[],
+) {
+  const rows = [];
+  for (const id of photoIds) {
+    rows.push(
+      PhotoSchemaDatabase.parse({
+        reviewId: reviewId,
+        id,
+        createdAt: new Date(),
+      }),
+    );
+  }
+  await ctx.db.insert(schema.photo).values(rows);
+}
 
 function getBaseUrl() {
   if (typeof window !== "undefined") return window.location.origin;
