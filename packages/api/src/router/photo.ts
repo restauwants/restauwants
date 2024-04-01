@@ -119,7 +119,12 @@ async function addPhotosToReviewInDB(
   reviewId: number,
   photoIds: string[],
 ) {
-  const rows = [];
+  interface row {
+    reviewId: number;
+    id: string;
+    createdAt: Date;
+  }
+  const rows = [] as row[];
   for (const id of photoIds) {
     rows.push(
       PhotoSchemaDatabase.parse({
