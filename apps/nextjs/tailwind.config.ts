@@ -15,7 +15,7 @@ export default {
         mono: ["var(--font-geist-mono)", ...fontFamily.mono],
       },
       backgroundImage: {
-        "signin-background": "url('/productPageBG.jpg')",
+        "signin-background": "url('/fullProductPageBG.jpg')",
       },
     },
   },

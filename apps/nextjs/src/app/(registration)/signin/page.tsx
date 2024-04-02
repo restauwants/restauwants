@@ -18,7 +18,7 @@ export default async function SignIn() {
         <DialogHeader>
           <DialogTitle>Sign In</DialogTitle>
           <DialogDescription>
-            Please choose a sign in provider. Your profile will permantently be
+            Please choose a sign in provider. Your profile will permanently be
             linked to this account.
           </DialogDescription>
         </DialogHeader>
