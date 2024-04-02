@@ -17,6 +17,9 @@ export default {
       backgroundImage: {
         "signin-background": "url('/fullProductPageBG.jpg')",
       },
+      logo: {
+        "shrimp-logo": "url('/shrimp.svg')",
+      },
     },
   },
 } satisfies Config;
