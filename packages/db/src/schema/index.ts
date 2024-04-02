@@ -97,7 +97,8 @@ export const verificationTokens = mySqlTable(
 export const review = mySqlTable("review", {
   id: int("id").autoincrement().notNull().primaryKey(),
   userId: varchar("userId", { length: 255 }).notNull(),
-  restaurantId: int("restaurantId").notNull(),
+  restaurantId: varchar("restaurantId", { length: 50 }).notNull(),
+  name: varchar("name", { length: 255 }).notNull(),
   rating: int("rating").notNull(),
   price: float("price").notNull(),
   text: varchar("text", { length: 255 }).notNull(),
@@ -125,7 +126,7 @@ export const profileRelations = relations(profile, ({ one }) => ({
 }));
 
 export const restaurant = mySqlTable("restaurant", {
-  id: int("id").autoincrement().notNull().primaryKey(),
+  restaurantId: varchar("restaurantId", { length: 50 }).notNull().primaryKey(),
   name: varchar("name", { length: 255 }).notNull(),
 });
 

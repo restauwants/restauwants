@@ -59,13 +59,18 @@ import {
 
 import { useDialogOrDrawer } from "~/hooks/dialogOrDrawer";
 import { api } from "~/trpc/react";
+import { SearchBox } from "/Users/devin/uvic/StartupProgramming/restauwants/apps/nextjs/src/app/_components/autoComplete";
 
 export function CreateReviewForm() {
+  const initialState = "";
+  const [autocompleteData, setautocompleteData] = useState(initialState);
+  const [restoname, setname] = useState(initialState);
   const form = useForm({
     mode: "onBlur",
     schema: ReviewFormSchema,
     defaultValues: {
       restaurantId: "",
+      name: "",
       rating: "",
       price: "",
       text: "",
@@ -90,11 +95,36 @@ export function CreateReviewForm() {
     },
   });
 
+  const addRestaurant = api.restaurant.create.useMutation({});
+
   const onSubmit = (data: z.input<typeof ReviewFormSchema>) => {
-    createReview.mutate(CreateReviewSchema.parse(data));
+    createReview.mutate(
+      CreateReviewSchema.parse({
+        ...data,
+        restaurantId: autocompleteData,
+        name: restoname,
+      }),
+    );
   };
 
-  return <ReviewForm form={form} onSubmit={onSubmit} />;
+  return (
+    <div>
+      <div>
+        <SearchBox
+          onSelectAddress={(address, place_id) => {
+            setautocompleteData(place_id);
+            setname(address);
+          }}
+          defaultValue=""
+        />
+      </div>
+      <ReviewForm
+        form={form}
+        onSubmit={onSubmit}
+        autocompleteData={autocompleteData}
+      />
+    </div>
+  );
 }
 
 const ReviewFormSchema = CreateReviewFormSchema.merge(
@@ -104,9 +134,11 @@ const ReviewFormSchema = CreateReviewFormSchema.merge(
 function ReviewForm({
   form,
   onSubmit,
+  autocompleteData,
 }: {
   form: ReturnType<typeof useForm<typeof ReviewFormSchema>>;
   onSubmit: (data: z.input<typeof ReviewFormSchema>) => void;
+  autocompleteData: string;
 }) {
   // TODO(#37): retrieve the restaurant name for a restaurant ID
   return (
@@ -119,19 +151,6 @@ function ReviewForm({
             <FormControl>
               <Input {...field} type="hidden" />
             </FormControl>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="restaurantId"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Restaurant ID</FormLabel>
-              <FormControl>
-                <Input {...field} placeholder="7426" />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
           )}
         />
         <FormField
@@ -445,7 +464,9 @@ export function ReviewCard(props: {
         <div className="border-t" />
         <CardContent className="p-4">
           <div className="grid gap-1.5">
-            <CardTitle>{props.review.restaurantId}</CardTitle>
+            <CardTitle>
+              {props.review.name ?? props.review.restaurantId}
+            </CardTitle>
             <CardDescription className="whitespace-pre-wrap">
               {props.review.text}
             </CardDescription>

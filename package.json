@@ -37,5 +37,21 @@
     "overrides": {
       "@auth/core": "0.20.0"
     }
+  },
+  "dependencies": {
+    "@radix-ui/react-dialog": "^1.0.5",
+    "@radix-ui/react-popover": "^1.0.7",
+    "@radix-ui/react-select": "^2.0.0",
+    "@reach/combobox": "^0.18.0",
+    "add": "^2.0.6",
+    "cmdk": "^1.0.0",
+    "command": "^0.0.5",
+    "popover": "^2.4.1",
+    "react-google-places-autocomplete": "^4.0.1",
+    "react-places-autocomplete": "^7.3.0",
+    "shadcn-ui": "^0.8.0",
+    "use-google-maps-script": "^0.1.2",
+    "use-places-autocomplete": "^4.0.1",
+    "usePlacesAutocompleteService": "link:react-google-autocomplete/lib/usePlacesAutocompleteService"
   }
 }
