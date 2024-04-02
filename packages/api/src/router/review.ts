@@ -9,6 +9,7 @@ import {
 
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 import { areFriends } from "./friend";
+import { byReviewId } from "./photo";
 
 export const reviewRouter = createTRPCRouter({
   all: protectedProcedure
@@ -40,6 +41,7 @@ export const reviewRouter = createTRPCRouter({
           .limit(input.limit + 1)
       ).map((r) => ({
         ...r.review,
+        photos: byReviewId(ctx.db, ctx.session.user.id, r.review.id),
         username: r.friendProfile.username,
       }));
       const hasMore = reviews.length > input.limit;
@@ -83,6 +85,12 @@ export const reviewRouter = createTRPCRouter({
           .limit(input.limit + 1)
       ).map((r) => ({
         ...r.review,
+        photos: (async () => {
+          const photos = byReviewId(ctx.db, ctx.session.user.id, r.review.id);
+          console.log("photos being sent to props:", await photos);
+          //return byReviewId(ctx.db, ctx.session.user.id, r.review.id)
+          return photos;
+        })(),
         username: r.profile.username,
       }));
       const hasMore = reviews.length > input.limit;
