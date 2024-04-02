@@ -9,6 +9,7 @@ import {
 
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 import { areFriends } from "./friend";
+import { byReviewId } from "./photo";
 
 // async function queryGooglePlaces(placeId: string) {
 //   const apiKey = process.env.GOOGLE_API_KEY;
@@ -48,6 +49,7 @@ export const reviewRouter = createTRPCRouter({
           .limit(input.limit + 1)
       ).map((r) => ({
         ...r.review,
+        photos: byReviewId(ctx.db, ctx.session.user.id, r.review.id),
         username: r.friendProfile.username,
         name: r.review.name,
       }));
@@ -92,6 +94,12 @@ export const reviewRouter = createTRPCRouter({
           .limit(input.limit + 1)
       ).map((r) => ({
         ...r.review,
+        photos: (async () => {
+          const photos = byReviewId(ctx.db, ctx.session.user.id, r.review.id);
+          console.log("photos being sent to props:", await photos);
+          //return byReviewId(ctx.db, ctx.session.user.id, r.review.id)
+          return photos;
+        })(),
         username: r.profile.username,
         name: r.review.name,
       }));

@@ -117,6 +117,7 @@ async function getSignedUploadUrl(fileSize: number) {
   const options = {
     action: "write" as const,
     extensionHeaders: { "content-length": fileSize },
+    contentType: "image/jpeg", //"application/octet-stream",
   };
 
   return getSignedUrl(stagingBucket, filename, options);
@@ -136,8 +137,6 @@ async function getSignedUrl(
 
   const origin = headers().get("host");
   if (origin) {
-    console.log("origin (in getSignedUrl):", origin);
-
     // set the cors configuration
     await bucket.setCorsConfiguration([
       {
@@ -154,7 +153,6 @@ async function getSignedUrl(
   const options = {
     version: "v4" as const,
     expires: Date.now() + 10 * 60 * 1000, // 10 minutes
-    contentType: "image/jpeg", //"application/octet-stream",
     ...inputOptions,
   };
 
