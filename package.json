@@ -36,8 +36,5 @@
     "overrides": {
       "@auth/core": "0.20.0"
     }
-  },
-  "dependencies": {
-    "react-infinite-scroll-component": "^6.1.0"
   }
 }
