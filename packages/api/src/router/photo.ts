@@ -23,36 +23,6 @@ export const photoRouter = createTRPCRouter({
       const { presignedUrl } = (await res.json()) as { presignedUrl: string };
       return presignedUrl;
     }),
-  byReviewId: protectedProcedure
-    .input(z.number())
-    .query(async ({ ctx, input }) => {
-      const review = await ctx.db.query.review.findFirst({
-        where: eq(schema.review.id, input),
-      });
-      if (!review) {
-        throw new Error("Review not found");
-      }
-
-      // Can't view images from reviews you don't own unless you're friends
-      if (
-        ctx.session.user.id !== review.userId &&
-        !(await areFriends(ctx.db, ctx.session.user.id, review.userId))
-      ) {
-        throw new Error("Not friends");
-      }
-
-      const photos = await ctx.db.query.photo.findMany({
-        where: eq(schema.photo.reviewId, input),
-      });
-      // get the signed urls for the photos
-      return photos.map(async (photo) => {
-        const res = await fetch(
-          getBaseUrl() + `/api/photo?action=download&photoId=${photo.id}`,
-        );
-        const { presignedUrl } = (await res.json()) as { presignedUrl: string };
-        return presignedUrl;
-      });
-    }),
 
   /*
   create: protectedProcedure
@@ -168,6 +138,50 @@ async function addPhotosToReviewInDB(
 
   return ctx.db.insert(schema.photo).values(rows);
 }
+
+export const byReviewId = async (
+  db: Database,
+  userId: string,
+  reviewId: number,
+) => {
+  console.log("reviewId:", reviewId);
+  console.log("userId:", userId);
+  const review = await db.query.review.findFirst({
+    where: eq(schema.review.id, reviewId),
+  });
+  if (!review) {
+    throw new Error(`Review ${reviewId} not found`);
+  }
+
+  // Can't view images from reviews you don't own unless you're friends
+  if (
+    userId !== review.userId &&
+    !(await areFriends(db, userId, review.userId))
+  ) {
+    throw new Error("Not friends");
+  }
+
+  const photos = await db.query.photo.findMany({
+    where: eq(schema.photo.reviewId, reviewId),
+  });
+  // get the signed urls for the photos
+  const signedUrls = photos.map(async (photo) => {
+    const res = await fetch(
+      getBaseUrl() + `/api/photo?action=download&photoId=${photo.id}`,
+      { next: { revalidate: 600 } },
+    ).then((res) => {
+      if (!res.ok) {
+        throw new Error("Failed to fetch presigned URL");
+      } else {
+        return res;
+      }
+    });
+    const { presignedUrl } = (await res.json()) as { presignedUrl: string };
+    console.log("presignedUrl:", presignedUrl);
+    return presignedUrl;
+  });
+  return Promise.all(signedUrls);
+};
 
 function getBaseUrl() {
   if (typeof window !== "undefined") return window.location.origin;
