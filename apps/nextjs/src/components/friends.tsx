@@ -3,6 +3,17 @@
 import type { z } from "zod";
 import { useState } from "react";
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@restauwants/ui/alert-dialog";
 import { Button } from "@restauwants/ui/button";
 import {
   Form,
@@ -157,12 +168,30 @@ function ExistingFriendTableRow({
   remove,
 }: ExistingFriendTableRowProps) {
   return (
-    <FriendTableRow>
-      {username}
-      <Button variant="outline" size="sm" onClick={remove}>
-        Remove
-      </Button>
-    </FriendTableRow>
+    <AlertDialog>
+      <FriendTableRow>
+        {username}
+        <AlertDialogTrigger>
+          <Button variant="outline" size="sm">
+            Remove
+          </Button>
+        </AlertDialogTrigger>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Removing a Friend</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure about removing {username} as your friend?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>No</AlertDialogCancel>
+            <AlertDialogAction onClick={remove}>
+              Good Bye Friend
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </FriendTableRow>
+    </AlertDialog>
   );
 }
 
@@ -204,12 +233,28 @@ function SentFriendRequestTableRow({
   revoke,
 }: SentFriendRequestTableRowProps) {
   return (
-    <FriendTableRow>
-      {username}
-      <Button variant="outline" size="sm" onClick={revoke}>
-        Cancel
-      </Button>
-    </FriendTableRow>
+    <AlertDialog>
+      <FriendTableRow>
+        {username}
+        <AlertDialogTrigger>
+          <Button variant="outline" size="sm">
+            Cancel
+          </Button>
+        </AlertDialogTrigger>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Canceling an Outgoing Request</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to cancel your friend request to {username}?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>No</AlertDialogCancel>
+            <AlertDialogAction onClick={revoke}>Yes</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </FriendTableRow>
+    </AlertDialog>
   );
 }
 
