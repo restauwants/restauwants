@@ -1,6 +1,7 @@
 "use client";
 
 import type { z } from "zod";
+import { useState } from "react";
 
 import { Button } from "@restauwants/ui/button";
 import {
@@ -249,6 +250,7 @@ const SentFriendRequestsTable = withFriendTable(() => {
 function AddFriendForm(props: {
   Footer: React.ComponentType<{ children: React.ReactNode }>;
 }) {
+  const [username, setUsername] = useState("");
   const form = useForm({
     schema: AddFriendFormSchema,
     defaultValues: {
@@ -262,14 +264,17 @@ function AddFriendForm(props: {
     onSuccess: async () => {
       form.reset();
       await utils.friend.invalidate();
-      toast.success("Friend request sent");
+      toast.success(
+        "Friend request to " + username + " was successfully sent!",
+      );
     },
-    onError: () => {
-      toast.error("Failed to send friend request");
+    onError: (error) => {
+      toast.error(error.message);
     },
   });
 
   const onSubmit = (data: z.infer<typeof AddFriendFormSchema>) => {
+    setUsername(form.getValues("username"));
     sendFriendRequest.mutate(
       SentFriendRequestSchema.parse({
         toUsername: data.username,
