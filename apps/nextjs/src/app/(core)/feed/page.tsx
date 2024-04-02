@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 
 import { api } from "~/trpc/server";
+import { SearchBox } from "../../_components/autoComplete";
 import { ReviewList } from "../../../components/reviews";
 
 export const runtime = "edge";
