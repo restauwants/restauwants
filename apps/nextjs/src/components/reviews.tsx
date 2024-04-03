@@ -469,17 +469,6 @@ export function ReviewCard(props: {
   onDelete?: () => void;
   onEdit?: () => void;
 }) {
-  const [photos, setPhotos] = useState([] as string[]);
-
-  useEffect(() => {
-    async function fetchPhotos() {
-      console.log("inside fetchPhotos:", props.review.photos);
-      setPhotos(props.review.photos);
-    }
-    void fetchPhotos();
-  }, [props.review]);
-  console.log("rerender: props.review:", props.review);
-
   // TODO(#37): retrieve the restaurant name for a restaurant ID
   return (
     <Card className="p-0">
@@ -517,7 +506,7 @@ export function ReviewCard(props: {
           <div className="grid gap-1.5">
             <CardTitle>{props.review.restaurantId}</CardTitle>
             <CardDescription className="whitespace-pre-wrap">
-              <>{photos}</>
+              <>{props.review.photos}</>
               <>{props.review.text}</>
             </CardDescription>
           </div>
