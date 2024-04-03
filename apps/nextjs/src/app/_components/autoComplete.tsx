@@ -1,32 +1,15 @@
-import { ChangeEvent, FunctionComponent, useState } from "react";
-import {
-  Combobox,
-  ComboboxInput,
-  ComboboxList,
-  ComboboxOption,
-  ComboboxPopover,
-} from "@reach/combobox";
+import { ChangeEvent } from "react";
 import { Libraries, useGoogleMapsScript } from "use-google-maps-script";
-import usePlacesAutocomplete, { getDetails } from "use-places-autocomplete";
+import usePlacesAutocomplete from "use-places-autocomplete";
 
 import "@reach/combobox/styles.css";
 
-import { cn } from "@restauwants/ui";
 import {
   Command,
-  CommandEmpty,
-  CommandGroup,
   CommandInput,
   CommandItem,
   CommandList,
-  CommandSeparator,
-  CommandShortcut,
 } from "@restauwants/ui/command";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@restauwants/ui/popover";
 
 interface ISearchBoxProps {
   onSelectAddress: (address: string, placeID: string) => void;
@@ -50,6 +33,17 @@ export function SearchBox({ onSelectAddress, defaultValue }: ISearchBoxProps) {
       defaultValue={defaultValue}
     />
   );
+}
+
+interface StructuredFormatting {
+  main_text: string;
+  secondary_text: string;
+}
+
+interface dataInterface {
+  place_id: string;
+  description: string;
+  structured_formatting: StructuredFormatting;
 }
 
 function ReadySearchBox({ onSelectAddress, defaultValue }: ISearchBoxProps) {
@@ -78,65 +72,46 @@ function ReadySearchBox({ onSelectAddress, defaultValue }: ISearchBoxProps) {
     clearSuggestions();
     setValue(address, false);
     onSelectAddress(address, place_id);
-
-    //console.log(place_id);
   };
 
-  //   return (
-  //     <Combobox onSelect={handleSelect}>
-  //       <ComboboxInput
-  //         id="search"
-  //         value={value}
-  //         onChange={handleChange}
-  //         disabled={!ready}
-  //         placeholder="Search for restaurant"
-  //         className="w-full p-2"
-  //         autoComplete="off"
-  //       />
-  //       <ComboboxPopover>
-  //         <li>
-  //           {status === "OK" &&
-  //             data.map((data) => (
-  //               <div key={data.place_id}>{data.structured_formatting.main_text} </div>
-  //             ))}
-  //         </li>
-  //       </ComboboxPopover>
-  //     </Combobox>
-  //   );
-  const [open, setOpen] = useState(false);
   return (
-    <Command>
-      <CommandInput
-        id="search"
-        value={value}
-        onInput={handleChange}
-        disabled={!ready}
-        placeholder="Search for restaurant"
-        className="w-full p-2"
-        autoComplete="off"
-      />
-      <CommandList>
-        {status === "OK" &&
-          data.map((data) => (
-            <CommandItem
-              key={data.place_id}
-              value={data.description}
-              onSelect={() =>
-                handleSelect(
-                  data.structured_formatting.main_text,
-                  data.place_id,
-                )
-              }
-            >
-              <div className="w-1/2">
-                <b>{data.structured_formatting.main_text}</b>{" "}
-              </div>{" "}
-              <div className="w-1/2">
-                {data.structured_formatting.secondary_text}
-              </div>
-            </CommandItem>
-          ))}
-      </CommandList>
-    </Command>
+    <div style={{ position: "relative" }}>
+      <Command>
+        <CommandInput
+          id="search"
+          value={value}
+          onInput={handleChange}
+          disabled={!ready}
+          placeholder="Search for restaurant"
+          className="w-full p-2"
+          autoComplete="off"
+        />
+        <CommandList className="absolute left-0 top-full z-10">
+          {status === "OK" &&
+            data.map((data: dataInterface) => (
+              <CommandItem
+                key={data.place_id}
+                value={data.description}
+                onSelect={() =>
+                  handleSelect(
+                    data.structured_formatting.main_text,
+                    data.place_id,
+                  )
+                }
+                className="bg-white"
+              >
+                <div className="w-1/2">
+                  <b>{data.structured_formatting.main_text}</b>{" "}
+                </div>{" "}
+                <div className="w-1/2">
+                  {data.structured_formatting.secondary_text}
+                </div>
+              </CommandItem>
+            ))}
+        </CommandList>
+      </Command>
+
+      {/* Other components below */}
+    </div>
   );
 }

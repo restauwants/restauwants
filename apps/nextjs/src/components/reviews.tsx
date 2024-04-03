@@ -59,7 +59,7 @@ import {
 
 import { useDialogOrDrawer } from "~/hooks/dialogOrDrawer";
 import { api } from "~/trpc/react";
-import { SearchBox } from "/Users/devin/uvic/StartupProgramming/restauwants/apps/nextjs/src/app/_components/autoComplete";
+import { SearchBox } from "../app/_components/autoComplete";
 
 export function CreateReviewForm() {
   const initialState = "";
@@ -95,8 +95,6 @@ export function CreateReviewForm() {
     },
   });
 
-  const addRestaurant = api.restaurant.create.useMutation({});
-
   const onSubmit = (data: z.input<typeof ReviewFormSchema>) => {
     createReview.mutate(
       CreateReviewSchema.parse({
@@ -118,11 +116,7 @@ export function CreateReviewForm() {
           defaultValue=""
         />
       </div>
-      <ReviewForm
-        form={form}
-        onSubmit={onSubmit}
-        autocompleteData={autocompleteData}
-      />
+      <ReviewForm form={form} onSubmit={onSubmit} />
     </div>
   );
 }
@@ -134,11 +128,9 @@ const ReviewFormSchema = CreateReviewFormSchema.merge(
 function ReviewForm({
   form,
   onSubmit,
-  autocompleteData,
 }: {
   form: ReturnType<typeof useForm<typeof ReviewFormSchema>>;
   onSubmit: (data: z.input<typeof ReviewFormSchema>) => void;
-  autocompleteData: string;
 }) {
   // TODO(#37): retrieve the restaurant name for a restaurant ID
   return (
