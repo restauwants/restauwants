@@ -26,8 +26,8 @@ export default function Layout(props: { children: React.ReactNode }) {
               <Image
                 src="/reviews.jpg"
                 alt="screenshots"
-                width={750}
-                height={2250}
+                width={500}
+                height={1500}
               />
             </div>
           </div>

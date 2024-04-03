@@ -6,7 +6,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@restauwants/ui/modal";
+} from "@restauwants/ui/dialog";
 
 import { signInDiscord, signInGoogle } from "../../actions";
 
