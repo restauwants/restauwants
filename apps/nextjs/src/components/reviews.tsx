@@ -175,15 +175,15 @@ function ReviewForm({
   // TOOD: move this to its own file
   async function convertImages(files: FileList) {
     if (typeof window !== "undefined") {
-      const heic2any = require("heic2any");
       const files_arr = Array.from(files).map(async (file: Blob) => {
         if (file.type === "image/heic" || file.type === "image/heif") {
+          const heic2any = (await import("heic2any")).default;
           const files = await heic2any({
             blob: file,
             toType: "image/jpeg",
             quality: 0.92,
           });
-          if ("length" in files && files[0] !== undefined) {
+          if ("length" in files) {
             if (files[0] === undefined) {
               throw new Error("No file exists");
             }
