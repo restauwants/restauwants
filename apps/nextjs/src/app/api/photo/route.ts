@@ -117,8 +117,8 @@ async function getSignedUploadUrl(fileSize: number) {
   const options = {
     action: "write" as const,
     extensionHeaders: { "content-length": fileSize },
-    contentType:
-      "image/jpeg, image/gif, image/png, image/heic, image/webp, image/heif", //"application/octet-stream",
+    //contentType:
+    //"image/jpeg, image/gif, image/png, image/heic, image/webp, image/heif", //"application/octet-stream",
   };
 
   return getSignedUrl(stagingBucket, filename, options);
@@ -204,8 +204,8 @@ async function verifySignedUrl(
     expires:
       new Date(xGoogDate_formatted).getTime() + parseInt(xGoogExpires) * 1000,
     extensionHeaders: { "content-length": fileSize },
-    contentType:
-      "image/jpeg, image/gif, image/png, image/heic, image/webp, image/heif", //"application/octet-stream",
+    //contentType:
+    //"image/jpeg, image/gif, image/png, image/heic, image/webp, image/heif", //"application/octet-stream",
   };
 
   const [signedUrlString] = await file.getSignedUrl(options);
@@ -235,7 +235,13 @@ async function moveFileIfVerified(
   const srcBucket = storage.bucket(srcBucketName);
   const destBucket = storage.bucket(destBucketName);
 
-  await srcBucket.file(filename).move(destBucket.file(filename));
+  // check if the file exists first
+  const file = srcBucket.file(filename);
+  if (!(await file.exists())) {
+    throw new Error("File to be moved was not uploaded to bucket.");
+  } else {
+    await file.move(destBucket.file(filename));
+  }
 }
 
 function getBaseUrl() {
