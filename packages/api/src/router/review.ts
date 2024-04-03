@@ -9,7 +9,7 @@ import {
 
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 import { areFriends } from "./friend";
-import { byReviewId } from "./photo";
+import { byReviewId as photoUrlsFromReviewId } from "./photo";
 
 // async function queryGooglePlaces(placeId: string) {
 //   const apiKey = process.env.GOOGLE_API_KEY;
@@ -35,24 +35,33 @@ export const reviewRouter = createTRPCRouter({
             lt(schema.review.id, input.cursor),
           )
         : eq(schema.friend.toUserId, ctx.session.user.id);
-      const reviews = (
-        await ctx.db
-          .select()
-          .from(schema.review)
-          .innerJoin(
-            schema.friend,
-            eq(schema.friend.fromUserId, schema.review.userId),
-          )
-          .innerJoin(friendProfile, eq(friendProfile.id, schema.review.userId))
-          .where(where)
-          .orderBy(desc(schema.review.id))
-          .limit(input.limit + 1)
-      ).map((r) => ({
-        ...r.review,
-        photos: byReviewId(ctx.db, ctx.session.user.id, r.review.id),
-        username: r.friendProfile.username,
-        name: r.review.name,
-      }));
+      const reviews = await Promise.all(
+        (
+          await ctx.db
+            .select()
+            .from(schema.review)
+            .innerJoin(
+              schema.friend,
+              eq(schema.friend.fromUserId, schema.review.userId),
+            )
+            .innerJoin(
+              friendProfile,
+              eq(friendProfile.id, schema.review.userId),
+            )
+            .where(where)
+            .orderBy(desc(schema.review.id))
+            .limit(input.limit + 1)
+        ).map(async (r) => ({
+          ...r.review,
+          photos: await photoUrlsFromReviewId(
+            ctx.db,
+            ctx.session.user.id,
+            r.review.id,
+          ),
+          username: r.friendProfile.username,
+          name: r.review.name,
+      })),
+      );
       const hasMore = reviews.length > input.limit;
       if (hasMore) {
         reviews.pop();
@@ -81,28 +90,29 @@ export const reviewRouter = createTRPCRouter({
             lt(schema.review.id, input.cursor),
           )
         : eq(schema.review.userId, input.userId);
-      const reviews = (
-        await ctx.db
-          .select()
-          .from(schema.review)
-          .innerJoin(
-            schema.profile,
-            eq(schema.profile.id, schema.review.userId),
-          )
-          .where(where)
-          .orderBy(desc(schema.review.id))
-          .limit(input.limit + 1)
-      ).map((r) => ({
-        ...r.review,
-        photos: (async () => {
-          const photos = byReviewId(ctx.db, ctx.session.user.id, r.review.id);
-          console.log("photos being sent to props:", await photos);
-          //return byReviewId(ctx.db, ctx.session.user.id, r.review.id)
-          return photos;
-        })(),
-        username: r.profile.username,
-        name: r.review.name,
-      }));
+      const reviews = await Promise.all(
+        (
+          await ctx.db
+            .select()
+            .from(schema.review)
+            .innerJoin(
+              schema.profile,
+              eq(schema.profile.id, schema.review.userId),
+            )
+            .where(where)
+            .orderBy(desc(schema.review.id))
+            .limit(input.limit + 1)
+        ).map(async (r) => ({
+          ...r.review,
+          photos: await photoUrlsFromReviewId(
+            ctx.db,
+            ctx.session.user.id,
+            r.review.id,
+          ),
+          username: r.profile.username,
+          name: r.review.name,
+      })),
+      );
       const hasMore = reviews.length > input.limit;
       if (hasMore) {
         reviews.pop();
