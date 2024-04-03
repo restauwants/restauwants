@@ -1,9 +1,17 @@
 "use client";
 
 import type { z } from "zod";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Button } from "@restauwants/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  //DialogTrigger,
+} from "@restauwants/ui/dialog";
 import {
   Form,
   FormControl,
@@ -36,6 +44,12 @@ export default function CreateProfile() {
 
   const [isLoading, setIsLoading] = useState(false);
 
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    setOpen(true);
+  }, []);
+
   const createProfile = api.user.profile.create.useMutation({
     onSuccess: async () => {
       await utils.user.invalidate();
@@ -58,38 +72,51 @@ export default function CreateProfile() {
 
   return (
     <>
-      <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="w-full"
-          id="create-profile"
-        >
-          <FormField
-            control={form.control}
-            name="username"
-            render={({ field }) => (
-              <FormItem className="pt-4">
-                <FormControl>
-                  <Input
-                    className="w-full"
-                    placeholder="Enter your username"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage className="text-start">&nbsp;</FormMessage>
-              </FormItem>
-            )}
-          />
-        </form>
-      </Form>
-      <div className="flex w-full justify-end gap-2">
-        <form>
-          <Button formAction={signOut}>Cancel</Button>
-        </form>
-        <Button type="submit" form="create-profile">
-          Create Profile
-        </Button>
-      </div>
+      <p>Sign up now!</p>
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent showCloseButton={false}>
+          <DialogHeader>
+            <DialogTitle style={{ textAlign: "center" }}>
+              Create Profile
+            </DialogTitle>
+            <DialogDescription style={{ textAlign: "center" }}>
+              Please select a username.
+            </DialogDescription>
+          </DialogHeader>
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="w-full"
+              id="create-profile"
+            >
+              <FormField
+                control={form.control}
+                name="username"
+                render={({ field }) => (
+                  <FormItem className="pt-4">
+                    <FormControl>
+                      <Input
+                        className="w-full"
+                        placeholder="Enter your username"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage className="text-start">&nbsp;</FormMessage>
+                  </FormItem>
+                )}
+              />
+            </form>
+          </Form>
+          <div className="flex w-full justify-end gap-2">
+            <form>
+              <Button formAction={signOut}>Cancel</Button>
+            </form>
+            <Button type="submit" form="create-profile">
+              Create Profile
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }
