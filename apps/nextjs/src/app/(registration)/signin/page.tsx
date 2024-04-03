@@ -8,7 +8,7 @@ import {
   DialogTrigger,
 } from "@restauwants/ui/modal";
 
-import { signIn } from "../../actions";
+import { signInDiscord, signInGoogle } from "../../actions";
 
 export default async function SignIn() {
   return (
@@ -27,7 +27,7 @@ export default async function SignIn() {
             <form>
               <Button
                 size="lg"
-                formAction={signIn}
+                formAction={signInDiscord}
                 style={{
                   backgroundColor: "#7289DA",
                   color: "white",
@@ -60,7 +60,7 @@ export default async function SignIn() {
             <form>
               <Button
                 size="lg"
-                formAction={signIn}
+                formAction={signInGoogle}
                 style={{
                   backgroundColor: "#F5F5F5",
                   color: "black",
