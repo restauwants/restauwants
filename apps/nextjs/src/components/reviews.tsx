@@ -547,11 +547,7 @@ export function ReviewCard(props: {
   useEffect(() => {
     async function fetchPhotos() {
       console.log("inside fetchPhotos:", props.review.photos);
-      props.review.photos
-        .then((photos) => {
-          setPhotos(photos);
-        })
-        .catch((err) => console.log("error fetchPhotos:", err));
+      setPhotos(props.review.photos);
     }
     void fetchPhotos();
   }, [props.review]);
