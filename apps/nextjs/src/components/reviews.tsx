@@ -288,7 +288,7 @@ function ReviewForm({
               <FormControl>
                 <Input
                   type="file"
-                  accept="image/x-png,image/jpeg,image/gif"
+                  accept="image/jpeg, image/gif, image/png, image/heic, image/webp, image/heif"
                   multiple
                   onChange={(e) => {
                     if (e.target.files) form.setValue("files", e.target.files);
@@ -506,12 +506,17 @@ export function ReviewCard(props: {
           <div className="grid gap-1.5">
             <CardTitle>{props.review.restaurantId}</CardTitle>
             {props.review.photos.map((photo) => (
-              <div className="relative h-96 w-96" key={photo}>
+              <div
+                className="center relative h-96 w-full max-w-96 bg-black object-cover sm:h-48"
+                key={photo}
+              >
                 <Image
                   src={photo}
                   alt="Review photo"
-                  fill={true}
-                  objectFit="contain"
+                  fill
+                  style={{
+                    objectFit: "cover", // cover, contain, none
+                  }}
                 />
               </div>
             ))}
