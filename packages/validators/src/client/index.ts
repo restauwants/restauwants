@@ -28,12 +28,11 @@ export const CreateReviewFormSchema = z.object({
     message: "visitedAt must be in the past",
   }),
   files: z
-    .custom<FileList>((value) => value instanceof FileList, {
-      message: "files must be a FileList",
+    .custom<Blob>((value) => value instanceof Blob, {
+      message: "File must be a blob",
     })
-    .refine((files) => files.length < 8, {
-      message: "only between 0 and 7 files can be uploaded",
-    })
+    .array()
+    .max(7)
     .refine(
       (files) => {
         for (const file of files) {

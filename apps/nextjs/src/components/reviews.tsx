@@ -90,7 +90,7 @@ export function CreateReviewForm() {
   });
 
   // TODO: These things need to move into their own file...
-  async function uploadFile(file: File) {
+  async function uploadFile(file: Blob) {
     const presignedUrl = await uploadPhotos.mutateAsync(file.size);
     if (!presignedUrl) {
       throw new Error("Failed to obtain a presigned upload url");
@@ -135,7 +135,7 @@ export function CreateReviewForm() {
   });
 
   const onSubmit = async (data: z.input<typeof ReviewFormSchema>) => {
-    const files: FileList = data.files;
+    const files: Blob[] = data.files;
     const urls: string[] = [];
     const sizes: number[] = [];
     // Upload every file from the form
@@ -172,6 +172,32 @@ function ReviewForm({
   form: ReturnType<typeof useForm<typeof ReviewFormSchema>>;
   onSubmit: (data: z.input<typeof ReviewFormSchema>) => void;
 }) {
+  // TOOD: move this to its own file
+  async function convertImages(files: FileList) {
+    if (typeof window !== "undefined") {
+      const heic2any = require("heic2any");
+      const files_arr = Array.from(files).map(async (file: Blob) => {
+        if (file.type === "image/heic" || file.type === "image/heif") {
+          const files = await heic2any({
+            blob: file,
+            toType: "image/jpeg",
+            quality: 0.92,
+          });
+          if ("length" in files && files[0] !== undefined) {
+            if (files[0] === undefined) {
+              throw new Error("No file exists");
+            }
+            file = files[0];
+          } else {
+            file = files;
+          }
+        }
+        console.log(file);
+        return file;
+      });
+      return Promise.all(files_arr);
+    }
+  }
   // TODO(#37): retrieve the restaurant name for a restaurant ID
   return (
     <Form {...form}>
@@ -290,15 +316,19 @@ function ReviewForm({
                   type="file"
                   accept="image/jpeg, image/gif, image/png, image/heic, image/webp, image/heif"
                   multiple
-                  onChange={(e) => {
-                    if (e.target.files) form.setValue("files", e.target.files);
+                  onChange={async (e) => {
+                    if (e.target.files)
+                      form.setValue(
+                        "files",
+                        await convertImages(e.target.files),
+                      );
                   }}
                 />
               </FormControl>
               <FormMessage />
               {field.value && (
                 <div className="flex flex-wrap justify-center gap-1">
-                  {Array.from(field.value).map((image: File, i: number) => (
+                  {Array.from(field.value).map((image: Blob, i: number) => (
                     <div className="relative h-16 w-16" key={i}>
                       <Image
                         src={URL.createObjectURL(image)}
