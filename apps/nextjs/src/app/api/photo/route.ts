@@ -117,7 +117,8 @@ async function getSignedUploadUrl(fileSize: number) {
   const options = {
     action: "write" as const,
     extensionHeaders: { "content-length": fileSize },
-    contentType: "image/jpeg", //"application/octet-stream",
+    contentType:
+      "image/jpeg, image/gif, image/png, image/heic, image/webp, image/heif", //"application/octet-stream",
   };
 
   return getSignedUrl(stagingBucket, filename, options);
@@ -203,7 +204,8 @@ async function verifySignedUrl(
     expires:
       new Date(xGoogDate_formatted).getTime() + parseInt(xGoogExpires) * 1000,
     extensionHeaders: { "content-length": fileSize },
-    contentType: "image/jpeg", //"application/octet-stream",
+    contentType:
+      "image/jpeg, image/gif, image/png, image/heic, image/webp, image/heif", //"application/octet-stream",
   };
 
   const [signedUrlString] = await file.getSignedUrl(options);
