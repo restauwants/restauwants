@@ -528,12 +528,19 @@ export function ReviewCard(props: {
         <div className="border-t" />
         <CardContent className="p-4">
           <div className="grid gap-1.5">
-            <CardTitle>
-              {props.review.name ?? props.review.restaurantId}
-            </CardTitle>
+            <CardTitle>{props.review.restaurantId}</CardTitle>
+            {props.review.photos.map((photo) => (
+              <div className="relative h-96 w-96" key={photo}>
+                <Image
+                  src={photo}
+                  alt="Review photo"
+                  fill={true}
+                  objectFit="contain"
+                />
+              </div>
+            ))}
             <CardDescription className="whitespace-pre-wrap">
-              <>{props.review.photos}</>
-              <>{props.review.text}</>
+              {props.review.text}
             </CardDescription>
           </div>
           <div className="mt-4 flex items-center gap-2">
