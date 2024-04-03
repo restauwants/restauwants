@@ -169,13 +169,11 @@ export const byReviewId = async (
     const res = await fetch(
       getBaseUrl() + `/api/photo?action=download&photoId=${photo.id}`,
       { next: { revalidate: 600 } },
-    ).then((res) => {
-      if (!res.ok) {
-        throw new Error("Failed to fetch presigned URL");
-      } else {
-        return res;
-      }
-    });
+    );
+
+    if (!res.ok) {
+      throw new Error("Failed to fetch presigned URL");
+    }
     const { presignedUrl } = (await res.json()) as { presignedUrl: string };
     console.log("presignedUrl:", presignedUrl);
     return presignedUrl;
