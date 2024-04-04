@@ -26,11 +26,6 @@ export const CreateReviewFormSchema = z.object({
   visitedAt: z.date().refine((d) => d <= new Date(), {
     message: "visitedAt must be in the past",
   }),
-  // visitedAt: z.string().pipe(
-  //   z.coerce.date().refine((d) => d <= new Date(), {
-  //     message: "visitedAt must be in the past",
-  //   }),
-  // ),
 });
 
 export const AddFriendFormSchema = z.object({
@@ -50,9 +45,4 @@ export const EditReviewFormSchema = z.object({
   visitedAt: z.date().refine((d) => d <= new Date(), {
     message: "visitedAt must be in the past",
   }),
-  // visitedAt: z.string().pipe(
-  //   z.coerce.date().refine((d) => d <= new Date(), {
-  //     message: "visitedAt must be in the past",
-  //   }),
-  // ),
 });
