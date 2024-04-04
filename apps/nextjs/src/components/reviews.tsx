@@ -59,7 +59,7 @@ import {
 
 import { useDialogOrDrawer } from "~/hooks/dialogOrDrawer";
 import { api } from "~/trpc/react";
-import { SearchBox } from "../app/_components/autoComplete";
+import { SearchBox } from "./autoComplete";
 
 export function CreateReviewForm() {
   const initialState = "";
