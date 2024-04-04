@@ -8,7 +8,7 @@ import {
   DialogTrigger,
 } from "@restauwants/ui/dialog";
 
-import { signInDiscord, signInGoogle } from "../../actions";
+import { signInWithDiscord, signInWithGoogle } from "../../actions";
 
 export default async function SignIn() {
   return (
@@ -27,7 +27,7 @@ export default async function SignIn() {
             <form>
               <Button
                 size="lg"
-                formAction={signInDiscord}
+                formAction={signInWithDiscord}
                 style={{
                   backgroundColor: "#7289DA",
                   color: "white",
@@ -60,7 +60,7 @@ export default async function SignIn() {
             <form>
               <Button
                 size="lg"
-                formAction={signInGoogle}
+                formAction={signInWithGoogle}
                 style={{
                   backgroundColor: "#F5F5F5",
                   color: "black",
