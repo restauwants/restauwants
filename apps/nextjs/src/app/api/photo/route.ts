@@ -29,6 +29,8 @@ export async function GET(request: NextRequest) {
     return download(searchParams);
   } else if (action === "move") {
     return move(searchParams);
+  } else if (action === "delete") {
+    return delete_(searchParams);
   }
 }
 
@@ -55,6 +57,26 @@ async function move(searchParams: URLSearchParams) {
     "restauwants_staging",
     "restauwants_production",
   ).catch(() => Response.json({ success: false }));
+  return Response.json({ success: true });
+}
+
+// TODO: Only the server itself should be able to access this route.
+// This is higher priority than move ... anyone can delete files this way
+// Could be fixed by adding a secret key to the request
+async function delete_(searchParams: URLSearchParams) {
+  let filename = searchParams.get("filename");
+  if (!filename) {
+    return Response.json(
+      { error: "filename query parameter is required" },
+      { status: 400 },
+    );
+  }
+
+  filename = z.string().uuid().parse(filename);
+
+  deleteFileIfAuthenticated(filename, "restauwants_production").catch(() =>
+    Response.json({ success: false }),
+  );
   return Response.json({ success: true });
 }
 
@@ -241,6 +263,23 @@ async function moveFileIfVerified(
     throw new Error("File to be moved was not uploaded to bucket.");
   } else {
     await file.move(destBucket.file(filename));
+  }
+}
+
+async function deleteFileIfAuthenticated(filename: string, bucketName: string) {
+  // TODO: Verify for edge cases
+  const storage = await getStorage();
+  const bucket = storage.bucket(bucketName);
+  if (!(await bucket.exists())) {
+    throw new Error("Bucket does not exist.");
+  }
+
+  // check if the file exists first
+  const file = bucket.file(filename);
+  if (!(await file.exists())) {
+    throw new Error("File to be moved was not uploaded to bucket.");
+  } else {
+    await file.delete();
   }
 }
 
