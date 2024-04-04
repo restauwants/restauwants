@@ -23,11 +23,14 @@ export const CreateReviewFormSchema = z.object({
   rating: z.string().pipe(z.coerce.number().int().max(5).positive()),
   price: z.string().pipe(z.coerce.number().max(1000000).positive()),
   text: z.string().min(0).max(255),
-  visitedAt: z.string().pipe(
-    z.coerce.date().refine((d) => d <= new Date(), {
-      message: "visitedAt must be in the past",
-    }),
-  ),
+  visitedAt: z.date().refine((d) => d <= new Date(), {
+    message: "visitedAt must be in the past",
+  }),
+  // visitedAt: z.string().pipe(
+  //   z.coerce.date().refine((d) => d <= new Date(), {
+  //     message: "visitedAt must be in the past",
+  //   }),
+  // ),
 });
 
 export const AddFriendFormSchema = z.object({
@@ -44,9 +47,12 @@ export const EditReviewFormSchema = z.object({
   rating: z.string().pipe(z.coerce.number().int().max(5).positive()),
   price: z.string().pipe(z.coerce.number().max(1000000).positive()),
   text: z.string().min(0).max(255),
-  visitedAt: z.string().pipe(
-    z.coerce.date().refine((d) => d <= new Date(), {
-      message: "visitedAt must be in the past",
-    }),
-  ),
+  visitedAt: z.date().refine((d) => d <= new Date(), {
+    message: "visitedAt must be in the past",
+  }),
+  // visitedAt: z.string().pipe(
+  //   z.coerce.date().refine((d) => d <= new Date(), {
+  //     message: "visitedAt must be in the past",
+  //   }),
+  // ),
 });
