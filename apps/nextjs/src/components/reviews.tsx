@@ -197,6 +197,7 @@ function ReviewForm({
       });
       return Promise.all(files_arr);
     }
+    return [];
   }
   // TODO(#37): retrieve the restaurant name for a restaurant ID
   return (
@@ -318,10 +319,14 @@ function ReviewForm({
                   multiple
                   onChange={async (e) => {
                     if (e.target.files)
-                      form.setValue(
-                        "files",
-                        await convertImages(e.target.files),
-                      );
+                      try {
+                        form.setValue(
+                          "files",
+                          await convertImages(e.target.files),
+                        );
+                      } catch (error) {
+                        toast.error("Failed to upload image");
+                      }
                   }}
                 />
               </FormControl>
