@@ -50,6 +50,13 @@ export default function CreateProfile() {
     setOpen(true);
   }, []);
 
+  const onOpenChange = async (open: boolean) => {
+    if (!open) {
+      await signOut();
+    }
+    setOpen(open);
+  };
+
   const createProfile = api.user.profile.create.useMutation({
     onSuccess: async () => {
       await utils.user.invalidate();
@@ -73,8 +80,8 @@ export default function CreateProfile() {
   return (
     <>
       <p>Sign up now!</p>
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent showCloseButton={false}>
+      <Dialog open={open} onOpenChange={onOpenChange}>
+        <DialogContent>
           <DialogHeader>
             <DialogTitle style={{ textAlign: "center" }}>
               Create Profile
