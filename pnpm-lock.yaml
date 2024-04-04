@@ -352,9 +352,15 @@ importers:
       class-variance-authority:
         specifier: ^0.7.0
         version: 0.7.0
+<<<<<<< HEAD
       cmdk:
         specifier: ^1.0.0
         version: 1.0.0(@types/react@18.2.48)(react-dom@18.2.0)(react@18.2.0)
+=======
+      date-fns:
+        specifier: ^3.6.0
+        version: 3.6.0
+>>>>>>> 2ebab51 (refactor: extract date picker ui component)
       lucide-react:
         specifier: ^0.344.0
         version: 0.344.0(react@18.2.0)
