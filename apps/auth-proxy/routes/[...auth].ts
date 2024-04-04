@@ -1,5 +1,6 @@
 import { Auth } from "@auth/core";
 import Discord from "@auth/core/providers/discord";
+import Google from "@auth/core/providers/google";
 import { eventHandler, toWebRequest } from "h3";
 
 export default eventHandler(async (event) =>
@@ -7,10 +8,17 @@ export default eventHandler(async (event) =>
     secret: process.env.AUTH_SECRET,
     trustHost: true,
     redirectProxyUrl: process.env.AUTH_REDIRECT_PROXY_URL,
+    pages: {
+      error: "/signin",
+    },
     providers: [
       Discord({
         clientId: process.env.AUTH_DISCORD_ID,
         clientSecret: process.env.AUTH_DISCORD_SECRET,
+      }),
+      Google({
+        clientId: process.env.AUTH_GOOGLE_ID,
+        clientSecret: process.env.AUTH_GOOGLE_SECRET,
       }),
     ],
   }),

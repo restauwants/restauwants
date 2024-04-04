@@ -1,12 +1,12 @@
 import { Suspense } from "react";
 
 import { api } from "~/trpc/server";
-import { ReviewList } from "../../../components/reviews";
+import { ReviewList, ReviewListSkeleton } from "../../../components/reviews";
 
 export const runtime = "edge";
 
 export default async function Feed() {
-  const reviews = api.review.all();
+  const reviews = api.review.all({});
 
   return (
     <div className="container min-h-dvh pb-20 pt-12">
@@ -15,7 +15,7 @@ export default async function Feed() {
           Restau<span className="text-primary">Wants</span>
         </h1>
         <div className="w-full">
-          <Suspense fallback={<h4>Loading...</h4>}>
+          <Suspense fallback={<ReviewListSkeleton count={3} />}>
             <ReviewList reviews={reviews} />
           </Suspense>
         </div>
