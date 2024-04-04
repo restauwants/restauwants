@@ -200,9 +200,7 @@ export const friendRequestRelations = relations(friendRequest, ({ one }) => ({
 }));
 
 export const photo = mySqlTable("photo", {
-  reviewId: int("reviewId")
-    .notNull()
-    .references(() => review.id),
+  reviewId: int("reviewId").notNull(),
   id: varchar("id", { length: 255 }).notNull().primaryKey(),
   createdAt: timestamp("createdAt")
     .notNull()

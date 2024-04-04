@@ -111,9 +111,6 @@ export function CreateReviewForm() {
     if (urls.length !== sizes.length) {
       throw new Error("Image urls and sizes must be the same length");
     }
-    const num_uploaded_images = urls.length;
-
-    console.log("num_uploaded_images:", num_uploaded_images);
     // TODO: there's probably an issue if a user gives another user their signed url after they've already created a review...
     const photo_data = {
       reviewId: reviewId,
@@ -140,9 +137,15 @@ export function CreateReviewForm() {
     const sizes: number[] = [];
     // Upload every file from the form
     for (const file of files) {
-      const res = await uploadFile(file);
-      urls.push(res.url);
-      sizes.push(file.size);
+      try {
+        const res = await uploadFile(file);
+        urls.push(res.url);
+        sizes.push(file.size);
+      } catch (error) {
+        toast.error("Failed to upload photos");
+        console.error(error);
+        return;
+      }
     }
 
     // add the review
@@ -152,9 +155,8 @@ export function CreateReviewForm() {
       );
       await addPhotosToReview(urls, sizes, reviewId);
     } catch (error) {
+      toast.error("Failed to add photos to review");
       console.error(error);
-    } finally {
-      console.log("done");
     }
   };
 
@@ -192,7 +194,6 @@ function ReviewForm({
             file = files;
           }
         }
-        console.log(file);
         return file;
       });
       return Promise.all(files_arr);

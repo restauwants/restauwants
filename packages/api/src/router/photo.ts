@@ -84,6 +84,7 @@ export const photoRouter = createTRPCRouter({
     }),
 
   // TODO: needs to also delete the files from the production storage bucket
+  // delete should only be called by the user who owns the review
   delete: protectedProcedure
     .input(z.string().uuid())
     .mutation(async ({ ctx, input }) => {
@@ -139,13 +140,28 @@ async function addPhotosToReviewInDB(
   return ctx.db.insert(schema.photo).values(rows);
 }
 
+// Precondition: user owns the review
+export const deleteByReviewId = async (db: Database, reviewId: number) => {
+  const photos = await db.query.photo.findMany({
+    where: eq(schema.photo.reviewId, reviewId),
+  });
+  for (const filename of photos) {
+    const res = await fetch(
+      getBaseUrl() +
+        `/api/photo?action=delete&filename=${encodeURIComponent(filename.id)}`,
+    );
+
+    // TODO: What if some files are deleted and others aren't?
+    (await res.json()) as { success: boolean };
+  }
+  await db.delete(schema.photo).where(eq(schema.photo.reviewId, reviewId));
+};
+
 export const byReviewId = async (
   db: Database,
   userId: string,
   reviewId: number,
 ) => {
-  console.log("reviewId:", reviewId);
-  console.log("userId:", userId);
   const review = await db.query.review.findFirst({
     where: eq(schema.review.id, reviewId),
   });
@@ -175,7 +191,6 @@ export const byReviewId = async (
       throw new Error("Failed to fetch presigned URL");
     }
     const { presignedUrl } = (await res.json()) as { presignedUrl: string };
-    console.log("presignedUrl:", presignedUrl);
     return presignedUrl;
   });
   return Promise.all(signedUrls);

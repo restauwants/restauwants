@@ -9,7 +9,10 @@ import {
 
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 import { areFriends } from "./friend";
-import { byReviewId as photoUrlsFromReviewId } from "./photo";
+import {
+  deleteByReviewId as deletePhotosByReviewId,
+  byReviewId as photoUrlsFromReviewId,
+} from "./photo";
 
 export const reviewRouter = createTRPCRouter({
   all: protectedProcedure
@@ -138,6 +141,7 @@ export const reviewRouter = createTRPCRouter({
       if (review.userId !== ctx.session.user.id) {
         throw new Error("Not authorized");
       }
+      await deletePhotosByReviewId(ctx.db, review.id);
       await ctx.db.delete(schema.review).where(eq(schema.review.id, input));
     }),
 
