@@ -6,6 +6,16 @@ import InfiniteScroll from "react-infinite-scroll-component";
 
 import type { RouterOutputs } from "@restauwants/api";
 import { cn } from "@restauwants/ui";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@restauwants/ui/alert-dialog";
 import { Button } from "@restauwants/ui/button";
 import {
   Card,
@@ -248,6 +258,10 @@ function reviewList() {
     const dialogOrDrawer = useDialogOrDrawer();
 
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [reviewToDelete, setReviewToDelete] = useState<
+      RouterOutputs["review"]["all"]["reviews"][number] | null
+    >(null);
 
     const editReviewForm = useForm({
       mode: "onBlur",
@@ -283,6 +297,13 @@ function reviewList() {
         toast.error("Failed to delete review");
       },
     });
+
+    const openDeleteModalFor = (
+      review: RouterOutputs["review"]["all"]["reviews"][number],
+    ) => {
+      setReviewToDelete(review);
+      setIsDeleteModalOpen(true);
+    };
 
     const updateReview = api.review.update.useMutation({
       onSuccess: async () => {
@@ -329,9 +350,7 @@ function reviewList() {
                 key={r.id}
                 review={r}
                 onDelete={
-                  isFromCurrentUser
-                    ? () => deleteReview.mutate(r.id)
-                    : undefined
+                  isFromCurrentUser ? () => openDeleteModalFor(r) : undefined
                 }
                 onEdit={
                   isFromCurrentUser ? () => openEditModalFor(r) : undefined
@@ -348,6 +367,29 @@ function reviewList() {
             <ReviewForm form={editReviewForm} onSubmit={onEditSubmit} />
           </dialogOrDrawer.Content>
         </dialogOrDrawer.Root>
+        <AlertDialog
+          open={isDeleteModalOpen}
+          onOpenChange={setIsDeleteModalOpen}
+        >
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>
+                Are you sure about deleting this review?
+              </AlertDialogTitle>
+              <AlertDialogDescription>
+                This action cannot be undone.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={() => deleteReview.mutate(reviewToDelete!.id)}
+              >
+                Delete
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </>
     );
   };
@@ -381,11 +423,11 @@ export function ReviewCard(props: {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
-                  <DropdownMenuItem onClick={props.onDelete}>
-                    Delete
-                  </DropdownMenuItem>
                   <DropdownMenuItem onClick={props.onEdit}>
                     Edit
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={props.onDelete}>
+                    Delete
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
