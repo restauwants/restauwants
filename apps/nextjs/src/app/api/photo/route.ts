@@ -70,13 +70,14 @@ async function move(searchParams: URLSearchParams) {
     .pipe(z.coerce.number().nonnegative().lte(MAX_FILE_SIZE))
     .parse(size);
 
-  moveFileIfVerified(
+  return moveFileIfVerified(
     signedUrlString,
     sizeInt,
     "restauwants_staging",
     "restauwants_production",
-  ).catch(() => Response.json({ success: false }));
-  return Response.json({ success: true });
+  )
+    .then(() => Response.json({ success: true }))
+    .catch(() => Response.json({ success: false }));
 }
 
 // TODO: Only the server itself should be able to access this route.
@@ -152,7 +153,7 @@ async function getSignedUploadUrl(fileSize: number) {
     return Promise.reject(new Error("File size too large."));
   }
 
-  const stagingBucket = "restauwants_staging";
+  const stagingBucket = "restauwants_production";
   // Filenames should be generated with uuids to avoid overwrite conflicts in the bucket
   const filename = uuidv4();
 
@@ -264,7 +265,19 @@ async function moveFileIfVerified(
   if (!(await file.exists())) {
     throw new Error("File to be moved was not uploaded to bucket.");
   } else {
-    await file.move(destBucket.file(filename));
+    const [moveRes] = await file.move(destBucket.file(filename));
+    console.log(Array.isArray(moveRes));
+    if (Array.isArray(moveRes) && moveRes.length == 2) {
+      const [destFile, res] = moveRes as [unknown, unknown];
+      if (destFile instanceof Storage.File) {
+        console.log(destFile);
+      } else {
+        throw new Error("Error moving file");
+      }
+      console.log(res);
+      return res;
+    }
+    throw new Error("Error moving file");
   }
 }
 
