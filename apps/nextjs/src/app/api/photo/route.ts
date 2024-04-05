@@ -15,7 +15,7 @@ async function setCors() {
   const config = {
     maxAgeSeconds: 3600,
     method: ["OPTIONS", "POST", "PUT", "GET"],
-    origin: [getBaseUrl()],
+    origin: ["*"],
     responseHeader: ["Access-Control-Allow-Origin", "Content-Type", "Vary"],
   };
 
@@ -309,7 +309,9 @@ async function deleteFileIfAuthenticated(filename: string, bucketName: string) {
   }
 }
 
+/*
 function getBaseUrl() {
   if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
   return `http://localhost:${process.env.PORT ?? 3000}`;
 }
+*/
