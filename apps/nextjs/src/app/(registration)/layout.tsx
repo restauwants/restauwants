@@ -1,9 +1,9 @@
 import Image from "next/image";
 
+import { ShrimpIcon } from "@restauwants/ui/icons";
 import { ThemeToggle } from "@restauwants/ui/theme";
 
 import { BottomBar } from "../../components/bottomBar";
-import { Shrimp } from "../../components/shrimp";
 
 export default function Layout(props: { children: React.ReactNode }) {
   return (
@@ -11,7 +11,7 @@ export default function Layout(props: { children: React.ReactNode }) {
       <div className="flex h-screen min-w-full items-center justify-center">
         <div className="bg-signin-background absolute -z-50 h-full w-screen bg-cover bg-bottom bg-no-repeat" />
         <div className="absolute top-[calc(1/6*100vh)] justify-center">
-          <Shrimp />
+          <ShrimpIcon className="size-24" />
         </div>
 
         <div className="flex h-full flex-col items-center justify-center">

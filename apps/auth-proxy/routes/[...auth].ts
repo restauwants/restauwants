@@ -8,9 +8,6 @@ export default eventHandler(async (event) =>
     secret: process.env.AUTH_SECRET,
     trustHost: true,
     redirectProxyUrl: process.env.AUTH_REDIRECT_PROXY_URL,
-    pages: {
-      error: "/signin",
-    },
     providers: [
       Discord({
         clientId: process.env.AUTH_DISCORD_ID,
