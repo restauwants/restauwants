@@ -1,7 +1,18 @@
 "use client";
 
 import type { z } from "zod";
+import { useState } from "react";
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@restauwants/ui/alert-dialog";
 import { Button } from "@restauwants/ui/button";
 import {
   Form,
@@ -16,6 +27,8 @@ import { Table, TableBody, TableCell, TableRow } from "@restauwants/ui/table";
 import { toast } from "@restauwants/ui/toast";
 import {
   AddFriendFormSchema,
+  RejectFriendRequestSchema,
+  RemoveFriendSchema,
   RevokeFriendRequestSchema,
   SentFriendRequestSchema,
 } from "@restauwants/validators/client";
@@ -71,23 +84,23 @@ const withFriendTable = (FriendTableRows: React.FC) => {
 
 interface ReceivedFriendRequestTableRowProps {
   username: string;
-  accept: () => void;
-  reject: () => void;
+  onAccept: () => void;
+  onReject: () => void;
 }
 
 function ReceivedFriendRequestTableRow({
   username,
-  accept,
-  reject,
+  onAccept,
+  onReject,
 }: ReceivedFriendRequestTableRowProps) {
   return (
     <FriendTableRow>
       {username}
       <div className="space-x-1">
-        <Button variant="outline" size="sm" onClick={accept}>
+        <Button variant="outline" size="sm" onClick={onAccept}>
           Accept
         </Button>
-        <Button variant="outline" size="sm" onClick={reject}>
+        <Button variant="outline" size="sm" onClick={onReject}>
           Reject
         </Button>
       </div>
@@ -98,6 +111,8 @@ function ReceivedFriendRequestTableRow({
 const ReceivedFriendRequestsTable = withFriendTable(() => {
   const [receivedFriendRequests] =
     api.friend.request.received.useSuspenseQuery();
+  const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
+  const [usernameToReject, setUsernameToReject] = useState<string | null>(null);
 
   const utils = api.useUtils();
 
@@ -112,6 +127,7 @@ const ReceivedFriendRequestsTable = withFriendTable(() => {
       );
     },
   });
+
   const rejectFriendRequest = api.friend.request.reject.useMutation({
     onSuccess: async (_data, variables) => {
       await utils.friend.invalidate();
@@ -124,41 +140,74 @@ const ReceivedFriendRequestsTable = withFriendTable(() => {
     },
   });
 
+  const openRejectModalFor = (fromUsername: string) => {
+    setUsernameToReject(fromUsername);
+    setIsRejectModalOpen(true);
+  };
+
   if (receivedFriendRequests.length === 0) {
     return <PlaceholderFriendTableRow message="None yet! Check back later." />;
   }
 
-  return receivedFriendRequests.map((receivedfriendRequest) => (
-    <ReceivedFriendRequestTableRow
-      key={receivedfriendRequest.fromUsername}
-      username={receivedfriendRequest.fromUsername}
-      accept={() =>
-        acceptFriendRequest.mutate({
-          fromUsername: receivedfriendRequest.fromUsername,
-        })
-      }
-      reject={() =>
-        rejectFriendRequest.mutate({
-          fromUsername: receivedfriendRequest.fromUsername,
-        })
-      }
-    />
-  ));
+  return (
+    <>
+      {receivedFriendRequests.map((receivedFriendRequest) => (
+        <ReceivedFriendRequestTableRow
+          key={receivedFriendRequest.fromUsername}
+          username={receivedFriendRequest.fromUsername}
+          onAccept={() =>
+            acceptFriendRequest.mutate({
+              fromUsername: receivedFriendRequest.fromUsername,
+            })
+          }
+          onReject={() =>
+            openRejectModalFor(receivedFriendRequest.fromUsername)
+          }
+        />
+      ))}
+      <AlertDialog open={isRejectModalOpen} onOpenChange={setIsRejectModalOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              Are you sure about rejecting this request?
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              Your friend request from {usernameToReject} will be rejected.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() =>
+                rejectFriendRequest.mutate(
+                  RejectFriendRequestSchema.parse({
+                    fromUsername: usernameToReject!,
+                  }),
+                )
+              }
+            >
+              Reject
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
+  );
 });
 
 interface ExistingFriendTableRowProps {
   username: string;
-  remove: () => void;
+  onRemove: () => void;
 }
 
 function ExistingFriendTableRow({
   username,
-  remove,
+  onRemove,
 }: ExistingFriendTableRowProps) {
   return (
     <FriendTableRow>
       {username}
-      <Button variant="outline" size="sm" onClick={remove}>
+      <Button variant="outline" size="sm" onClick={onRemove}>
         Remove
       </Button>
     </FriendTableRow>
@@ -167,6 +216,8 @@ function ExistingFriendTableRow({
 
 const ExistingFriendsTable = withFriendTable(() => {
   const [friends] = api.friend.all.useSuspenseQuery();
+  const [isRemoveModalOpen, setIsRemoveModalOpen] = useState(false);
+  const [usernameToRemove, setUsernameToRemove] = useState<string | null>(null);
 
   const utils = api.useUtils();
 
@@ -180,32 +231,65 @@ const ExistingFriendsTable = withFriendTable(() => {
     },
   });
 
+  const openRemoveModalFor = (username: string) => {
+    setUsernameToRemove(username);
+    setIsRemoveModalOpen(true);
+  };
+
   if (friends.length === 0) {
     return <PlaceholderFriendTableRow message="It's just you here for now!" />;
   }
 
-  return friends.map((friend) => (
-    <ExistingFriendTableRow
-      key={friend.username}
-      username={friend.username}
-      remove={() => removeFriend.mutate({ username: friend.username })}
-    />
-  ));
+  return (
+    <>
+      {friends.map((friend) => (
+        <ExistingFriendTableRow
+          key={friend.username}
+          username={friend.username}
+          onRemove={() => openRemoveModalFor(friend.username)}
+        />
+      ))}
+      <AlertDialog open={isRemoveModalOpen} onOpenChange={setIsRemoveModalOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              Are you sure about removing this friend?
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              You will no longer be friends with {usernameToRemove}.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() =>
+                removeFriend.mutate(
+                  RemoveFriendSchema.parse({ username: usernameToRemove! }),
+                )
+              }
+            >
+              Remove
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
+  );
 });
 
 interface SentFriendRequestTableRowProps {
   username: string;
-  revoke: () => void;
+  onRevoke: () => void;
 }
 
 function SentFriendRequestTableRow({
   username,
-  revoke,
+  onRevoke,
 }: SentFriendRequestTableRowProps) {
   return (
     <FriendTableRow>
       {username}
-      <Button variant="outline" size="sm" onClick={revoke}>
+      <Button variant="outline" size="sm" onClick={onRevoke}>
         Cancel
       </Button>
     </FriendTableRow>
@@ -214,6 +298,8 @@ function SentFriendRequestTableRow({
 
 const SentFriendRequestsTable = withFriendTable(() => {
   const [sentFriendRequests] = api.friend.request.sent.useSuspenseQuery();
+  const [isRevokeModalOpen, setIsRevokeModalOpen] = useState(false);
+  const [usernameToRevoke, setUsernameToRevoke] = useState<string | null>(null);
 
   const utils = api.useUtils();
 
@@ -227,23 +313,52 @@ const SentFriendRequestsTable = withFriendTable(() => {
     },
   });
 
+  const openRevokeModalFor = (toUsername: string) => {
+    setUsernameToRevoke(toUsername);
+    setIsRevokeModalOpen(true);
+  };
+
   if (sentFriendRequests.length === 0) {
     return <PlaceholderFriendTableRow message="Try adding a friend!" />;
   }
 
-  return sentFriendRequests.map((sentFriendRequest) => (
-    <SentFriendRequestTableRow
-      key={sentFriendRequest.toUsername}
-      username={sentFriendRequest.toUsername}
-      revoke={() =>
-        revokeFriendRequest.mutate(
-          RevokeFriendRequestSchema.parse({
-            toUsername: sentFriendRequest.toUsername,
-          }),
-        )
-      }
-    />
-  ));
+  return (
+    <>
+      {sentFriendRequests.map((sentFriendRequest) => (
+        <SentFriendRequestTableRow
+          key={sentFriendRequest.toUsername}
+          username={sentFriendRequest.toUsername}
+          onRevoke={() => openRevokeModalFor(sentFriendRequest.toUsername)}
+        />
+      ))}
+      <AlertDialog open={isRevokeModalOpen} onOpenChange={setIsRevokeModalOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              Are you sure about canceling this request?
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              Your friend request to {usernameToRevoke} will be canceled.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Don&apos;t Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() =>
+                revokeFriendRequest.mutate(
+                  RevokeFriendRequestSchema.parse({
+                    toUsername: usernameToRevoke!,
+                  }),
+                )
+              }
+            >
+              Cancel
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
+  );
 });
 
 function AddFriendForm(props: {
@@ -259,13 +374,13 @@ function AddFriendForm(props: {
   const utils = api.useUtils();
 
   const sendFriendRequest = api.friend.request.send.useMutation({
-    onSuccess: async () => {
+    onSuccess: async (_data, variables) => {
       form.reset();
       await utils.friend.invalidate();
-      toast.success("Friend request sent");
+      toast.success(`Friend request sent to ${variables.toUsername}`);
     },
-    onError: () => {
-      toast.error("Failed to send friend request");
+    onError: (_data, variables) => {
+      toast.error(`Failed to send friend request to ${variables.toUsername}`);
     },
   });
 

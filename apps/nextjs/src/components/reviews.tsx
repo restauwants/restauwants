@@ -83,6 +83,7 @@ export function CreateReviewForm() {
     onSuccess: async () => {
       form.reset();
       await utils.review.invalidate();
+      toast.success(`Review created`);
     },
     onError: () => {
       toast.error("Failed to create review");
