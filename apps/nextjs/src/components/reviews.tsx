@@ -1,7 +1,7 @@
 "use client";
 
 import type { z } from "zod";
-import { use, useState } from "react";
+import { use, useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 
 import type { RouterOutputs } from "@restauwants/api";
@@ -63,10 +63,14 @@ export function CreateReviewForm() {
       name: "",
       rating: "",
       price: "",
-      visitedAt: new Date(),
       text: "",
     },
   });
+
+  useEffect(() => {
+    // Set the default value once the form is mounted to avoid hydration error
+    form.setValue("visitedAt", new Date());
+  }, [form]);
 
   const utils = api.useUtils();
 
