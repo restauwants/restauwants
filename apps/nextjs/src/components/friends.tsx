@@ -27,6 +27,7 @@ import { Table, TableBody, TableCell, TableRow } from "@restauwants/ui/table";
 import { toast } from "@restauwants/ui/toast";
 import {
   AddFriendFormSchema,
+  RejectFriendRequestSchema,
   RemoveFriendSchema,
   RevokeFriendRequestSchema,
   SentFriendRequestSchema,
@@ -110,6 +111,8 @@ function ReceivedFriendRequestTableRow({
 const ReceivedFriendRequestsTable = withFriendTable(() => {
   const [receivedFriendRequests] =
     api.friend.request.received.useSuspenseQuery();
+  const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
+  const [usernameToReject, setUsernameToReject] = useState<string | null>(null);
 
   const utils = api.useUtils();
 
@@ -124,6 +127,7 @@ const ReceivedFriendRequestsTable = withFriendTable(() => {
       );
     },
   });
+
   const rejectFriendRequest = api.friend.request.reject.useMutation({
     onSuccess: async (_data, variables) => {
       await utils.friend.invalidate();
@@ -136,26 +140,59 @@ const ReceivedFriendRequestsTable = withFriendTable(() => {
     },
   });
 
+  const openRejectModalFor = (fromUsername: string) => {
+    setUsernameToReject(fromUsername);
+    setIsRejectModalOpen(true);
+  };
+
   if (receivedFriendRequests.length === 0) {
     return <PlaceholderFriendTableRow message="None yet! Check back later." />;
   }
 
-  return receivedFriendRequests.map((receivedfriendRequest) => (
-    <ReceivedFriendRequestTableRow
-      key={receivedfriendRequest.fromUsername}
-      username={receivedfriendRequest.fromUsername}
-      onAccept={() =>
-        acceptFriendRequest.mutate({
-          fromUsername: receivedfriendRequest.fromUsername,
-        })
-      }
-      onReject={() =>
-        rejectFriendRequest.mutate({
-          fromUsername: receivedfriendRequest.fromUsername,
-        })
-      }
-    />
-  ));
+  return (
+    <>
+      {receivedFriendRequests.map((receivedFriendRequest) => (
+        <ReceivedFriendRequestTableRow
+          key={receivedFriendRequest.fromUsername}
+          username={receivedFriendRequest.fromUsername}
+          onAccept={() =>
+            acceptFriendRequest.mutate({
+              fromUsername: receivedFriendRequest.fromUsername,
+            })
+          }
+          onReject={() =>
+            openRejectModalFor(receivedFriendRequest.fromUsername)
+          }
+        />
+      ))}
+      <AlertDialog open={isRejectModalOpen} onOpenChange={setIsRejectModalOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              Are you sure about rejecting this request?
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              Your friend request from {usernameToReject} will be rejected.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() =>
+                rejectFriendRequest.mutate(
+                  RejectFriendRequestSchema.parse({
+                    fromUsername: usernameToReject!,
+                  }),
+                )
+              }
+            >
+              Reject
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
+  );
 });
 
 interface ExistingFriendTableRowProps {
