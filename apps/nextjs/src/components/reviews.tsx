@@ -168,12 +168,12 @@ export function CreateReviewForm() {
     // add the review
     try {
       const reviewId = await createReview.mutateAsync(
-        
-      CreateReviewSchema.parse({
-        ...data,
-        restaurantId: autocompleteData,
-        name: restoname,
-      });
+        CreateReviewSchema.parse({
+          ...data,
+          restaurantId: autocompleteData,
+          name: restoname,
+        }),
+      );
 
       await addPhotosToReview(urls, sizes, reviewId);
     } catch (error) {

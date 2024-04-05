@@ -11,6 +11,8 @@ export const appRouter = createTRPCRouter({
   review: reviewRouter,
   friend: friendRouter,
   user: userRouter,
+  restaurant: restaurantRouter,
+  photo: photoRouter,
 });
 
 // export type definition of API

@@ -66,7 +66,7 @@ export const reviewRouter = createTRPCRouter({
           }),
           username: r.friendProfile.username,
           name: r.review.name,
-      })),
+        })),
       );
       const hasMore = reviews.length > input.limit;
       if (hasMore) {
@@ -120,7 +120,7 @@ export const reviewRouter = createTRPCRouter({
           }),
           username: r.profile.username,
           name: r.review.name,
-      })),
+        })),
       );
       const hasMore = reviews.length > input.limit;
       if (hasMore) {
