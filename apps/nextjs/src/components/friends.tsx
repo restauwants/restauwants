@@ -1,6 +1,7 @@
 "use client";
 
 import type { z } from "zod";
+import { useState } from "react";
 
 import {
   AlertDialog,
@@ -232,33 +233,19 @@ function SentFriendRequestTableRow({
   revoke,
 }: SentFriendRequestTableRowProps) {
   return (
-    <AlertDialog>
-      <FriendTableRow>
-        {username}
-        <AlertDialogTrigger>
-          <Button variant="outline" size="sm">
-            Cancel
-          </Button>
-        </AlertDialogTrigger>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Canceling an Outgoing Request</AlertDialogTitle>
-            <AlertDialogDescription>
-              Are you sure you want to cancel your friend request to {username}?
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>No</AlertDialogCancel>
-            <AlertDialogAction onClick={revoke}>Yes</AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </FriendTableRow>
-    </AlertDialog>
+    <FriendTableRow>
+      {username}
+      <Button variant="outline" size="sm" onClick={revoke}>
+        Cancel
+      </Button>
+    </FriendTableRow>
   );
 }
 
 const SentFriendRequestsTable = withFriendTable(() => {
   const [sentFriendRequests] = api.friend.request.sent.useSuspenseQuery();
+  const [isRevokeModalOpen, setIsRevokeModalOpen] = useState(false);
+  const [usernameToRevoke, setUsernameToRevoke] = useState<string | null>(null);
 
   const utils = api.useUtils();
 
@@ -272,23 +259,52 @@ const SentFriendRequestsTable = withFriendTable(() => {
     },
   });
 
+  const openRevokeModalFor = (toUsername: string) => {
+    setUsernameToRevoke(toUsername);
+    setIsRevokeModalOpen(true);
+  };
+
   if (sentFriendRequests.length === 0) {
     return <PlaceholderFriendTableRow message="Try adding a friend!" />;
   }
 
-  return sentFriendRequests.map((sentFriendRequest) => (
-    <SentFriendRequestTableRow
-      key={sentFriendRequest.toUsername}
-      username={sentFriendRequest.toUsername}
-      revoke={() =>
-        revokeFriendRequest.mutate(
-          RevokeFriendRequestSchema.parse({
-            toUsername: sentFriendRequest.toUsername,
-          }),
-        )
-      }
-    />
-  ));
+  return (
+    <>
+      {sentFriendRequests.map((sentFriendRequest) => (
+        <SentFriendRequestTableRow
+          key={sentFriendRequest.toUsername}
+          username={sentFriendRequest.toUsername}
+          revoke={() => openRevokeModalFor(sentFriendRequest.toUsername)}
+        />
+      ))}
+      <AlertDialog open={isRevokeModalOpen} onOpenChange={setIsRevokeModalOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              Are you sure about canceling this request?
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              Your friend request to {usernameToRevoke} will be canceled.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>No</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() =>
+                revokeFriendRequest.mutate(
+                  RevokeFriendRequestSchema.parse({
+                    toUsername: usernameToRevoke!,
+                  }),
+                )
+              }
+            >
+              Yes
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
+  );
 });
 
 function AddFriendForm(props: {
