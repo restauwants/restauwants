@@ -309,12 +309,10 @@ function AddFriendForm(props: {
     onSuccess: async () => {
       form.reset();
       await utils.friend.invalidate();
-      toast.success(
-        "Friend request to " + username + " was successfully sent!",
-      );
+      toast.success(`Friend request sent to ${username}`);
     },
-    onError: (error) => {
-      toast.error(error.message);
+    onError: () => {
+      toast.error(`Failed to send friend request to ${username}`);
     },
   });
 
