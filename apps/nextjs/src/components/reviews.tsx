@@ -629,6 +629,7 @@ export function ReviewCard(props: {
                 <Image
                   src={photo}
                   alt="Review photo"
+                  className="rounded-lg"
                   fill
                   style={{
                     objectFit: "cover", // cover, contain, none
