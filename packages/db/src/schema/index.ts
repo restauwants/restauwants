@@ -98,7 +98,7 @@ export const review = mySqlTable("review", {
   id: int("id").autoincrement().notNull().primaryKey(),
   userId: varchar("userId", { length: 255 }).notNull(),
   restaurantId: varchar("restaurantId", { length: 50 }).notNull(),
-  name: varchar("name", { length: 255 }).notNull(),
+  restaurantName: varchar("name", { length: 255 }).notNull(),
   rating: int("rating").notNull(),
   price: float("price").notNull(),
   text: varchar("text", { length: 255 }).notNull(),

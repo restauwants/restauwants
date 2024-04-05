@@ -10,14 +10,14 @@ import {
   CommandList,
 } from "@restauwants/ui/command";
 
-interface ISearchBoxProps {
+interface SearchBoxProps {
   onSelectAddress: (address: string, placeID: string) => void;
   defaultValue: string;
 }
 
 const libraries: Libraries = ["places"];
 
-export function SearchBox({ onSelectAddress, defaultValue }: ISearchBoxProps) {
+export function SearchBox({ onSelectAddress, defaultValue }: SearchBoxProps) {
   const { isLoaded, loadError } = useGoogleMapsScript({
     googleMapsApiKey: "AIzaSyBhu50DXDGivMJJuglSByZVDGew6ZIVohE",
     libraries,
@@ -39,13 +39,13 @@ interface StructuredFormatting {
   secondary_text: string;
 }
 
-interface dataInterface {
+interface DataInterface {
   place_id: string;
   description: string;
   structured_formatting: StructuredFormatting;
 }
 
-function ReadySearchBox({ onSelectAddress, defaultValue }: ISearchBoxProps) {
+function ReadySearchBox({ onSelectAddress, defaultValue }: SearchBoxProps) {
   const {
     ready,
     value,
@@ -74,7 +74,7 @@ function ReadySearchBox({ onSelectAddress, defaultValue }: ISearchBoxProps) {
   };
 
   return (
-    <div style={{ position: "relative" }}>
+    <div className="relative">
       <Command>
         <CommandInput
           id="search"
@@ -87,7 +87,7 @@ function ReadySearchBox({ onSelectAddress, defaultValue }: ISearchBoxProps) {
         />
         <CommandList className="absolute left-0 top-full z-10">
           {status === "OK" &&
-            data.map((data: dataInterface) => (
+            data.map((data: DataInterface) => (
               <CommandItem
                 key={data.place_id}
                 value={data.description}

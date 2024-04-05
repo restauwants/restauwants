@@ -59,7 +59,7 @@ import { SearchBox } from "./autoComplete";
 
 export function CreateReviewForm() {
   const initialState = "";
-  const [autocompleteData, setautocompleteData] = useState(initialState);
+  const [autoCompleteData, setAutocompleteData] = useState(initialState);
   const [restoname, setname] = useState(initialState);
   const form = useForm({
     mode: "onBlur",
@@ -91,7 +91,7 @@ export function CreateReviewForm() {
     createReview.mutate(
       CreateReviewSchema.parse({
         ...data,
-        restaurantId: autocompleteData,
+        restaurantId: autoCompleteData,
         name: restoname,
       }),
     );
@@ -102,7 +102,7 @@ export function CreateReviewForm() {
       <div>
         <SearchBox
           onSelectAddress={(address, place_id) => {
-            setautocompleteData(place_id);
+            setAutocompleteData(place_id);
             setname(address);
           }}
           defaultValue=""

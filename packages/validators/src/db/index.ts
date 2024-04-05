@@ -4,8 +4,8 @@ import { username } from "../common";
 
 export const ReviewSchema = z.object({
   userId: z.string().min(0).max(255),
-  restaurantId: z.string(),
-  name: z.string(),
+  restaurantId: z.string().min(0).max(50),
+  restaurantName: z.string().min(0).max(255),
   rating: z.number().int().min(1).max(5),
   price: z.number().min(0).max(1000000),
   text: z.string().min(0).max(255),
