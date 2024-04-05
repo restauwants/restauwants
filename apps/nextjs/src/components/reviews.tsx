@@ -37,7 +37,6 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-  FormSectionHeader,
   useForm,
 } from "@restauwants/ui/form";
 import {
@@ -145,12 +144,12 @@ function ReviewForm({
             </FormItem>
           )}
         />
-        <FormSectionHeader>Review Details</FormSectionHeader>
         <FormField
           control={form.control}
           name="rating"
           render={({ field }) => (
             <FormItem>
+              <FormLabel>Rating</FormLabel>
               <div className="flex gap-0.5">
                 {Array.from({ length: 5 })
                   .map((_, index) => index + 1)
@@ -193,6 +192,7 @@ function ReviewForm({
           name="price"
           render={({ field }) => (
             <FormItem>
+              <FormLabel>Price</FormLabel>
               <FormControl>
                 <Input {...field} type="number" placeholder="23.50" />
               </FormControl>
@@ -205,6 +205,7 @@ function ReviewForm({
           name="text"
           render={({ field }) => (
             <FormItem>
+              <FormLabel>Description</FormLabel>
               <FormControl>
                 <Textarea
                   className="h-32 resize-none"
