@@ -6,7 +6,6 @@ import { PhotoSchema as PhotoSchemaDatabase } from "@restauwants/validators/db";
 import { CreatePhotosSchema as CreatePhotosSchemaExternal } from "@restauwants/validators/server/external";
 
 import { createTRPCRouter, protectedProcedure } from "../trpc";
-import { areFriends } from "./friend";
 
 export const photoRouter = createTRPCRouter({
   getSignedUploadUrl: protectedProcedure
@@ -157,26 +156,9 @@ export const deleteByReviewId = async (db: Database, reviewId: number) => {
   await db.delete(schema.photo).where(eq(schema.photo.reviewId, reviewId));
 };
 
-export const byReviewId = async (
-  db: Database,
-  userId: string,
-  reviewId: number,
-) => {
-  const review = await db.query.review.findFirst({
-    where: eq(schema.review.id, reviewId),
-  });
-  if (!review) {
-    throw new Error(`Review ${reviewId} not found`);
-  }
-
-  // Can't view images from reviews you don't own unless you're friends
-  if (
-    userId !== review.userId &&
-    !(await areFriends(db, userId, review.userId))
-  ) {
-    throw new Error("Not friends");
-  }
-
+// PRECONDITION: reviewid is valid
+// PRECONDITION: user is authorized to view the photos
+export const byReviewId = async (db: Database, reviewId: number) => {
   const photos = await db.query.photo.findMany({
     where: eq(schema.photo.reviewId, reviewId),
   });
@@ -184,7 +166,7 @@ export const byReviewId = async (
   const signedUrls = photos.map(async (photo) => {
     const res = await fetch(
       getBaseUrl() + `/api/photo?action=download&photoId=${photo.id}`,
-      { next: { revalidate: 600 } },
+      { next: { revalidate: 3600 } },
     );
 
     if (!res.ok) {
