@@ -118,6 +118,7 @@ async function upload(searchParams: URLSearchParams) {
 async function getSignedDownloadUrl(filename: string) {
   const options = {
     action: "read" as const,
+    expires: Date.now() + 3600 * 1000, // 1 hour
   };
 
   const prodBucket = "restauwants_production";
@@ -138,9 +139,8 @@ async function getSignedUploadUrl(fileSize: number) {
 
   const options = {
     action: "write" as const,
+    expires: Date.now() + 600 * 1000, // 10 minutes
     extensionHeaders: { "content-length": fileSize },
-    //contentType:
-    //"image/jpeg, image/gif, image/png, image/heic, image/webp, image/heif", //"application/octet-stream",
   };
 
   return getSignedUrl(stagingBucket, filename, options);
@@ -151,6 +151,7 @@ async function getSignedUrl(
   filename: string,
   inputOptions: {
     action: "write" | "read";
+    expires: number;
     extensionHeaders?: { "content-length": number };
   },
 ): Promise<string> {
@@ -175,7 +176,6 @@ async function getSignedUrl(
 
   const options = {
     version: "v4" as const,
-    expires: Date.now() + 10 * 60 * 1000, // 10 minutes
     ...inputOptions,
   };
 
@@ -226,8 +226,6 @@ async function verifySignedUrl(
     expires:
       new Date(xGoogDate_formatted).getTime() + parseInt(xGoogExpires) * 1000,
     extensionHeaders: { "content-length": fileSize },
-    //contentType:
-    //"image/jpeg, image/gif, image/png, image/heic, image/webp, image/heif", //"application/octet-stream",
   };
 
   const [signedUrlString] = await file.getSignedUrl(options);

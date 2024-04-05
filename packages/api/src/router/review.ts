@@ -58,9 +58,12 @@ export const reviewRouter = createTRPCRouter({
           ...r.review,
           photos: await photoUrlsFromReviewId(
             ctx.db,
-            ctx.session.user.id,
             r.review.id,
-          ),
+            // TODO: Think about handling this better rather than failing silently
+          ).catch((error) => {
+            console.error(error);
+            return [];
+          }),
           username: r.friendProfile.username,
           name: r.review.name,
       })),
@@ -109,9 +112,12 @@ export const reviewRouter = createTRPCRouter({
           ...r.review,
           photos: await photoUrlsFromReviewId(
             ctx.db,
-            ctx.session.user.id,
             r.review.id,
-          ),
+            // TODO: Think about handling this better rather than failing silently
+          ).catch((error) => {
+            console.error(error);
+            return [];
+          }),
           username: r.profile.username,
           name: r.review.name,
       })),

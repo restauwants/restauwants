@@ -619,7 +619,7 @@ export function ReviewCard(props: {
             </CardTitle>
             {props.review.photos.map((photo) => (
               <div
-                className="center relative h-96 w-full max-w-96 bg-black object-cover sm:h-48"
+                className="center relative h-96 w-full max-w-96 object-cover sm:h-48"
                 key={photo}
               >
                 <Image
