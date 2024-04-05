@@ -359,7 +359,7 @@ function ReviewForm({
               {field.value && (
                 <div className="flex flex-wrap justify-center gap-1">
                   {Array.from(field.value).map((image: Blob, i: number) => (
-                    <div className="relative h-16 w-16" key={i}>
+                    <div className="relative h-32 w-32" key={i}>
                       <Image
                         src={URL.createObjectURL(image)}
                         alt="Preview"
@@ -567,7 +567,7 @@ export function ReviewCard(props: {
             <CardTitle>{props.review.restaurantId}</CardTitle>
             {props.review.photos.map((photo) => (
               <div
-                className="center relative h-96 w-full max-w-96 object-cover sm:h-48"
+                className="relative aspect-square object-cover sm:size-full xl:w-6/12"
                 key={photo}
               >
                 <Image
