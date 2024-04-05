@@ -190,9 +190,8 @@ async function getSignedUrl(
     ...inputOptions,
   };
 
-  console.log("FILENAME:", filename, "EXISTS:", await file.exists());
   const [exists] = await file.exists();
-  if (!exists) {
+  if (!exists && inputOptions.action === "read") {
     throw new Error("File does not exist.");
   }
 
