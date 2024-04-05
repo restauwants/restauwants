@@ -1,7 +1,6 @@
 "use client";
 
 import type { z } from "zod";
-import { useState } from "react";
 
 import {
   AlertDialog,
@@ -295,7 +294,6 @@ const SentFriendRequestsTable = withFriendTable(() => {
 function AddFriendForm(props: {
   Footer: React.ComponentType<{ children: React.ReactNode }>;
 }) {
-  const [username, setUsername] = useState("");
   const form = useForm({
     schema: AddFriendFormSchema,
     defaultValues: {
@@ -306,18 +304,17 @@ function AddFriendForm(props: {
   const utils = api.useUtils();
 
   const sendFriendRequest = api.friend.request.send.useMutation({
-    onSuccess: async () => {
+    onSuccess: async (_data, variables) => {
       form.reset();
       await utils.friend.invalidate();
-      toast.success(`Friend request sent to ${username}`);
+      toast.success(`Friend request sent to ${variables.toUsername}`);
     },
-    onError: () => {
-      toast.error(`Failed to send friend request to ${username}`);
+    onError: (_data, variables) => {
+      toast.error(`Failed to send friend request to ${variables.toUsername}`);
     },
   });
 
   const onSubmit = (data: z.infer<typeof AddFriendFormSchema>) => {
-    setUsername(form.getValues("username"));
     sendFriendRequest.mutate(
       SentFriendRequestSchema.parse({
         toUsername: data.username,
