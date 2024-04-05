@@ -61,6 +61,7 @@ export function CreateReviewForm() {
       rating: "",
       price: "",
       text: "",
+      files: [],
     },
   });
 
