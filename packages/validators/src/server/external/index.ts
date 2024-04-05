@@ -13,7 +13,8 @@ export const RemoveFriendSchema = z.object({
 });
 
 export const CreateReviewSchema = z.object({
-  restaurantId: z.number().int().positive(),
+  restaurantId: z.string(),
+  name: z.string(),
   rating: z.number().int().max(5).positive(),
   price: z.number().max(1000000).positive(),
   text: z.string().min(0).max(255),
@@ -24,7 +25,8 @@ export const CreateReviewSchema = z.object({
 
 export const EditReviewSchema = z.object({
   id: z.number().int().positive(),
-  restaurantId: z.number().int().positive(),
+  restaurantId: z.string(),
+  name: z.string(),
   rating: z.number().int().max(5).positive(),
   price: z.number().max(1000000).positive(),
   text: z.string().min(0).max(255),
@@ -65,4 +67,9 @@ export const RevokeFriendRequestSchema = z.object({
 
 export const CreateProfileSchema = z.object({
   username: username,
+});
+
+export const AddRestaurantSchema = z.object({
+  restaurantId: z.string(),
+  name: z.string(),
 });

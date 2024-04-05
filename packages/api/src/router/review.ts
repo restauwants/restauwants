@@ -10,6 +10,14 @@ import {
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 import { areFriends } from "./friend";
 
+// async function queryGooglePlaces(placeId: string) {
+//   const apiKey = process.env.GOOGLE_API_KEY;
+//   const url = `https://maps.googleapis.com/maps/api/place/details/json?fields=name&place_id=${placeId}&key=${apiKey}`;
+//   const response = await fetch(url);
+//   const data = await response.json();
+//   return data.result.name;
+// }
+
 export const reviewRouter = createTRPCRouter({
   all: protectedProcedure
     .input(
@@ -41,6 +49,7 @@ export const reviewRouter = createTRPCRouter({
       ).map((r) => ({
         ...r.review,
         username: r.friendProfile.username,
+        name: r.review.name,
       }));
       const hasMore = reviews.length > input.limit;
       if (hasMore) {
@@ -84,6 +93,7 @@ export const reviewRouter = createTRPCRouter({
       ).map((r) => ({
         ...r.review,
         username: r.profile.username,
+        name: r.review.name,
       }));
       const hasMore = reviews.length > input.limit;
       if (hasMore) {
