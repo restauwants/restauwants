@@ -1,10 +1,29 @@
 import type { NextRequest } from "next/server";
-import { headers } from "next/headers";
 import { Storage } from "@google-cloud/storage";
 import { v4 as uuidv4 } from "uuid";
 import { z } from "zod";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
+await setCors();
+
+async function setCors() {
+  // Set the cors config once
+  const storage = await getStorage();
+  const stagingBucket = storage.bucket("restauwants_staging");
+  const prodBucket = storage.bucket("restauwants_production");
+
+  const config = {
+    maxAgeSeconds: 3600,
+    method: ["OPTIONS", "POST", "PUT", "GET"],
+    origin: [getBaseUrl()],
+    responseHeader: ["Access-Control-Allow-Origin", "Content-Type", "Vary"],
+  };
+
+  await stagingBucket.setCorsConfiguration([config]);
+  console.log("Set cors config for staging bucket.");
+  await prodBucket.setCorsConfiguration([config]);
+  console.log("Set cors config for production bucket.");
+}
 
 async function getStorage() {
   return new Storage({
@@ -158,21 +177,6 @@ async function getSignedUrl(
   const storage = await getStorage();
   const bucket = storage.bucket(bucketName);
   const file = bucket.file(filename);
-
-  const origin = headers().get("host");
-  if (origin) {
-    // set the cors configuration
-    await bucket.setCorsConfiguration([
-      {
-        maxAgeSeconds: 3600,
-        method: ["OPTIONS", "POST", "PUT", "GET"],
-        origin: [getBaseUrl()],
-        responseHeader: ["Access-Control-Allow-Origin", "Content-Type", "Vary"],
-      },
-    ]);
-  } else {
-    return Promise.reject(new Error("No origin header found."));
-  }
 
   const options = {
     version: "v4" as const,
