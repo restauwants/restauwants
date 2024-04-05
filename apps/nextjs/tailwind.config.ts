@@ -16,6 +16,7 @@ export default {
       },
       backgroundImage: {
         "signin-background": "url('/fullProductPageBG.jpg')",
+        "feed-background": "url('/background.jpg')",
       },
     },
   },

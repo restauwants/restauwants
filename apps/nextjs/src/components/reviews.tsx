@@ -34,6 +34,7 @@ import {
   CalendarIcon,
   DollarSignIcon,
   DotsVerticalIcon,
+  ShrimpIcon,
   StarIcon,
 } from "@restauwants/ui/icons";
 import { Input } from "@restauwants/ui/input";
@@ -303,11 +304,16 @@ function reviewList() {
       return (
         <div className="relative flex w-full flex-col items-center gap-4">
           <div className="mt-20 max-w-xs">
-            <p className="text-center">
-              Your feed is looking a bit{" "}
-              <span className="italic">hungry...</span> maybe it&apos;s time to
-              find a place to eat!
-            </p>
+            <div className="mt-20 max-w-xs">
+              <p className="text-center">
+                Your feed is looking a bit{" "}
+                <span className="italic">hungry...</span> maybe it&apos;s time
+                to find a place to eat!
+              </p>
+              <div className="mt-5 flex justify-center">
+                <ShrimpIcon className="size-20" />
+              </div>
+            </div>
           </div>
         </div>
       );
@@ -434,7 +440,7 @@ export function ReviewCardSkeleton(props: { pulse?: boolean }) {
           <div className="grid gap-1.5">
             <CardTitle
               className={cn(
-                "w-32 rounded bg-primary",
+                "w-32 rounded bg-secondary",
                 pulse && "animate-pulse",
               )}
             >
@@ -457,9 +463,9 @@ export function ReviewCardSkeleton(props: { pulse?: boolean }) {
               pulse && "animate-pulse",
             )}
           >
-            <div className="w-16 rounded bg-primary text-3xl">&nbsp;</div>
+            <div className="w-16 rounded bg-secondary text-3xl">&nbsp;</div>
             <div className="ml-auto flex items-center gap-2">
-              <span className="w-20 rounded bg-primary">&nbsp;</span>
+              <span className="w-20 rounded bg-secondary">&nbsp;</span>
             </div>
           </div>
         </CardContent>

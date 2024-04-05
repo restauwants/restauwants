@@ -3,7 +3,7 @@ import { GeistMono } from "geist/font/mono";
 import { GeistSans } from "geist/font/sans";
 
 import { cn } from "@restauwants/ui";
-import { ThemeProvider } from "@restauwants/ui/theme";
+// import { ThemeProvider } from "@restauwants/ui/theme";
 import { Toaster } from "@restauwants/ui/toast";
 
 import { env } from "~/env";
@@ -49,12 +49,12 @@ export default function RootLayout(props: { children: React.ReactNode }) {
           GeistMono.variable,
         )}
       >
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <TRPCReactProvider>
-            <main>{props.children}</main>
-          </TRPCReactProvider>
-          <Toaster />
-        </ThemeProvider>
+        {/* <ThemeProvider attribute="class" defaultTheme="system" enableSystem> */}
+        <TRPCReactProvider>
+          <main>{props.children}</main>
+        </TRPCReactProvider>
+        <Toaster />
+        {/* </ThemeProvider> */}
       </body>
     </html>
   );

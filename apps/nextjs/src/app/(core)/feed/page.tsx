@@ -9,17 +9,19 @@ export default async function Feed() {
   const reviews = api.review.all({});
 
   return (
-    <div className="container min-h-dvh pb-20 pt-12">
-      <div className="flex flex-col items-center justify-center gap-4">
-        <h1 className="text-5xl font-extrabold tracking-tight sm:text-[5rem]">
-          Restau<span className="text-primary">Wants</span>
-        </h1>
-        <div className="w-full">
-          <Suspense fallback={<ReviewListSkeleton count={3} />}>
-            <ReviewList reviews={reviews} />
-          </Suspense>
+    <>
+      <div className="bg-feed-background absolute -z-50 h-full w-screen bg-cover bg-bottom bg-no-repeat" />
+      <div className="container min-h-dvh pb-20 pt-12">
+        <div className="flex flex-col items-center justify-center gap-4">
+          <div className="w-full">
+            <div className="mt-20">
+              <Suspense fallback={<ReviewListSkeleton count={3} />}>
+                <ReviewList reviews={reviews} />
+              </Suspense>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
