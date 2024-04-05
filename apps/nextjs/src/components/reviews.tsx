@@ -184,7 +184,7 @@ function ReviewForm({
           render={({ field }) => (
             <FormItem>
               <FormControl>
-                <Input {...field} type="number" placeholder="23.50" />
+                <Input {...field} type="number" placeholder="$23.50" />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -305,7 +305,7 @@ function reviewList() {
         <div className="relative flex w-full flex-col items-center gap-4">
           <div className="mt-20 max-w-xs">
             <div className="mt-20 max-w-xs">
-              <p className="text-center">
+              <p className="text-l text-center">
                 Your feed is looking a bit{" "}
                 <span className="italic">hungry...</span> maybe it&apos;s time
                 to find a place to eat!
@@ -407,7 +407,7 @@ export function ReviewCard(props: {
             </CardDescription>
           </div>
           <div className="mt-4 flex items-center gap-2">
-            <StarIcon className="h-6 w-6 fill-primary" />
+            <StarIcon className="h-6 w-6 fill-secondary" />
             <div className="text-3xl font-semibold">{props.review.rating}</div>
             <div className="ml-auto flex items-center gap-2">
               <DollarSignIcon className="h-4 w-4" />
