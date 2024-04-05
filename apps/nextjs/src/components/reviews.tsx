@@ -172,7 +172,9 @@ function ReviewForm({
                         className="h-4 w-4"
                         viewBox="0 0 20 20"
                         xmlns="http://www.w3.org/2000/svg"
-                        onClick={() => form.setValue("rating", index.toString())}
+                        onClick={() =>
+                          form.setValue("rating", index.toString())
+                        }
                       >
                         <g id="SVGRepo_bgCarrier" strokeWidth="0" />
                         <g
