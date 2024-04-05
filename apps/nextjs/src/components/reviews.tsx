@@ -250,19 +250,6 @@ function ReviewForm({
         />
         <FormField
           control={form.control}
-          name="restaurantId"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Restaurant ID</FormLabel>
-              <FormControl>
-                <Input {...field} placeholder="7426" />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
           name="visitedAt"
           render={({ field }) => (
             <FormItem>
