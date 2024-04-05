@@ -37,9 +37,7 @@ export const friendRouter = createTRPCRouter({
         }
 
         if (await hasSentFriendRequest(ctx.db, ctx.session.user.id, toUserId)) {
-          throw new Error(
-            "Already Sent a Friend Request to " + input.toUsername,
-          );
+          throw new Error("Friend request already sent");
         }
 
         if (await hasSentFriendRequest(ctx.db, toUserId, ctx.session.user.id)) {
