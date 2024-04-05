@@ -109,9 +109,12 @@ async function download(searchParams: URLSearchParams) {
       { status: 400 },
     );
   }
-  const url = await getSignedDownloadUrl(photoId);
-
-  return Response.json({ presignedUrl: url });
+  try {
+    const url = await getSignedDownloadUrl(photoId);
+    return Response.json({ presignedUrl: url });
+  } catch (e) {
+    return Response.json({ error: e }, { status: 400 });
+  }
 }
 
 async function upload(searchParams: URLSearchParams) {
@@ -129,9 +132,12 @@ async function upload(searchParams: URLSearchParams) {
     )
     .parse(size);
 
-  const url = await getSignedUploadUrl(sizeInt);
-
-  return Response.json({ presignedUrl: url });
+  try {
+    const url = await getSignedUploadUrl(sizeInt);
+    return Response.json({ presignedUrl: url });
+  } catch (e) {
+    return Response.json({ error: e }, { status: 400 });
+  }
 }
 
 // TODO: Validation is all messed up because the route handler is not typed :(
@@ -183,6 +189,12 @@ async function getSignedUrl(
     version: "v4" as const,
     ...inputOptions,
   };
+
+  console.log("FILENAME:", filename, "EXISTS:", await file.exists());
+  const [exists] = await file.exists();
+  if (!exists) {
+    throw new Error("File does not exist.");
+  }
 
   const [url] = await file.getSignedUrl(options);
 
