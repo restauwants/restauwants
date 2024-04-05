@@ -1,5 +1,6 @@
-import { ChangeEvent } from "react";
-import { Libraries, useGoogleMapsScript } from "use-google-maps-script";
+import type { ChangeEvent } from "react";
+import type { Libraries } from "use-google-maps-script";
+import { useGoogleMapsScript } from "use-google-maps-script";
 import usePlacesAutocomplete from "use-places-autocomplete";
 
 import {
@@ -108,8 +109,6 @@ function ReadySearchBox({ onSelectAddress, defaultValue }: ISearchBoxProps) {
             ))}
         </CommandList>
       </Command>
-
-      {/* Other components below */}
     </div>
   );
 }
