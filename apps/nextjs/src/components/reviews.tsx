@@ -313,21 +313,25 @@ function ReviewForm({
           name="files"
           render={({ field }) => (
             <FormItem>
+              <FormLabel>Upload Photos</FormLabel>
               <FormControl>
                 <Input
                   type="file"
                   accept="image/jpeg, image/gif, image/png, image/heic, image/webp, image/heif"
                   multiple
                   onChange={async (e) => {
-                    if (e.target.files)
+                    if (e.target.files) {
                       try {
-                        form.setValue(
-                          "files",
-                          await convertImages(e.target.files),
-                        );
+                        field.onChange({
+                          target: {
+                            value: await convertImages(e.target.files),
+                            name: field.name,
+                          },
+                        });
                       } catch (error) {
                         toast.error("Failed to upload image");
                       }
+                    }
                   }}
                 />
               </FormControl>

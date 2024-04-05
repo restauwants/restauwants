@@ -29,7 +29,7 @@ export const CreateReviewFormSchema = z.object({
   }),
   files: z
     .custom<Blob>((value) => value instanceof Blob, {
-      message: "File must be a blob",
+      message: "Files must be of type Blob",
     })
     .array()
     .max(7)
@@ -42,7 +42,7 @@ export const CreateReviewFormSchema = z.object({
         }
         return true;
       },
-      { message: "file size must be a postive number less than 5MB" },
+      { message: "Images must be less than 5 MB in size" },
     ),
 });
 
