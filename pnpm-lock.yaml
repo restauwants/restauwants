@@ -13,7 +13,7 @@ importers:
     dependencies:
       '@radix-ui/react-popover':
         specifier: ^1.0.7
-        version: 1.0.7(react-dom@18.2.0)(react@18.2.0)
+        version: 1.0.7(@types/react@18.2.48)(react-dom@18.2.0)(react@18.2.0)
       date-fns:
         specifier: ^3.6.0
         version: 3.6.0
@@ -139,6 +139,9 @@ importers:
       react-google-places-autocomplete:
         specifier: ^4.0.1
         version: 4.0.1(@types/react@18.2.48)(react-dom@18.2.0)(react@18.2.0)
+      react-infinite-scroll-component:
+        specifier: ^6.1.0
+        version: 6.1.0(react@18.2.0)
       react-places-autocomplete:
         specifier: ^7.3.0
         version: 7.3.0(react@18.2.0)
@@ -154,9 +157,6 @@ importers:
       usePlacesAutocompleteService:
         specifier: link:react-google-autocomplete/lib/usePlacesAutocompleteService
         version: link:react-google-autocomplete/lib/usePlacesAutocompleteService
-      react-infinite-scroll-component:
-        specifier: ^6.1.0
-        version: 6.1.0(react@18.2.0)
       usehooks-ts:
         specifier: ^3.0.2
         version: 3.0.2(react@18.2.0)
@@ -2419,7 +2419,6 @@ packages:
       '@radix-ui/react-primitive': 1.0.3(@types/react@18.2.48)(react-dom@18.2.0)(react@18.2.0)
       '@radix-ui/react-slot': 1.0.2(@types/react@18.2.48)(react@18.2.0)
       '@radix-ui/react-use-controllable-state': 1.0.1(@types/react@18.2.48)(react@18.2.0)
-
       '@types/react': 18.2.48
       aria-hidden: 1.2.3
       react: 18.2.0
