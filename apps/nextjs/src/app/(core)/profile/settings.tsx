@@ -33,7 +33,7 @@ export function Settings() {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon">
-              <SettingsIcon className="size-5" />
+              <SettingsIcon className="size-8 text-primary-foreground" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent>

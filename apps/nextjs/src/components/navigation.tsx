@@ -3,16 +3,14 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { CircleFadingPlus, Home, User } from "lucide-react";
 
 import {
-  HomeIcon,
   NavigationMenu,
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
   navigationMenuTriggerStyle,
-  PersonIcon,
-  PlusCircledIcon,
 } from "@restauwants/ui/navigation-menu";
 
 import {
@@ -38,8 +36,9 @@ export function Navigation() {
         <NavigationMenuItem>
           <Link href={feedPagePath} legacyBehavior passHref>
             <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-              <HomeIcon
-                className={`size-5 ${isHomePage ? "text-secondary" : ""}`}
+              <Home
+                strokeWidth={`${isHomePage ? 3 : 2}`}
+                className={`size-7 ${isHomePage ? "text-secondary" : ""}`}
               />
             </NavigationMenuLink>
           </Link>
@@ -47,8 +46,9 @@ export function Navigation() {
         <NavigationMenuItem>
           <Link href={reviewPagePath} legacyBehavior passHref>
             <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-              <PlusCircledIcon
-                className={`size-5 ${isReviewPage ? "text-secondary" : ""}`}
+              <CircleFadingPlus
+                strokeWidth={`${isReviewPage ? 3 : 2}`}
+                className={`size-7 ${isReviewPage ? "text-secondary" : ""}`}
               />
             </NavigationMenuLink>
           </Link>
@@ -56,8 +56,9 @@ export function Navigation() {
         <NavigationMenuItem>
           <Link href={profilePagePath} legacyBehavior passHref>
             <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-              <PersonIcon
-                className={`size-5 ${isProfilePage ? "text-secondary" : ""}`}
+              <User
+                strokeWidth={`${isProfilePage ? 3 : 2}`}
+                className={`size-7 ${isProfilePage ? "text-secondary" : ""}`}
               />
             </NavigationMenuLink>
           </Link>
