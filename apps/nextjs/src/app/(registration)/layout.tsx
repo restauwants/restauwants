@@ -1,7 +1,8 @@
 import Image from "next/image";
 
 import { ShrimpIcon } from "@restauwants/ui/icons";
-import { ThemeToggle } from "@restauwants/ui/theme";
+
+// import { ThemeToggle } from "@restauwants/ui/theme";
 
 import { BottomBar } from "../../components/bottomBar";
 
@@ -40,9 +41,7 @@ export default function Layout(props: { children: React.ReactNode }) {
       <BottomBar>
         <div />
         <div />
-        <div className="ml-auto mr-4">
-          <ThemeToggle />
-        </div>
+        <div className="ml-auto mr-4">{/* <ThemeToggle /> */}</div>
       </BottomBar>
     </>
   );
