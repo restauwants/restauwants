@@ -1,7 +1,7 @@
 import { authRouter } from "./router/auth";
 import { friendRouter } from "./router/friend";
-import { restaurantRouter } from "./router/restaurant";
 import { photoRouter } from "./router/photo";
+import { restaurantRouter } from "./router/restaurant";
 import { reviewRouter } from "./router/review";
 import { userRouter } from "./router/user";
 import { createTRPCRouter } from "./trpc";

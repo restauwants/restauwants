@@ -65,6 +65,7 @@ export const reviewRouter = createTRPCRouter({
             return [];
           }),
           username: r.friendProfile.username,
+          name: r.review.restaurantName,
         })),
       );
       const hasMore = reviews.length > input.limit;
@@ -118,6 +119,7 @@ export const reviewRouter = createTRPCRouter({
             return [];
           }),
           username: r.profile.username,
+          name: r.review.restaurantName,
         })),
       );
       const hasMore = reviews.length > input.limit;

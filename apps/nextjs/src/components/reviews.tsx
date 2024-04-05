@@ -224,7 +224,6 @@ function ReviewForm({
   }
   // TODO(#37): retrieve the restaurant name for a restaurant ID
   return (
-    <div>
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
         <FormField
@@ -296,42 +295,41 @@ function ReviewForm({
                     </svg>
                   ))}
               </div>
-<<<<<<< HEAD
-                <FormControl>
-                  <Input {...field} type="hidden" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="price"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <Input {...field} type="number" placeholder="23.50" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="text"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <Textarea
-                    className="h-32 resize-none"
-                    {...field}
-                    placeholder="I had a great time at..."
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />  
+              <FormControl>
+                <Input {...field} type="hidden" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="price"
+          render={({ field }) => (
+            <FormItem>
+              <FormControl>
+                <Input {...field} type="number" placeholder="23.50" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="text"
+          render={({ field }) => (
+            <FormItem>
+              <FormControl>
+                <Textarea
+                  className="h-32 resize-none"
+                  {...field}
+                  placeholder="I had a great time at..."
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <FormField
           control={form.control}
           name="files"
