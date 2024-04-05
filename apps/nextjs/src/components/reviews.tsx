@@ -15,7 +15,6 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  //AlertDialogTrigger,
 } from "@restauwants/ui/alert-dialog";
 import { Button } from "@restauwants/ui/button";
 import {
@@ -292,11 +291,9 @@ function reviewList() {
     const deleteReview = api.review.delete.useMutation({
       onSuccess: async () => {
         await utils.review.invalidate();
-        setIsDeleteModalOpen(false);
         toast.success("Review deleted");
       },
       onError: () => {
-        setIsDeleteModalOpen(false);
         toast.error("Failed to delete review");
       },
     });
@@ -304,8 +301,8 @@ function reviewList() {
     const openDeleteModalFor = (
       review: RouterOutputs["review"]["all"]["reviews"][number],
     ) => {
-      setIsDeleteModalOpen(true);
       setReviewToDelete(review);
+      setIsDeleteModalOpen(true);
     };
 
     const updateReview = api.review.update.useMutation({
@@ -370,7 +367,6 @@ function reviewList() {
             <ReviewForm form={editReviewForm} onSubmit={onEditSubmit} />
           </dialogOrDrawer.Content>
         </dialogOrDrawer.Root>
-
         <AlertDialog
           open={isDeleteModalOpen}
           onOpenChange={setIsDeleteModalOpen}
@@ -378,20 +374,18 @@ function reviewList() {
           <AlertDialogContent>
             <AlertDialogHeader>
               <AlertDialogTitle>
-                Are you sure you want to delete your post?
+                Are you sure about deleting this review?
               </AlertDialogTitle>
               <AlertDialogDescription>
-                This action cannot be undone. This will permanently delete your
-                post.
+                This action cannot be undone.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel>Cancel</AlertDialogCancel>
               <AlertDialogAction
-                onClick={() => deleteReview.mutate(reviewToDelete?.id ?? -1)}
+                onClick={() => deleteReview.mutate(reviewToDelete!.id)}
               >
-                {" "}
-                Delete{" "}
+                Delete
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
@@ -429,11 +423,11 @@ export function ReviewCard(props: {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
-                  <DropdownMenuItem onClick={props.onDelete}>
-                    Delete
-                  </DropdownMenuItem>
                   <DropdownMenuItem onClick={props.onEdit}>
                     Edit
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={props.onDelete}>
+                    Delete
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
