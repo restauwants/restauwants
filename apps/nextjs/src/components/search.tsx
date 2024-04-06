@@ -1,6 +1,6 @@
 import type { ChangeEvent } from "react";
-import type { Libraries } from "use-google-maps-script";
-import { useGoogleMapsScript } from "use-google-maps-script";
+// import type { Libraries } from "use-google-maps-script";
+// import { useGoogleMapsScript } from "use-google-maps-script";
 import usePlacesAutocomplete from "use-places-autocomplete";
 import { z } from "zod";
 
@@ -11,32 +11,7 @@ import {
   CommandList,
 } from "@restauwants/ui/command";
 
-export interface RestaurantSearchBoxProps {
-  onSelectAddress: (address: string, placeId: string) => void;
-  defaultValue: string;
-}
-
-const libraries: Libraries = ["places"];
-
-export function RestaurantSearchBox({
-  onSelectAddress,
-  defaultValue,
-}: RestaurantSearchBoxProps) {
-  const { isLoaded, loadError } = useGoogleMapsScript({
-    googleMapsApiKey: "AIzaSyBhu50DXDGivMJJuglSByZVDGew6ZIVohE",
-    libraries,
-  });
-
-  if (!isLoaded) return null;
-  if (loadError) return <div>Error loading</div>;
-
-  return (
-    <ReadySearchBox
-      onSelectAddress={onSelectAddress}
-      defaultValue={defaultValue}
-    />
-  );
-}
+// const libraries: Libraries = ["places"];
 
 const SuggestionSchema = z
   .object({
@@ -54,10 +29,20 @@ const SuggestionSchema = z
     secondaryText: suggestion.structured_formatting.secondary_text,
   }));
 
-function ReadySearchBox({
+export interface RestaurantSearchBoxProps {
+  onSelectAddress: (address: string, placeId: string) => void;
+  defaultValue: string;
+}
+
+export function RestaurantSearchBox({
   onSelectAddress,
   defaultValue,
 }: RestaurantSearchBoxProps) {
+  // const { isLoaded, loadError } = useGoogleMapsScript({
+  //   googleMapsApiKey: "AIzaSyBhu50DXDGivMJJuglSByZVDGew6ZIVohE",
+  //   libraries,
+  // });
+
   const {
     ready,
     value,
