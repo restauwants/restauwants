@@ -59,7 +59,7 @@ import {
 
 import { useDialogOrDrawer } from "~/hooks/dialogOrDrawer";
 import { api } from "~/trpc/react";
-import { SearchBox } from "./search";
+import { RestaurantSearchBox } from "./search";
 
 export function CreateReviewForm() {
   const initialState = "";
@@ -108,7 +108,7 @@ export function CreateReviewForm() {
   return (
     <div>
       <div>
-        <SearchBox
+        <RestaurantSearchBox
           onSelectAddress={(address, place_id) => {
             setautocompleteData(place_id);
             setname(address);

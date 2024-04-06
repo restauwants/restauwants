@@ -2,6 +2,7 @@ import type { ChangeEvent } from "react";
 import type { Libraries } from "use-google-maps-script";
 import { useGoogleMapsScript } from "use-google-maps-script";
 import usePlacesAutocomplete from "use-places-autocomplete";
+import { z } from "zod";
 
 import {
   Command,
@@ -10,14 +11,17 @@ import {
   CommandList,
 } from "@restauwants/ui/command";
 
-interface ISearchBoxProps {
-  onSelectAddress: (address: string, placeID: string) => void;
+export interface RestaurantSearchBoxProps {
+  onSelectAddress: (address: string, placeId: string) => void;
   defaultValue: string;
 }
 
 const libraries: Libraries = ["places"];
 
-export function SearchBox({ onSelectAddress, defaultValue }: ISearchBoxProps) {
+export function RestaurantSearchBox({
+  onSelectAddress,
+  defaultValue,
+}: RestaurantSearchBoxProps) {
   const { isLoaded, loadError } = useGoogleMapsScript({
     googleMapsApiKey: "AIzaSyBhu50DXDGivMJJuglSByZVDGew6ZIVohE",
     libraries,
@@ -34,18 +38,26 @@ export function SearchBox({ onSelectAddress, defaultValue }: ISearchBoxProps) {
   );
 }
 
-interface StructuredFormatting {
-  main_text: string;
-  secondary_text: string;
-}
+const SuggestionSchema = z
+  .object({
+    place_id: z.string(),
+    description: z.string(),
+    structured_formatting: z.object({
+      main_text: z.string(),
+      secondary_text: z.string(),
+    }),
+  })
+  .transform((suggestion) => ({
+    placeId: suggestion.place_id,
+    description: suggestion.description,
+    mainText: suggestion.structured_formatting.main_text,
+    secondaryText: suggestion.structured_formatting.secondary_text,
+  }));
 
-interface dataInterface {
-  place_id: string;
-  description: string;
-  structured_formatting: StructuredFormatting;
-}
-
-function ReadySearchBox({ onSelectAddress, defaultValue }: ISearchBoxProps) {
+function ReadySearchBox({
+  onSelectAddress,
+  defaultValue,
+}: RestaurantSearchBoxProps) {
   const {
     ready,
     value,
@@ -59,6 +71,10 @@ function ReadySearchBox({ onSelectAddress, defaultValue }: ISearchBoxProps) {
     debounce: 300,
     defaultValue,
   });
+
+  const suggestions = data.map((suggestion) =>
+    SuggestionSchema.parse(suggestion),
+  );
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setValue(e.target.value);
@@ -87,24 +103,19 @@ function ReadySearchBox({ onSelectAddress, defaultValue }: ISearchBoxProps) {
         />
         <CommandList className="absolute left-0 top-full z-10">
           {status === "OK" &&
-            data.map((data: dataInterface) => (
+            suggestions.map((suggestion) => (
               <CommandItem
-                key={data.place_id}
-                value={data.description}
+                key={suggestion.placeId}
+                value={suggestion.description}
                 onSelect={() =>
-                  handleSelect(
-                    data.structured_formatting.main_text,
-                    data.place_id,
-                  )
+                  handleSelect(suggestion.mainText, suggestion.placeId)
                 }
                 className="bg-white"
               >
                 <div className="w-1/2">
-                  <b>{data.structured_formatting.main_text}</b>{" "}
+                  <b>{suggestion.mainText}</b>{" "}
                 </div>{" "}
-                <div className="w-1/2">
-                  {data.structured_formatting.secondary_text}
-                </div>
+                <div className="w-1/2">{suggestion.secondaryText}</div>
               </CommandItem>
             ))}
         </CommandList>
