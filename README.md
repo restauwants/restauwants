@@ -33,7 +33,7 @@ packages
   ├─ auth
   |   └─ Authentication using next-auth.
   ├─ db
-  |   └─ Typesafe db calls using Drizzle & Planetscale
+  |   └─ Typesafe db calls using Drizzle & MySQL
   └─ ui
       └─ Start of a UI package for the webapp using shadcn-ui
 tooling
@@ -73,7 +73,7 @@ pnpm run dev
 docker compose up
 ```
 
-The Next.js application will be available on [http://localhost:3000](http://localhost:3000). The docker-compose command will start the MySQL database, Adminer, and PlanetScale API proxy. The Adminer interface will be available on [http://localhost:8080](http://localhost:8080).
+The Next.js application will be available on [http://localhost:3000](http://localhost:3000). The docker-compose command will start the MySQL database and Adminer. The Adminer interface will be available on [http://localhost:8080](http://localhost:8080).
 
 ### 4. When it's time to add a new package
 

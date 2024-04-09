@@ -10,7 +10,7 @@ const uri = [
   "@",
   process.env.DB_HOST,
   ":",
-  isLocal ? process.env.LOCAL_UNPROXIED_DB_PORT : process.env.DB_PORT,
+  process.env.DB_PORT,
   "/",
   process.env.DB_NAME,
   isLocal ? "" : '?ssl={"rejectUnauthorized":true}',

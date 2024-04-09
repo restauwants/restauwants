@@ -1,5 +1,5 @@
-import { connect } from "@planetscale/database";
-import { drizzle } from "drizzle-orm/planetscale-serverless";
+import { drizzle } from "drizzle-orm/mysql2";
+import mysql from "mysql2/promise";
 
 import { isLocal } from "./local";
 import * as schema from "./schema";
@@ -13,7 +13,7 @@ export { alias } from "drizzle-orm/mysql-core";
 
 const config = isLocal
   ? {
-      url: [
+      uri: [
         "http://",
         process.env.DB_USERNAME,
         ":",
@@ -30,8 +30,8 @@ const config = isLocal
       password: process.env.DB_PASSWORD!,
     };
 
-const connection = connect(config);
+const connection = await mysql.createConnection(config);
 
-export const db = drizzle(connection, { schema });
+export const db = drizzle(connection, { schema, mode: "default" });
 
 export type Database = typeof db;

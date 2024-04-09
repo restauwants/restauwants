@@ -1,4 +1,4 @@
-# Creates a local MySQL server with a PlanetScale API-compliant proxy.
+# Creates a local MySQL server.
 # Adminer is included for easy database management.
 
 version: "3.8"
@@ -14,23 +14,9 @@ services:
       MYSQL_USER: ${DB_USERNAME}
       MYSQL_PASSWORD: ${DB_PASSWORD}
     ports:
-      - ${LOCAL_UNPROXIED_DB_PORT}:3306
+      - ${DB_PORT}:3306
     volumes:
       - mysql:/var/lib/mysql
-
-  planetscale-proxy:
-    # Source: https://github.com/mattrobenolt/ps-http-sim/tree/main
-    image: ghcr.io/mattrobenolt/ps-http-sim:latest
-    command:
-      [
-        "-listen-port=3306",
-        "-mysql-dbname=${DB_NAME}",
-        "-mysql-addr=mysql",
-      ]
-    depends_on:
-      - mysql
-    ports:
-      - ${DB_PORT}:3306
 
   adminer:
     image: adminer
