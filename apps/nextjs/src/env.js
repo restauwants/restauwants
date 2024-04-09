@@ -22,6 +22,7 @@ export const env = createEnv({
     DB_NAME: z.string(),
     DB_PASSWORD: z.string(),
     DB_USERNAME: z.string(),
+    DB_PORT: z.coerce.number().default(3306),
   },
   /**
    * Specify your client-side environment variables schema here.

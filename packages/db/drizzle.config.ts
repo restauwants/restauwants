@@ -1,7 +1,5 @@
 import type { Config } from "drizzle-kit";
 
-import { isLocal } from "./src/local";
-
 const uri = [
   "mysql://",
   process.env.DB_USERNAME,
@@ -13,7 +11,6 @@ const uri = [
   process.env.DB_PORT,
   "/",
   process.env.DB_NAME,
-  isLocal ? "" : '?ssl={"rejectUnauthorized":true}',
 ].join("");
 
 export default {
