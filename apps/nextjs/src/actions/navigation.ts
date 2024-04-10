@@ -9,9 +9,20 @@ import type { UserSchemaWithOptionals } from "@restauwants/validators/server/int
 import { auth } from "@restauwants/auth";
 import { isCompleteUser } from "@restauwants/validators/server/internal";
 
-import { getPathnameFromHeaders } from "~/middleware";
 import { api } from "~/trpc/server";
 import { profileCreationPage, profilePage, signInPage } from "../app/paths";
+
+const pathnameHeader = "x-pathname";
+
+export const newHeadersWithPathname = (headers: Headers, pathname: string) => {
+  const newHeaders = new Headers(headers);
+  newHeaders.set(pathnameHeader, pathname);
+  return newHeaders;
+};
+
+export const getPathnameFromHeaders = (headers: Headers) => {
+  return headers.get(pathnameHeader);
+};
 
 const isAtPath = (currentPath: string, targetPath: string) => {
   return currentPath === targetPath;
@@ -89,7 +100,7 @@ export const withRestrictionsBasedOnSession = <T>(
   return async (props: T) => {
     await restrictPagesBasedOnSession(
       auth(),
-      getPathnameFromHeaders(headers()),
+      getPathnameFromHeaders(headers())!,
       redirect,
       api.user.currentWithOptionals,
     );
