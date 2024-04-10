@@ -24,6 +24,10 @@ export const getPathnameFromHeaders = (headers: Headers) => {
   return headers.get(pathnameHeader);
 };
 
+export async function navigate(page: string) {
+  redirect(page);
+}
+
 const isAtPath = (currentPath: string, targetPath: string) => {
   return currentPath === targetPath;
 };
@@ -74,8 +78,7 @@ const handleExistingSession = async (
   }
 };
 
-// TODO: remove this export
-export const restrictPagesBasedOnSession = async (
+const restrictPagesBasedOnSession = async (
   session: Promise<Session | null>,
   currentPath: string,
   onRedirect: (path: string) => Promise<void>,
