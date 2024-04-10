@@ -8,8 +8,8 @@ import {
   DialogTrigger,
 } from "@restauwants/ui/dialog";
 
+import { signInWithDiscord, signInWithGoogle } from "~/actions/auth";
 import { withRestrictionsBasedOnSession } from "~/actions/navigation";
-import { signInWithDiscord, signInWithGoogle } from "../../actions";
 
 export default withRestrictionsBasedOnSession(async () => {
   return (
