@@ -9,20 +9,9 @@ import type { UserSchemaWithOptionals } from "@restauwants/validators/server/int
 import { auth } from "@restauwants/auth";
 import { isCompleteUser } from "@restauwants/validators/server/internal";
 
+import { getPathnameFromHeaders } from "~/functions/navigation";
 import { api } from "~/trpc/server";
 import { profileCreationPage, profilePage, signInPage } from "../app/paths";
-
-const pathnameHeader = "x-pathname";
-
-export const newHeadersWithPathname = (headers: Headers, pathname: string) => {
-  const newHeaders = new Headers(headers);
-  newHeaders.set(pathnameHeader, pathname);
-  return newHeaders;
-};
-
-export const getPathnameFromHeaders = (headers: Headers) => {
-  return headers.get(pathnameHeader);
-};
 
 export async function navigate(page: string) {
   redirect(page);

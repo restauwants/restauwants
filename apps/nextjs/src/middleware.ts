@@ -1,7 +1,7 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
-import { newHeadersWithPathname } from "./actions/navigation";
+import { newHeadersWithPathname } from "./functions/navigation";
 
 export const middleware = async (request: NextRequest) => {
   return NextResponse.next({

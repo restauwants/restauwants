@@ -1,3 +1,5 @@
+"use server";
+
 import {
   signOut as _signOut,
   signIn as signInWithProvider,
