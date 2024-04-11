@@ -51,14 +51,10 @@ export const reviewRouter = createTRPCRouter({
         visitedAt: r.review.visitedAt,
         createdAt: r.review.createdAt,
         updatedAt: r.review.updatedAt,
-        user: {
-          id: r.friendProfile.id,
-          name: r.friendProfile.username,
-        },
-        restaurant: {
-          id: r.restaurant.id,
-          name: r.restaurant.name,
-        },
+        userId: r.friendProfile.id,
+        username: r.friendProfile.username,
+        restaurantId: r.restaurant.id,
+        restaurantName: r.restaurant.name,
       }));
       const hasMore = reviews.length > input.limit;
       if (hasMore) {
@@ -111,14 +107,10 @@ export const reviewRouter = createTRPCRouter({
         visitedAt: r.review.visitedAt,
         createdAt: r.review.createdAt,
         updatedAt: r.review.updatedAt,
-        user: {
-          id: r.profile.id,
-          name: r.profile.username,
-        },
-        restaurant: {
-          id: r.restaurant.id,
-          name: r.restaurant.name,
-        },
+        userId: r.profile.id,
+        username: r.profile.username,
+        restaurantId: r.restaurant.id,
+        restaurantName: r.restaurant.name,
       }));
       const hasMore = reviews.length > input.limit;
       if (hasMore) {
