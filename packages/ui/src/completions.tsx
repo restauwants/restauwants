@@ -21,26 +21,11 @@ export interface CompletionOption<T> {
   key: string;
 }
 
-export interface CompletionsSkeletonProps {
-  placeholder: string;
-}
-
-export const CompletionsSkeleton = ({
-  placeholder,
-}: CompletionsSkeletonProps) => {
-  return (
-    <Command>
-      <CommandInput placeholder={placeholder} disabled />
-      <div className="relative mt-1" />
-    </Command>
-  );
-};
-
 export interface CompletionsProps<T> {
   options: CompletionOption<T>[];
-  emptyMessage: string;
+  emptyMessage?: string;
   selected?: CompletionOption<T>;
-  onSelect: (value?: CompletionOption<T>) => void;
+  onSelect?: (value?: CompletionOption<T>) => void;
   value: string;
   onChange: (value: string) => void;
   isLoading?: boolean;
@@ -81,7 +66,7 @@ export const Completions = <T,>({
           (option) => option.label === input.value,
         );
         if (optionToSelect) {
-          onSelect(optionToSelect);
+          onSelect?.(optionToSelect);
         }
       }
 
@@ -99,7 +84,7 @@ export const Completions = <T,>({
   const handleSelectOption = useCallback(
     (selectedOption: CompletionOption<T>) => {
       onChange(selectedOption.label);
-      onSelect(selectedOption);
+      onSelect?.(selectedOption);
 
       // This is a hack to prevent the input from being focused after the user selects an option
       // We can call this hack: "The next tick"
@@ -115,7 +100,7 @@ export const Completions = <T,>({
       <CommandInput
         ref={inputRef}
         value={value}
-        onValueChange={isLoading ? undefined : onChange}
+        onValueChange={onChange}
         onBlur={handleBlur}
         onFocus={() => setOpen(true)}
         placeholder={placeholder}
@@ -158,7 +143,9 @@ export const Completions = <T,>({
             ) : null}
             {!isLoading ? <CommandEmpty>{emptyMessage}</CommandEmpty> : null}
           </CommandList>
-        ) : null}
+        ) : (
+          <CommandList />
+        )}
       </div>
     </Command>
   );

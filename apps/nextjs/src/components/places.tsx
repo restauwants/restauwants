@@ -1,11 +1,11 @@
 import type { Libraries } from "use-google-maps-script";
-import { useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useGoogleMapsScript } from "use-google-maps-script";
 import usePlacesAutocomplete from "use-places-autocomplete";
 import { z } from "zod";
 
 import type { CompletionOption } from "@restauwants/ui/completions";
-import { Completions, CompletionsSkeleton } from "@restauwants/ui/completions";
+import { Completions } from "@restauwants/ui/completions";
 
 export type PlaceType = "bar" | "restaurant" | "cafe" | "bakery";
 
@@ -25,9 +25,12 @@ const PlaceSchema = z
 
 export type Place = z.infer<typeof PlaceSchema>;
 
-const withGoogleMapsScript = <T extends object>(
-  Component: React.ComponentType<T>,
-  Fallback: React.ComponentType,
+interface PropsWithGoogleMapsScript {
+  isGoogleMapsScriptLoaded: boolean;
+}
+
+const withGoogleMapsScript = <T,>(
+  Component: React.ComponentType<T & PropsWithGoogleMapsScript>,
   libraries: Libraries,
 ) => {
   const ComponentUsingGoogleMapsScript = (props: T) => {
@@ -35,12 +38,7 @@ const withGoogleMapsScript = <T extends object>(
       googleMapsApiKey: "AIzaSyBhu50DXDGivMJJuglSByZVDGew6ZIVohE",
       libraries,
     });
-
-    if (!isLoaded) {
-      return <Fallback />;
-    }
-
-    return <Component {...props} />;
+    return <Component {...props} isGoogleMapsScriptLoaded={isLoaded} />;
   };
   return ComponentUsingGoogleMapsScript;
 };
@@ -59,17 +57,22 @@ export const RestaurantSearchBoxWithSuggestions =
       selected,
       onSelect,
       types = ["bar", "restaurant", "cafe", "bakery"],
-    }: RestaurantSearchBoxWithSuggestionsProps) => {
+      isGoogleMapsScriptLoaded,
+    }: RestaurantSearchBoxWithSuggestionsProps & PropsWithGoogleMapsScript) => {
+      const [skeletonValue, setSkeletonValue] = useState("");
+
       const {
         ready,
         value,
         setValue,
         suggestions: { status, data },
+        init,
       } = usePlacesAutocomplete({
         requestOptions: {
           types,
         },
         debounce: 300,
+        initOnMount: false,
       });
 
       const placeToOption = useCallback(
@@ -81,6 +84,18 @@ export const RestaurantSearchBoxWithSuggestions =
         [],
       );
 
+      useEffect(() => {
+        if (isGoogleMapsScriptLoaded) {
+          init();
+        }
+      }, [isGoogleMapsScriptLoaded, init]);
+
+      useEffect(() => {
+        if (ready) {
+          setValue(skeletonValue);
+        }
+      }, [ready, skeletonValue, setValue]);
+
       const suggestions =
         status === "OK" ? PlaceSchema.array().parse(data) : [];
       const options = suggestions.map(placeToOption);
@@ -90,14 +105,13 @@ export const RestaurantSearchBoxWithSuggestions =
           options={options}
           emptyMessage="No restaurants found"
           placeholder={restaurantSearchPlaceholder}
-          disabled={!ready}
           selected={selected && placeToOption(selected)}
-          value={value}
-          onChange={setValue}
+          value={ready ? value : skeletonValue}
+          onChange={ready ? setValue : setSkeletonValue}
           onSelect={(option) => onSelect(option?.value)}
+          isLoading={!ready}
         />
       );
     },
-    () => <CompletionsSkeleton placeholder={restaurantSearchPlaceholder} />,
     ["places"],
   );
