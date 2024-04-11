@@ -1,6 +1,6 @@
 import type { ChangeEvent } from "react";
-// import type { Libraries } from "use-google-maps-script";
-// import { useGoogleMapsScript } from "use-google-maps-script";
+import type { Libraries } from "use-google-maps-script";
+import { useGoogleMapsScript } from "use-google-maps-script";
 import usePlacesAutocomplete from "use-places-autocomplete";
 import { z } from "zod";
 
@@ -10,8 +10,6 @@ import {
   CommandItem,
   CommandList,
 } from "@restauwants/ui/command";
-
-// const libraries: Libraries = ["places"];
 
 const SuggestionSchema = z
   .object({
@@ -29,82 +27,101 @@ const SuggestionSchema = z
     secondaryText: suggestion.structured_formatting.secondary_text,
   }));
 
-export interface RestaurantSearchBoxProps {
+const withGoogleMapsScript = <T extends object>(
+  Component: React.ComponentType<T>,
+  Fallback: React.ComponentType,
+  libraries: Libraries,
+) => {
+  const GoogleMapsScriptComponent = (props: T) => {
+    const { isLoaded } = useGoogleMapsScript({
+      googleMapsApiKey: "AIzaSyBhu50DXDGivMJJuglSByZVDGew6ZIVohE",
+      libraries,
+    });
+
+    if (!isLoaded) {
+      return <Fallback />;
+    }
+
+    return <Component {...props} />;
+  };
+  return GoogleMapsScriptComponent;
+};
+
+export interface RestaurantSearchBoxWithSuggestionsProps {
   onSelectAddress: (address: string, placeId: string) => void;
   defaultValue: string;
 }
 
-export function RestaurantSearchBox({
-  onSelectAddress,
-  defaultValue,
-}: RestaurantSearchBoxProps) {
-  // const { isLoaded, loadError } = useGoogleMapsScript({
-  //   googleMapsApiKey: "AIzaSyBhu50DXDGivMJJuglSByZVDGew6ZIVohE",
-  //   libraries,
-  // });
+export const RestaurantSearchBoxWithSuggestions =
+  withGoogleMapsScript<RestaurantSearchBoxWithSuggestionsProps>(
+    ({
+      onSelectAddress,
+      defaultValue,
+    }: RestaurantSearchBoxWithSuggestionsProps) => {
+      const {
+        ready,
+        value,
+        setValue,
+        suggestions: { status, data },
+        clearSuggestions,
+      } = usePlacesAutocomplete({
+        requestOptions: {
+          types: ["bar", "restaurant", "cafe", "bakery"],
+        },
+        debounce: 300,
+        defaultValue,
+      });
 
-  const {
-    ready,
-    value,
-    setValue,
-    suggestions: { status, data },
-    clearSuggestions,
-  } = usePlacesAutocomplete({
-    requestOptions: {
-      types: ["bar", "restaurant", "cafe", "bakery"],
+      const suggestions =
+        status === "OK" ? SuggestionSchema.array().parse(data) : [];
+
+      const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+        setValue(e.target.value);
+        if (e.target.value === "") {
+          onSelectAddress("", "");
+        }
+      };
+
+      const handleSelect = (address: string, place_id: string) => {
+        clearSuggestions();
+        setValue(address, false);
+        onSelectAddress(address, place_id);
+      };
+
+      return (
+        <div style={{ position: "relative" }}>
+          <Command>
+            <CommandInput
+              id="search"
+              value={value}
+              onInput={handleChange}
+              disabled={!ready}
+              placeholder="Search for restaurant"
+              className="w-full p-2"
+              autoComplete="off"
+            />
+            <CommandList className="absolute left-0 top-full z-10">
+              {status === "OK" &&
+                suggestions.map((suggestion) => (
+                  <CommandItem
+                    key={suggestion.placeId}
+                    value={suggestion.description}
+                    onSelect={() =>
+                      handleSelect(suggestion.mainText, suggestion.placeId)
+                    }
+                    className="bg-white"
+                  >
+                    <div className="w-1/2">
+                      <b>{suggestion.mainText}</b>{" "}
+                    </div>{" "}
+                    <div className="w-1/2">{suggestion.secondaryText}</div>
+                  </CommandItem>
+                ))}
+            </CommandList>
+          </Command>
+        </div>
+      );
     },
-    debounce: 300,
-    defaultValue,
-  });
-
-  const suggestions = data.map((suggestion) =>
-    SuggestionSchema.parse(suggestion),
+    () => <div>Loading...</div>,
+    ["places"],
   );
-
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setValue(e.target.value);
-    if (e.target.value === "") {
-      onSelectAddress("", "");
-    }
-  };
-
-  const handleSelect = (address: string, place_id: string) => {
-    clearSuggestions();
-    setValue(address, false);
-    onSelectAddress(address, place_id);
-  };
-
-  return (
-    <div style={{ position: "relative" }}>
-      <Command>
-        <CommandInput
-          id="search"
-          value={value}
-          onInput={handleChange}
-          disabled={!ready}
-          placeholder="Search for restaurant"
-          className="w-full p-2"
-          autoComplete="off"
-        />
-        <CommandList className="absolute left-0 top-full z-10">
-          {status === "OK" &&
-            suggestions.map((suggestion) => (
-              <CommandItem
-                key={suggestion.placeId}
-                value={suggestion.description}
-                onSelect={() =>
-                  handleSelect(suggestion.mainText, suggestion.placeId)
-                }
-                className="bg-white"
-              >
-                <div className="w-1/2">
-                  <b>{suggestion.mainText}</b>{" "}
-                </div>{" "}
-                <div className="w-1/2">{suggestion.secondaryText}</div>
-              </CommandItem>
-            ))}
-        </CommandList>
-      </Command>
-    </div>
-  );
-}

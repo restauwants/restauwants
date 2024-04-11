@@ -69,8 +69,8 @@ const PlaceholderFriendTableRow = ({
   );
 };
 
-const withFriendTable = (FriendTableRows: React.FC) => {
-  const FriendTable: React.FC = () => {
+const withFriendTable = (FriendTableRows: React.ComponentType) => {
+  const FriendTable = () => {
     return (
       <Table>
         <TableBody>
