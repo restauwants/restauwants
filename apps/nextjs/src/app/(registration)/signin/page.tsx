@@ -8,9 +8,10 @@ import {
   DialogTrigger,
 } from "@restauwants/ui/dialog";
 
-import { signInWithDiscord, signInWithGoogle } from "../../actions";
+import { signInWithDiscord, signInWithGoogle } from "~/actions/auth";
+import { withRestrictionsBasedOnSession } from "~/actions/navigation";
 
-export default async function SignIn() {
+export default withRestrictionsBasedOnSession(async () => {
   return (
     <Dialog>
       <DialogTrigger>Sign up now!</DialogTrigger>
@@ -105,4 +106,4 @@ export default async function SignIn() {
       </DialogContent>
     </Dialog>
   );
-}
+});

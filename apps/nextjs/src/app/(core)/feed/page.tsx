@@ -1,11 +1,10 @@
 import { Suspense } from "react";
 
+import { withRestrictionsBasedOnSession } from "~/actions/navigation";
 import { api } from "~/trpc/server";
 import { ReviewList, ReviewListSkeleton } from "../../../components/reviews";
 
-export const runtime = "edge";
-
-export default async function Feed() {
+export default withRestrictionsBasedOnSession(() => {
   const reviews = api.review.all({});
 
   return (
@@ -24,4 +23,4 @@ export default async function Feed() {
       </div>
     </>
   );
-}
+});

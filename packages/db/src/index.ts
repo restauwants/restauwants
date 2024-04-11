@@ -1,7 +1,6 @@
-import { connect } from "@planetscale/database";
-import { drizzle } from "drizzle-orm/planetscale-serverless";
+import { drizzle } from "drizzle-orm/mysql2";
+import mysql from "mysql2";
 
-import { isLocal } from "./local";
 import * as schema from "./schema";
 
 export { schema };
@@ -11,27 +10,16 @@ export { mySqlTable as tableCreator } from "./schema/_table";
 export * from "drizzle-orm";
 export { alias } from "drizzle-orm/mysql-core";
 
-const config = isLocal
-  ? {
-      url: [
-        "http://",
-        process.env.DB_USERNAME,
-        ":",
-        process.env.DB_PASSWORD,
-        "@",
-        process.env.DB_HOST,
-        ":",
-        process.env.DB_PORT,
-      ].join(""),
-    }
-  : {
-      host: process.env.DB_HOST!,
-      username: process.env.DB_USERNAME!,
-      password: process.env.DB_PASSWORD!,
-    };
+const config = {
+  host: process.env.DB_HOST!,
+  user: process.env.DB_USERNAME!,
+  password: process.env.DB_PASSWORD!,
+  database: process.env.DB_NAME!,
+  port: parseInt(process.env.DB_PORT!),
+};
 
-const connection = connect(config);
+const connection = mysql.createConnection(config);
 
-export const db = drizzle(connection, { schema });
+export const db = drizzle(connection, { schema, mode: "default" });
 
 export type Database = typeof db;

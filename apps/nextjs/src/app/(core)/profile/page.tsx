@@ -1,10 +1,11 @@
 import { Suspense } from "react";
 
+import { withRestrictionsBasedOnSession } from "~/actions/navigation";
 import { api } from "~/trpc/server";
 import { ReviewList, ReviewListSkeleton } from "../../../components/reviews";
 import { Settings } from "./settings";
 
-export default async function Profile() {
+export default withRestrictionsBasedOnSession(async () => {
   const user = await api.user.current();
   const reviews = api.review.byUserId({ userId: user.id });
 
@@ -26,4 +27,4 @@ export default async function Profile() {
       </div>
     </>
   );
-}
+});

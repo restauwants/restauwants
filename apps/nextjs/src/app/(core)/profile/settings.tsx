@@ -21,9 +21,9 @@ import {
 } from "@restauwants/ui/dropdown-menu";
 import { SettingsIcon } from "@restauwants/ui/icons";
 
+import { signOut } from "~/actions/auth";
 import { useDialogOrDrawer } from "~/hooks/dialogOrDrawer";
 import { ManageFriends } from "../../../components/friends";
-import { signOut } from "../../actions";
 
 export function Settings() {
   const dialogOrDrawer = useDialogOrDrawer();
