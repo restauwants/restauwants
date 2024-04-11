@@ -1,17 +1,23 @@
 import { z } from "zod";
 
-import { username } from "../../common";
+import { userIdSchema, usernameSchema } from "../../common";
 
-export { ReviewSchema, FriendSchema, FriendRequestSchema } from "../../db";
+export {
+  ReviewSchema,
+  FriendSchema,
+  FriendRequestSchema,
+  ProfileSchema,
+  RestaurantSchema,
+} from "../../db";
 
 export const UserSchemaWithOptionals = z.object({
-  id: z.string().min(0).max(255),
-  username: username.optional(),
+  id: userIdSchema,
+  username: usernameSchema.optional(),
 });
 
 export const UserSchema = z.object({
-  id: z.string().min(0).max(255),
-  username: username,
+  id: userIdSchema,
+  username: usernameSchema,
 });
 
 export const isCompleteUser = (

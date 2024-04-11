@@ -1,51 +1,48 @@
 import { z } from "zod";
 
-import { username } from "../common";
+import {
+  confirmedAtSchema,
+  createdAtSchema,
+  priceSchema,
+  ratingSchema,
+  restaurantIdSchema,
+  restaurantNameSchema,
+  textSchema,
+  updatedAtSchema,
+  userIdSchema,
+  usernameSchema,
+  visitedAtSchema,
+} from "../common";
 
 export const ReviewSchema = z.object({
-  userId: z.string().min(0).max(255),
-  restaurantId: z.string(),
-  name: z.string(),
-  rating: z.number().int().min(1).max(5),
-  price: z.number().min(0).max(1000000),
-  text: z.string().min(0).max(255),
-  visitedAt: z.date().refine((d) => d <= new Date(), {
-    message: "visitedAt must be in the past",
-  }),
-  createdAt: z.date().refine((d) => d <= new Date(), {
-    message: "createdAt must be in the past",
-  }),
-  updatedAt: z.date().refine((d) => d <= new Date(), {
-    message: "updatedAt must be in the past",
-  }),
-});
-
-export const FriendSchema = z.object({
-  fromUserId: z.string().min(0).max(255),
-  toUserId: z.string().min(0).max(255),
-  confirmedAt: z.date().refine((d) => d <= new Date(), {
-    message: "createdAt must be in the past",
-  }),
-});
-
-export const FriendRequestSchema = z.object({
-  fromUserId: z.string().min(0).max(255),
-  toUserId: z.string().min(0).max(255),
-  createdAt: z.date().refine((d) => d <= new Date(), {
-    message: "createdAt must be in the past",
-  }),
-});
-
-export const UserSchema = z.object({
-  id: z.string().min(0).max(255),
+  userId: userIdSchema,
+  restaurantId: restaurantIdSchema,
+  rating: ratingSchema,
+  price: priceSchema,
+  text: textSchema,
+  visitedAt: visitedAtSchema,
+  createdAt: createdAtSchema,
+  updatedAt: updatedAtSchema,
 });
 
 export const ProfileSchema = z.object({
-  id: z.string().min(0).max(255),
-  username: username,
+  id: userIdSchema,
+  username: usernameSchema,
 });
 
 export const RestaurantSchema = z.object({
-  restaurantId: z.string().min(0).max(50),
-  name: z.string().min(0).max(255),
+  id: restaurantIdSchema,
+  name: restaurantNameSchema,
+});
+
+export const FriendSchema = z.object({
+  fromUserId: userIdSchema,
+  toUserId: userIdSchema,
+  confirmedAt: confirmedAtSchema,
+});
+
+export const FriendRequestSchema = z.object({
+  fromUserId: userIdSchema,
+  toUserId: userIdSchema,
+  createdAt: createdAtSchema,
 });

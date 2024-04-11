@@ -1,6 +1,16 @@
 import { z } from "zod";
 
-import { username } from "../../common";
+import {
+  confirmedAtSchema,
+  createdAtSchema,
+  priceSchema,
+  ratingSchema,
+  restaurantIdSchema,
+  reviewIdSchema,
+  textSchema,
+  usernameSchema,
+  visitedAtSchema,
+} from "../../common";
 
 export {
   UserSchemaWithOptionals,
@@ -9,67 +19,52 @@ export {
 } from "../internal";
 
 export const RemoveFriendSchema = z.object({
-  username: username,
+  username: usernameSchema,
 });
 
 export const CreateReviewSchema = z.object({
-  restaurantId: z.string(),
-  name: z.string(),
-  rating: z.number().int().max(5).positive(),
-  price: z.number().max(1000000).positive(),
-  text: z.string().min(0).max(255),
-  visitedAt: z.date().refine((d) => d <= new Date(), {
-    message: "updatedAt must be in the past",
-  }),
+  restaurantId: restaurantIdSchema,
+  rating: ratingSchema,
+  price: priceSchema,
+  text: textSchema,
+  visitedAt: visitedAtSchema,
 });
 
 export const EditReviewSchema = z.object({
-  id: z.number().int().positive(),
-  restaurantId: z.string(),
-  name: z.string(),
-  rating: z.number().int().max(5).positive(),
-  price: z.number().max(1000000).positive(),
-  text: z.string().min(0).max(255),
-  visitedAt: z.date().refine((d) => d <= new Date(), {
-    message: "updatedAt must be in the past",
-  }),
+  id: reviewIdSchema,
+  restaurantId: restaurantIdSchema,
+  rating: ratingSchema,
+  price: priceSchema,
+  text: textSchema,
+  visitedAt: visitedAtSchema,
 });
 
 export const ReceivedFriendRequestSchema = z.object({
-  fromUsername: username,
-  createdAt: z.date().refine((d) => d <= new Date(), {
-    message: "createdAt must be in the past",
-  }),
+  fromUsername: usernameSchema,
+  createdAt: createdAtSchema,
 });
 
 export const FriendSchema = z.object({
-  username: username,
-  confirmedAt: z.date().refine((d) => d <= new Date(), {
-    message: "createdAt must be in the past",
-  }),
+  username: usernameSchema,
+  confirmedAt: confirmedAtSchema,
 });
 
 export const AcceptFriendRequestSchema = z.object({
-  fromUsername: username,
+  fromUsername: usernameSchema,
 });
 
 export const RejectFriendRequestSchema = z.object({
-  fromUsername: username,
+  fromUsername: usernameSchema,
 });
 
 export const SentFriendRequestSchema = z.object({
-  toUsername: username,
+  toUsername: usernameSchema,
 });
 
 export const RevokeFriendRequestSchema = z.object({
-  toUsername: username,
+  toUsername: usernameSchema,
 });
 
 export const CreateProfileSchema = z.object({
-  username: username,
-});
-
-export const AddRestaurantSchema = z.object({
-  restaurantId: z.string(),
-  name: z.string(),
+  username: usernameSchema,
 });

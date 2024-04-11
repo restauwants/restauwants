@@ -1,6 +1,14 @@
 import { z } from "zod";
 
-import { username } from "../common";
+import {
+  priceSchema,
+  ratingSchema,
+  restaurantIdSchema,
+  reviewIdSchema,
+  textSchema,
+  usernameSchema,
+  visitedAtSchema,
+} from "../common";
 
 export {
   UserSchemaWithOptionals,
@@ -9,42 +17,36 @@ export {
   RemoveFriendSchema,
   CreateReviewSchema,
   EditReviewSchema,
-  FriendSchema,
   ReceivedFriendRequestSchema,
-  SentFriendRequestSchema,
-  CreateProfileSchema,
+  FriendSchema,
   AcceptFriendRequestSchema,
   RejectFriendRequestSchema,
+  SentFriendRequestSchema,
   RevokeFriendRequestSchema,
+  CreateProfileSchema,
 } from "../server/external";
 
 export const CreateReviewFormSchema = z.object({
-  restaurantId: z.string(),
-  name: z.string(),
-  rating: z.string().pipe(z.coerce.number().int().max(5).positive()),
-  price: z.string().pipe(z.coerce.number().max(1000000).positive()),
-  text: z.string().min(0).max(255),
-  visitedAt: z.date().refine((d) => d <= new Date(), {
-    message: "visitedAt must be in the past",
-  }),
+  restaurantId: restaurantIdSchema,
+  rating: ratingSchema,
+  price: priceSchema,
+  text: textSchema,
+  visitedAt: visitedAtSchema,
 });
 
 export const AddFriendFormSchema = z.object({
-  username: username,
+  username: usernameSchema,
 });
 
 export const CreateProfileFormSchema = z.object({
-  username: username,
+  username: usernameSchema,
 });
 
 export const EditReviewFormSchema = z.object({
-  id: z.string().pipe(z.coerce.number().int().positive()),
-  restaurantId: z.string(),
-  name: z.string(),
-  rating: z.string().pipe(z.coerce.number().int().max(5).positive()),
-  price: z.string().pipe(z.coerce.number().max(1000000).positive()),
-  text: z.string().min(0).max(255),
-  visitedAt: z.date().refine((d) => d <= new Date(), {
-    message: "visitedAt must be in the past",
-  }),
+  id: reviewIdSchema,
+  restaurantId: restaurantIdSchema,
+  rating: ratingSchema,
+  price: priceSchema,
+  text: textSchema,
+  visitedAt: visitedAtSchema,
 });
