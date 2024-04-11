@@ -15,17 +15,17 @@ import {
   CommandSkeletonContent,
 } from "./command";
 
-export interface AutoCompleteOption<T> {
+export interface CompletionOption<T> {
   label: string;
   value: T;
   key: string;
 }
 
-interface AutoCompleteProps<T> {
-  options: AutoCompleteOption<T>[];
+interface CompletionsProps<T> {
+  options: CompletionOption<T>[];
   emptyMessage: string;
-  selected?: AutoCompleteOption<T>;
-  onSelect: (value?: AutoCompleteOption<T>) => void;
+  selected?: CompletionOption<T>;
+  onSelect: (value?: CompletionOption<T>) => void;
   value: string;
   onChange: (value: string) => void;
   isLoading?: boolean;
@@ -33,7 +33,7 @@ interface AutoCompleteProps<T> {
   placeholder?: string;
 }
 
-export const AutoComplete = <T,>({
+export const Completions = <T,>({
   options,
   placeholder,
   emptyMessage,
@@ -43,7 +43,7 @@ export const AutoComplete = <T,>({
   onChange,
   disabled,
   isLoading = false,
-}: AutoCompleteProps<T>) => {
+}: CompletionsProps<T>) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const [isOpen, setOpen] = useState(false);
@@ -82,7 +82,7 @@ export const AutoComplete = <T,>({
   }, []);
 
   const handleSelectOption = useCallback(
-    (selectedOption: AutoCompleteOption<T>) => {
+    (selectedOption: CompletionOption<T>) => {
       onChange(selectedOption.label);
       onSelect(selectedOption);
 

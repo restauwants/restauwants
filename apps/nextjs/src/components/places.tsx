@@ -4,8 +4,8 @@ import { useGoogleMapsScript } from "use-google-maps-script";
 import usePlacesAutocomplete from "use-places-autocomplete";
 import { z } from "zod";
 
-import type { AutoCompleteOption } from "@restauwants/ui/autocomplete";
-import { AutoComplete } from "@restauwants/ui/autocomplete";
+import type { CompletionOption } from "@restauwants/ui/completions";
+import { Completions } from "@restauwants/ui/completions";
 
 export type PlaceType = "bar" | "restaurant" | "cafe" | "bakery";
 
@@ -71,7 +71,7 @@ export const RestaurantSearchBoxWithSuggestions =
       });
 
       const placeToOption = useCallback(
-        (place: Place): AutoCompleteOption<Place> => ({
+        (place: Place): CompletionOption<Place> => ({
           label: place.address,
           value: place,
           key: place.id,
@@ -84,7 +84,7 @@ export const RestaurantSearchBoxWithSuggestions =
       const options = suggestions.map(placeToOption);
 
       return (
-        <AutoComplete
+        <Completions
           options={options}
           emptyMessage="No restaurants found"
           placeholder="Find a restaurant"
