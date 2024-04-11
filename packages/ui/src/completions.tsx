@@ -21,7 +21,22 @@ export interface CompletionOption<T> {
   key: string;
 }
 
-interface CompletionsProps<T> {
+export interface CompletionsSkeletonProps {
+  placeholder: string;
+}
+
+export const CompletionsSkeleton = ({
+  placeholder,
+}: CompletionsSkeletonProps) => {
+  return (
+    <Command>
+      <CommandInput placeholder={placeholder} disabled />
+      <div className="relative mt-1" />
+    </Command>
+  );
+};
+
+export interface CompletionsProps<T> {
   options: CompletionOption<T>[];
   emptyMessage: string;
   selected?: CompletionOption<T>;
@@ -97,17 +112,15 @@ export const Completions = <T,>({
 
   return (
     <Command className="overflow-visible" onKeyDown={handleKeyDown}>
-      <div>
-        <CommandInput
-          ref={inputRef}
-          value={value}
-          onValueChange={isLoading ? undefined : onChange}
-          onBlur={handleBlur}
-          onFocus={() => setOpen(true)}
-          placeholder={placeholder}
-          disabled={disabled}
-        />
-      </div>
+      <CommandInput
+        ref={inputRef}
+        value={value}
+        onValueChange={isLoading ? undefined : onChange}
+        onBlur={handleBlur}
+        onFocus={() => setOpen(true)}
+        placeholder={placeholder}
+        disabled={disabled}
+      />
       <div className="relative mt-1">
         {isOpen ? (
           <CommandList className="absolute top-0 z-10 w-full rounded-md border bg-popover shadow-lg animate-in fade-in-0 zoom-in-95">

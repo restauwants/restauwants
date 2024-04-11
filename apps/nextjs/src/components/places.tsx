@@ -5,7 +5,7 @@ import usePlacesAutocomplete from "use-places-autocomplete";
 import { z } from "zod";
 
 import type { CompletionOption } from "@restauwants/ui/completions";
-import { Completions } from "@restauwants/ui/completions";
+import { Completions, CompletionsSkeleton } from "@restauwants/ui/completions";
 
 export type PlaceType = "bar" | "restaurant" | "cafe" | "bakery";
 
@@ -51,6 +51,8 @@ export interface RestaurantSearchBoxWithSuggestionsProps {
   types?: PlaceType[];
 }
 
+const restaurantSearchPlaceholder = "Find a restaurant";
+
 export const RestaurantSearchBoxWithSuggestions =
   withGoogleMapsScript<RestaurantSearchBoxWithSuggestionsProps>(
     ({
@@ -87,7 +89,7 @@ export const RestaurantSearchBoxWithSuggestions =
         <Completions
           options={options}
           emptyMessage="No restaurants found"
-          placeholder="Find a restaurant"
+          placeholder={restaurantSearchPlaceholder}
           disabled={!ready}
           selected={selected && placeToOption(selected)}
           value={value}
@@ -96,6 +98,6 @@ export const RestaurantSearchBoxWithSuggestions =
         />
       );
     },
-    () => <div>Loading...</div>,
+    () => <CompletionsSkeleton placeholder={restaurantSearchPlaceholder} />,
     ["places"],
   );
