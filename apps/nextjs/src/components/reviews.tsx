@@ -57,14 +57,13 @@ import {
   EditReviewSchema,
 } from "@restauwants/validators/client";
 
+import type { Place } from "./places";
 import { useDialogOrDrawer } from "~/hooks/dialogOrDrawer";
 import { api } from "~/trpc/react";
-import { RestaurantSearchBoxWithSuggestions } from "./search";
+import { RestaurantSearchBoxWithSuggestions } from "./places";
 
 export function CreateReviewForm() {
-  const initialState = "";
-  const [autocompleteData, setautocompleteData] = useState(initialState);
-  const [restoname, setname] = useState(initialState);
+  const [place, setPlace] = useState<Place>();
   const form = useForm({
     mode: "onBlur",
     schema: ReviewFormSchema,
@@ -96,11 +95,14 @@ export function CreateReviewForm() {
   });
 
   const onSubmit = (data: z.input<typeof ReviewFormSchema>) => {
+    if (!place) {
+      return;
+    }
     createReview.mutate(
       CreateReviewSchema.parse({
         ...data,
-        restaurantId: autocompleteData,
-        name: restoname,
+        restaurantId: place.id,
+        name: place.name,
       }),
     );
   };
@@ -109,11 +111,8 @@ export function CreateReviewForm() {
     <div>
       <div>
         <RestaurantSearchBoxWithSuggestions
-          onSelectAddress={(address, place_id) => {
-            setautocompleteData(place_id);
-            setname(address);
-          }}
-          defaultValue=""
+          selected={place}
+          onSelect={setPlace}
         />
       </div>
       <ReviewForm form={form} onSubmit={onSubmit} />

@@ -6,6 +6,7 @@
   "exports": {
     ".": "./src/index.ts",
     "./alert-dialog": "./src/alert-dialog.tsx",
+    "./autocomplete": "./src/autocomplete.tsx",
     "./button": "./src/button.tsx",
     "./calendar": "./src/calendar.tsx",
     "./card": "./src/card.tsx",
