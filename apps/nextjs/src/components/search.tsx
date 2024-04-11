@@ -101,22 +101,21 @@ export const RestaurantSearchBoxWithSuggestions =
               autoComplete="off"
             />
             <CommandList className="absolute left-0 top-full z-10">
-              {status === "OK" &&
-                suggestions.map((suggestion) => (
-                  <CommandItem
-                    key={suggestion.placeId}
-                    value={suggestion.description}
-                    onSelect={() =>
-                      handleSelect(suggestion.mainText, suggestion.placeId)
-                    }
-                    className="bg-white"
-                  >
-                    <div className="w-1/2">
-                      <b>{suggestion.mainText}</b>{" "}
-                    </div>{" "}
-                    <div className="w-1/2">{suggestion.secondaryText}</div>
-                  </CommandItem>
-                ))}
+              {suggestions.map((suggestion) => (
+                <CommandItem
+                  key={suggestion.placeId}
+                  value={suggestion.description}
+                  onSelect={() =>
+                    handleSelect(suggestion.mainText, suggestion.placeId)
+                  }
+                  className="bg-white"
+                >
+                  <div className="w-1/2">
+                    <b>{suggestion.mainText}</b>{" "}
+                  </div>{" "}
+                  <div className="w-1/2">{suggestion.secondaryText}</div>
+                </CommandItem>
+              ))}
             </CommandList>
           </Command>
         </div>
