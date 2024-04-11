@@ -127,6 +127,7 @@ export const profileRelations = relations(profile, ({ one }) => ({
 export const restaurant = mySqlTable("restaurant", {
   id: varchar("id", { length: 255 }).notNull().primaryKey(),
   name: varchar("name", { length: 255 }).notNull(),
+  address: varchar("address", { length: 255 }).notNull(),
 });
 
 export const restaurantRelations = relations(restaurant, ({ many }) => ({

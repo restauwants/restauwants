@@ -5,9 +5,10 @@ import {
   createdAtSchema,
   priceSchema,
   ratingSchema,
+  restaurantAddressSchema,
   restaurantIdSchema,
   restaurantNameSchema,
-  textSchema,
+  reviewTextSchema,
   updatedAtSchema,
   userIdSchema,
   usernameSchema,
@@ -19,7 +20,7 @@ export const ReviewSchema = z.object({
   restaurantId: restaurantIdSchema,
   rating: ratingSchema,
   price: priceSchema,
-  text: textSchema,
+  text: reviewTextSchema,
   visitedAt: visitedAtSchema,
   createdAt: createdAtSchema,
   updatedAt: updatedAtSchema,
@@ -33,6 +34,7 @@ export const ProfileSchema = z.object({
 export const RestaurantSchema = z.object({
   id: restaurantIdSchema,
   name: restaurantNameSchema,
+  address: restaurantAddressSchema,
 });
 
 export const FriendSchema = z.object({

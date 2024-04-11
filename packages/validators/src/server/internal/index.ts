@@ -1,6 +1,11 @@
 import { z } from "zod";
 
-import { userIdSchema, usernameSchema } from "../../atoms";
+import {
+  restaurantAddressSchema,
+  restaurantNameSchema,
+  userIdSchema,
+  usernameSchema,
+} from "../../atoms";
 
 export {
   ReviewSchema,
@@ -9,6 +14,23 @@ export {
   ProfileSchema,
   RestaurantSchema,
 } from "../../db";
+
+export const RestaurantDetailsSchema = z.object({
+  name: restaurantNameSchema,
+  address: restaurantAddressSchema,
+});
+
+export const RestaurantDetailsSchemaParser = z
+  .object({
+    result: z.object({
+      name: restaurantNameSchema,
+      formatted_address: restaurantAddressSchema,
+    }),
+  })
+  .transform((data) => ({
+    name: data.result.name,
+    address: data.result.formatted_address,
+  }));
 
 export const UserSchemaWithOptionals = z.object({
   id: userIdSchema,

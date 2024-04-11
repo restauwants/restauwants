@@ -7,7 +7,7 @@ import {
   ratingSchema,
   restaurantIdSchema,
   reviewIdSchema,
-  textSchema,
+  reviewTextSchema,
   usernameSchema,
   visitedAtSchema,
 } from "../../atoms";
@@ -26,7 +26,7 @@ export const CreateReviewSchema = z.object({
   restaurantId: restaurantIdSchema,
   rating: ratingSchema,
   price: priceSchema,
-  text: textSchema,
+  text: reviewTextSchema,
   visitedAt: visitedAtSchema,
 });
 
@@ -35,7 +35,7 @@ export const EditReviewSchema = z.object({
   restaurantId: restaurantIdSchema,
   rating: ratingSchema,
   price: priceSchema,
-  text: textSchema,
+  text: reviewTextSchema,
   visitedAt: visitedAtSchema,
 });
 
