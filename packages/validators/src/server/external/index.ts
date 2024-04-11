@@ -10,7 +10,7 @@ import {
   textSchema,
   usernameSchema,
   visitedAtSchema,
-} from "../../common";
+} from "../../atoms";
 
 export {
   UserSchemaWithOptionals,

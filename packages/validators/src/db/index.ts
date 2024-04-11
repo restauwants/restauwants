@@ -12,7 +12,7 @@ import {
   userIdSchema,
   usernameSchema,
   visitedAtSchema,
-} from "../common";
+} from "../atoms";
 
 export const ReviewSchema = z.object({
   userId: userIdSchema,

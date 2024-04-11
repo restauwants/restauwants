@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import { alias, and, desc, eq, lt, schema } from "@restauwants/db";
+import { reviewIdSchema, userIdSchema } from "@restauwants/validators/atoms";
 import { ReviewSchema as ReviewSchemaDatabase } from "@restauwants/validators/db";
 import {
   CreateReviewSchema as CreateReviewSchemaExternal,
@@ -9,14 +10,6 @@ import {
 
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 import { areFriends } from "./friend";
-
-// async function queryGooglePlaces(placeId: string) {
-//   const apiKey = process.env.GOOGLE_API_KEY;
-//   const url = `https://maps.googleapis.com/maps/api/place/details/json?fields=name&place_id=${placeId}&key=${apiKey}`;
-//   const response = await fetch(url);
-//   const data = await response.json();
-//   return data.result.name;
-// }
 
 export const reviewRouter = createTRPCRouter({
   all: protectedProcedure
@@ -43,13 +36,29 @@ export const reviewRouter = createTRPCRouter({
             eq(schema.friend.fromUserId, schema.review.userId),
           )
           .innerJoin(friendProfile, eq(friendProfile.id, schema.review.userId))
+          .innerJoin(
+            schema.restaurant,
+            eq(schema.restaurant.id, schema.review.restaurantId),
+          )
           .where(where)
           .orderBy(desc(schema.review.id))
           .limit(input.limit + 1)
       ).map((r) => ({
-        ...r.review,
-        username: r.friendProfile.username,
-        name: r.review.name,
+        id: r.review.id,
+        text: r.review.text,
+        rating: r.review.rating,
+        price: r.review.price,
+        visitedAt: r.review.visitedAt,
+        createdAt: r.review.createdAt,
+        updatedAt: r.review.updatedAt,
+        user: {
+          id: r.friendProfile.id,
+          name: r.friendProfile.username,
+        },
+        restaurant: {
+          id: r.restaurant.id,
+          name: r.restaurant.name,
+        },
       }));
       const hasMore = reviews.length > input.limit;
       if (hasMore) {
@@ -61,7 +70,7 @@ export const reviewRouter = createTRPCRouter({
   byUserId: protectedProcedure
     .input(
       z.object({
-        userId: z.string(),
+        userId: userIdSchema,
         limit: z.number().int().min(1).max(100).default(50),
         cursor: z.number().int().optional(),
       }),
@@ -87,13 +96,29 @@ export const reviewRouter = createTRPCRouter({
             schema.profile,
             eq(schema.profile.id, schema.review.userId),
           )
+          .innerJoin(
+            schema.restaurant,
+            eq(schema.restaurant.id, schema.review.restaurantId),
+          )
           .where(where)
           .orderBy(desc(schema.review.id))
           .limit(input.limit + 1)
       ).map((r) => ({
-        ...r.review,
-        username: r.profile.username,
-        name: r.review.name,
+        id: r.review.id,
+        text: r.review.text,
+        rating: r.review.rating,
+        price: r.review.price,
+        visitedAt: r.review.visitedAt,
+        createdAt: r.review.createdAt,
+        updatedAt: r.review.updatedAt,
+        user: {
+          id: r.profile.id,
+          name: r.profile.username,
+        },
+        restaurant: {
+          id: r.restaurant.id,
+          name: r.restaurant.name,
+        },
       }));
       const hasMore = reviews.length > input.limit;
       if (hasMore) {
@@ -116,7 +141,7 @@ export const reviewRouter = createTRPCRouter({
     }),
 
   delete: protectedProcedure
-    .input(z.number())
+    .input(reviewIdSchema)
     .mutation(async ({ ctx, input }) => {
       const review = await ctx.db.query.review.findFirst({
         where: eq(schema.review.id, input),

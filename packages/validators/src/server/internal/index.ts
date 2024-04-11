@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { userIdSchema, usernameSchema } from "../../common";
+import { userIdSchema, usernameSchema } from "../../atoms";
 
 export {
   ReviewSchema,
