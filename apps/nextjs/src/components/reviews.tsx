@@ -5,6 +5,12 @@ import { use, useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 
 import type { RouterOutputs } from "@restauwants/api";
+import {
+  CreateReviewFormSchema,
+  CreateReviewSchema,
+  EditReviewFormSchema,
+  EditReviewSchema,
+} from "@restauwants/schema/client";
 import { cn } from "@restauwants/ui";
 import {
   AlertDialog,
@@ -50,12 +56,6 @@ import { Input } from "@restauwants/ui/input";
 import { Textarea } from "@restauwants/ui/textarea";
 import { fromNow } from "@restauwants/ui/time";
 import { toast } from "@restauwants/ui/toast";
-import {
-  CreateReviewFormSchema,
-  CreateReviewSchema,
-  EditReviewFormSchema,
-  EditReviewSchema,
-} from "@restauwants/validators/client";
 
 import { useDialogOrDrawer } from "~/hooks/dialogOrDrawer";
 import { api } from "~/trpc/react";

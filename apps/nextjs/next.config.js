@@ -12,7 +12,7 @@ const config = {
     "@restauwants/auth",
     "@restauwants/db",
     "@restauwants/ui",
-    "@restauwants/validators",
+    "@restauwants/schema",
   ],
 
   /** We already do linting and typechecking as separate tasks in CI */

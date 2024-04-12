@@ -4,13 +4,13 @@ import { useCallback, useEffect, useState } from "react";
 import { useGoogleMapsScript } from "use-google-maps-script";
 import usePlacesAutocomplete from "use-places-autocomplete";
 
+import type { PlaceSchema } from "@restauwants/schema/client";
 import type { CompletionOption } from "@restauwants/ui/completions";
-import type { PlaceSchema } from "@restauwants/validators/client";
-import { Completions } from "@restauwants/ui/completions";
 import {
   AddPlaceDescription,
   GoogleApiToPlaceSchema,
-} from "@restauwants/validators/client";
+} from "@restauwants/schema/client";
+import { Completions } from "@restauwants/ui/completions";
 
 import { env } from "~/env";
 

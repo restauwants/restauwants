@@ -90,9 +90,9 @@ importers:
       '@restauwants/ui':
         specifier: workspace:^0.1.0
         version: link:../../packages/ui
-      '@restauwants/validators':
+      '@restauwants/schema':
         specifier: workspace:^0.1.0
-        version: link:../../packages/validators
+        version: link:../../packages/schema
       '@t3-oss/env-nextjs':
         specifier: ^0.7.1
         version: 0.7.1(typescript@5.3.3)(zod@3.22.4)
@@ -193,9 +193,9 @@ importers:
       '@restauwants/db':
         specifier: workspace:^0.1.0
         version: link:../db
-      '@restauwants/validators':
+      '@restauwants/schema':
         specifier: workspace:^0.1.0
-        version: link:../validators
+        version: link:../schema
       '@trpc/server':
         specifier: 11.0.0-next-beta.236
         version: 11.0.0-next-beta.236
@@ -273,9 +273,9 @@ importers:
 
   packages/db:
     dependencies:
-      '@restauwants/validators':
+      '@restauwants/schema':
         specifier: workspace:^0.1.0
-        version: link:../validators
+        version: link:../schema
       drizzle-orm:
         specifier: ^0.30.7
         version: 0.30.7(mysql2@3.9.4)
@@ -414,7 +414,7 @@ importers:
         specifier: ^3.22.4
         version: 3.22.4
 
-  packages/validators:
+  packages/schema:
     dependencies:
       zod:
         specifier: ^3.22.4

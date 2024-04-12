@@ -1,16 +1,16 @@
 import { z } from "zod";
 
 import type { Database } from "@restauwants/db";
-import type { RestaurantIdSchema } from "@restauwants/validators/atoms";
-import type { RestaurantDetailsSchema } from "@restauwants/validators/server/internal";
+import type { RestaurantIdSchema } from "@restauwants/schema/atoms";
+import type { RestaurantDetailsSchema } from "@restauwants/schema/server/internal";
 import { alias, and, desc, eq, lt, schema } from "@restauwants/db";
-import { ReviewIdSchema, UserIdSchema } from "@restauwants/validators/atoms";
-import { ReviewSchema as ReviewSchemaDatabase } from "@restauwants/validators/db";
+import { ReviewIdSchema, UserIdSchema } from "@restauwants/schema/atoms";
+import { ReviewSchema as ReviewSchemaDatabase } from "@restauwants/schema/db";
 import {
   CreateReviewSchema as CreateReviewSchemaExternal,
   EditReviewSchema as EditReviewSchemaExternal,
-} from "@restauwants/validators/server/external";
-import { RestaurantDetailsSchemaParser } from "@restauwants/validators/server/internal";
+} from "@restauwants/schema/server/external";
+import { RestaurantDetailsSchemaParser } from "@restauwants/schema/server/internal";
 
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 import { areFriends } from "./friend";

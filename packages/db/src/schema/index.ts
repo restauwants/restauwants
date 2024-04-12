@@ -92,8 +92,6 @@ export const verificationTokens = mySqlTable(
   }),
 );
 
-// #### Model Schema ####
-
 export const review = mySqlTable("review", {
   id: int("id").autoincrement().notNull().primaryKey(),
   userId: varchar("userId", { length: 255 }).notNull(),
