@@ -1,17 +1,9 @@
 "use client";
 
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@restauwants/ui/alert-dialog";
+import { useState } from "react";
+
 import { Button } from "@restauwants/ui/button";
+import { ConfirmationDialog } from "@restauwants/ui/confirmation";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -27,9 +19,10 @@ import { ManageFriends } from "../../../components/friends";
 
 export function Settings() {
   const dialogOrDrawer = useDialogOrDrawer();
+  const [isSignOutModalOpen, setIsSignOutModalOpen] = useState(false);
   return (
-    <dialogOrDrawer.Root>
-      <AlertDialog>
+    <>
+      <dialogOrDrawer.Root>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon">
@@ -41,32 +34,27 @@ export function Settings() {
               <DropdownMenuItem>Friends</DropdownMenuItem>
             </dialogOrDrawer.Trigger>
             <DropdownMenuSeparator />
-            <AlertDialogTrigger className="w-full">
-              <DropdownMenuItem>Sign Out</DropdownMenuItem>
-            </AlertDialogTrigger>
+            <DropdownMenuItem onClick={() => setIsSignOutModalOpen(true)}>
+              Sign Out
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Sign-Out Confirmation</AlertDialogTitle>
-            <AlertDialogDescription>
-              Are you sure you want to sign out?
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={() => signOut()}>
-              Sign Out
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-      <ManageFriends
-        Content={dialogOrDrawer.Content}
-        Header={dialogOrDrawer.Header}
-        Title={dialogOrDrawer.Title}
-        Footer={dialogOrDrawer.Footer}
+        <ManageFriends
+          Content={dialogOrDrawer.Content}
+          Header={dialogOrDrawer.Header}
+          Title={dialogOrDrawer.Title}
+          Footer={dialogOrDrawer.Footer}
+        />
+      </dialogOrDrawer.Root>
+      <ConfirmationDialog
+        title="Sign-Out Confirmation"
+        description="Are you sure you want to sign out?"
+        cancelVerb="Cancel"
+        actionVerb="Sign Out"
+        onAction={() => signOut()}
+        open={isSignOutModalOpen}
+        onOpenChange={setIsSignOutModalOpen}
       />
-    </dialogOrDrawer.Root>
+    </>
   );
 }
