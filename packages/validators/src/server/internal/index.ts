@@ -1,10 +1,10 @@
 import { z } from "zod";
 
 import {
-  restaurantAddressSchema,
-  restaurantNameSchema,
-  userIdSchema,
-  usernameSchema,
+  RestaurantAddressSchema,
+  RestaurantNameSchema,
+  UserIdSchema,
+  UsernameSchema,
 } from "../../atoms";
 
 export {
@@ -16,15 +16,15 @@ export {
 } from "../../db";
 
 export const RestaurantDetailsSchema = z.object({
-  name: restaurantNameSchema,
-  address: restaurantAddressSchema,
+  name: RestaurantNameSchema,
+  address: RestaurantAddressSchema,
 });
 
 export const RestaurantDetailsSchemaParser = z
   .object({
     result: z.object({
-      name: restaurantNameSchema,
-      formatted_address: restaurantAddressSchema,
+      name: RestaurantNameSchema,
+      formatted_address: RestaurantAddressSchema,
     }),
   })
   .transform((data) => ({
@@ -33,13 +33,13 @@ export const RestaurantDetailsSchemaParser = z
   }));
 
 export const UserSchemaWithOptionals = z.object({
-  id: userIdSchema,
-  username: usernameSchema.optional(),
+  id: UserIdSchema,
+  username: UsernameSchema.optional(),
 });
 
 export const UserSchema = z.object({
-  id: userIdSchema,
-  username: usernameSchema,
+  id: UserIdSchema,
+  username: UsernameSchema,
 });
 
 export const isCompleteUser = (

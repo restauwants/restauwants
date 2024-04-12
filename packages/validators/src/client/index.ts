@@ -1,16 +1,16 @@
 import { z } from "zod";
 
 import {
-  priceSchema,
-  ratingSchema,
-  restaurantAddressSchema,
-  restaurantDescriptionSchema,
-  restaurantIdSchema,
-  restaurantNameSchema,
-  reviewIdSchema,
-  reviewTextSchema,
-  usernameSchema,
-  visitedAtSchema,
+  PriceSchema,
+  RatingSchema,
+  RestaurantAddressSchema,
+  RestaurantDescriptionSchema,
+  RestaurantIdSchema,
+  RestaurantNameSchema,
+  ReviewIdSchema,
+  ReviewTextSchema,
+  UsernameSchema,
+  VisitedAtSchema,
 } from "../atoms";
 
 export {
@@ -30,13 +30,13 @@ export {
 } from "../server/external";
 
 export const PlaceSchema = z.object({
-  id: restaurantIdSchema,
-  address: restaurantAddressSchema,
-  name: restaurantNameSchema,
+  id: RestaurantIdSchema,
+  address: RestaurantAddressSchema,
+  name: RestaurantNameSchema,
 });
 
 export const PlaceSchemaWithDescription = PlaceSchema.extend({
-  description: restaurantDescriptionSchema,
+  description: RestaurantDescriptionSchema,
 });
 
 export const GoogleApiToPlaceSchema = z
@@ -60,25 +60,25 @@ export const AddPlaceDescription = PlaceSchema.transform((place) => ({
 
 export const CreateReviewFormSchema = z.object({
   place: PlaceSchema,
-  rating: ratingSchema,
-  price: priceSchema,
-  text: reviewTextSchema,
-  visitedAt: visitedAtSchema,
+  rating: RatingSchema,
+  price: PriceSchema,
+  text: ReviewTextSchema,
+  visitedAt: VisitedAtSchema,
 });
 
 export const AddFriendFormSchema = z.object({
-  username: usernameSchema,
+  username: UsernameSchema,
 });
 
 export const CreateProfileFormSchema = z.object({
-  username: usernameSchema,
+  username: UsernameSchema,
 });
 
 export const EditReviewFormSchema = z.object({
-  id: reviewIdSchema,
+  id: ReviewIdSchema,
   place: PlaceSchema,
-  rating: ratingSchema,
-  price: priceSchema,
-  text: reviewTextSchema,
-  visitedAt: visitedAtSchema,
+  rating: RatingSchema,
+  price: PriceSchema,
+  text: ReviewTextSchema,
+  visitedAt: VisitedAtSchema,
 });

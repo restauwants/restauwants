@@ -1,10 +1,10 @@
 import { z } from "zod";
 
 import type { Database } from "@restauwants/db";
-import type { restaurantIdSchema } from "@restauwants/validators/atoms";
+import type { RestaurantIdSchema } from "@restauwants/validators/atoms";
 import type { RestaurantDetailsSchema } from "@restauwants/validators/server/internal";
 import { alias, and, desc, eq, lt, schema } from "@restauwants/db";
-import { reviewIdSchema, userIdSchema } from "@restauwants/validators/atoms";
+import { ReviewIdSchema, UserIdSchema } from "@restauwants/validators/atoms";
 import { ReviewSchema as ReviewSchemaDatabase } from "@restauwants/validators/db";
 import {
   CreateReviewSchema as CreateReviewSchemaExternal,
@@ -71,7 +71,7 @@ export const reviewRouter = createTRPCRouter({
   byUserId: protectedProcedure
     .input(
       z.object({
-        userId: userIdSchema,
+        userId: UserIdSchema,
         limit: z.number().int().min(1).max(100).default(50),
         cursor: z.number().int().optional(),
       }),
@@ -146,7 +146,7 @@ export const reviewRouter = createTRPCRouter({
     }),
 
   delete: protectedProcedure
-    .input(reviewIdSchema)
+    .input(ReviewIdSchema)
     .mutation(async ({ ctx, input }) => {
       const review = await ctx.db.query.review.findFirst({
         where: eq(schema.review.id, input),
@@ -196,7 +196,7 @@ export const reviewRouter = createTRPCRouter({
 const withRestaurantCreationIfNecessary = async (
   db: Database,
   statement: (db: Database) => Promise<void>,
-  restaurantId: z.infer<typeof restaurantIdSchema>,
+  restaurantId: z.infer<typeof RestaurantIdSchema>,
 ) => {
   if (!(await doesRestaurantExist(db, restaurantId))) {
     const restaurantDetails = await getRestaurantDetails(restaurantId);
@@ -211,7 +211,7 @@ const withRestaurantCreationIfNecessary = async (
 
 const doesRestaurantExist = async (
   db: Database,
-  restaurantId: z.infer<typeof restaurantIdSchema>,
+  restaurantId: z.infer<typeof RestaurantIdSchema>,
 ): Promise<boolean> => {
   return (
     (await db.query.restaurant.findFirst({
@@ -221,7 +221,7 @@ const doesRestaurantExist = async (
 };
 
 const getRestaurantDetails = async (
-  restaurantId: z.infer<typeof restaurantIdSchema>,
+  restaurantId: z.infer<typeof RestaurantIdSchema>,
 ): Promise<z.infer<typeof RestaurantDetailsSchema>> => {
   return fetch(
     `https://maps.googleapis.com/maps/api/place/details/json?fields=name%2Cformatted_address&place_id=${restaurantId}&key=${process.env.GOOGLE_PLACES_API_KEY}`,
@@ -232,7 +232,7 @@ const getRestaurantDetails = async (
 
 const createRestaurant = async (
   db: Database,
-  restaurantId: z.infer<typeof restaurantIdSchema>,
+  restaurantId: z.infer<typeof RestaurantIdSchema>,
   details: z.infer<typeof RestaurantDetailsSchema>,
 ): Promise<void> => {
   await db.insert(schema.restaurant).values({

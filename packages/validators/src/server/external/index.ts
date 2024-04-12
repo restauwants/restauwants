@@ -1,15 +1,15 @@
 import { z } from "zod";
 
 import {
-  confirmedAtSchema,
-  createdAtSchema,
-  priceSchema,
-  ratingSchema,
-  restaurantIdSchema,
-  reviewIdSchema,
-  reviewTextSchema,
-  usernameSchema,
-  visitedAtSchema,
+  ConfirmedAtSchema,
+  CreatedAtSchema,
+  PriceSchema,
+  RatingSchema,
+  RestaurantIdSchema,
+  ReviewIdSchema,
+  ReviewTextSchema,
+  UsernameSchema,
+  VisitedAtSchema,
 } from "../../atoms";
 
 export {
@@ -19,52 +19,52 @@ export {
 } from "../internal";
 
 export const RemoveFriendSchema = z.object({
-  username: usernameSchema,
+  username: UsernameSchema,
 });
 
 export const CreateReviewSchema = z.object({
-  restaurantId: restaurantIdSchema,
-  rating: ratingSchema,
-  price: priceSchema,
-  text: reviewTextSchema,
-  visitedAt: visitedAtSchema,
+  restaurantId: RestaurantIdSchema,
+  rating: RatingSchema,
+  price: PriceSchema,
+  text: ReviewTextSchema,
+  visitedAt: VisitedAtSchema,
 });
 
 export const EditReviewSchema = z.object({
-  id: reviewIdSchema,
-  restaurantId: restaurantIdSchema,
-  rating: ratingSchema,
-  price: priceSchema,
-  text: reviewTextSchema,
-  visitedAt: visitedAtSchema,
+  id: ReviewIdSchema,
+  restaurantId: RestaurantIdSchema,
+  rating: RatingSchema,
+  price: PriceSchema,
+  text: ReviewTextSchema,
+  visitedAt: VisitedAtSchema,
 });
 
 export const ReceivedFriendRequestSchema = z.object({
-  fromUsername: usernameSchema,
-  createdAt: createdAtSchema,
+  fromUsername: UsernameSchema,
+  createdAt: CreatedAtSchema,
 });
 
 export const FriendSchema = z.object({
-  username: usernameSchema,
-  confirmedAt: confirmedAtSchema,
+  username: UsernameSchema,
+  confirmedAt: ConfirmedAtSchema,
 });
 
 export const AcceptFriendRequestSchema = z.object({
-  fromUsername: usernameSchema,
+  fromUsername: UsernameSchema,
 });
 
 export const RejectFriendRequestSchema = z.object({
-  fromUsername: usernameSchema,
+  fromUsername: UsernameSchema,
 });
 
 export const SentFriendRequestSchema = z.object({
-  toUsername: usernameSchema,
+  toUsername: UsernameSchema,
 });
 
 export const RevokeFriendRequestSchema = z.object({
-  toUsername: usernameSchema,
+  toUsername: UsernameSchema,
 });
 
 export const CreateProfileSchema = z.object({
-  username: usernameSchema,
+  username: UsernameSchema,
 });

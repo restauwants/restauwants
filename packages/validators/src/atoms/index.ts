@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const usernameSchema = z
+export const UsernameSchema = z
   .string()
   .min(2, {
     message: "Username must be at least 2 characters long",
@@ -13,15 +13,15 @@ export const usernameSchema = z
       "Username must only contain lowercase letters, numbers, underscores, and periods",
   });
 
-export const userIdSchema = z.string().min(1).max(255);
+export const UserIdSchema = z.string().min(1).max(255);
 
-export const restaurantIdSchema = z.string().min(1).max(255);
+export const RestaurantIdSchema = z.string().min(1).max(255);
 
-export const restaurantNameSchema = z.string().min(1).max(255);
+export const RestaurantNameSchema = z.string().min(1).max(255);
 
-export const ratingSchema = z.number().int().min(1).max(5);
+export const RatingSchema = z.number().int().min(1).max(5);
 
-export const priceSchema = z
+export const PriceSchema = z
   .number()
   .min(0)
   .max(1000000)
@@ -29,26 +29,26 @@ export const priceSchema = z
     message: "Price must not have more than 2 decimal places",
   });
 
-export const reviewTextSchema = z.string().min(0).max(255);
+export const ReviewTextSchema = z.string().min(0).max(255);
 
-export const visitedAtSchema = z.date().refine((d) => d <= new Date(), {
+export const VisitedAtSchema = z.date().refine((d) => d <= new Date(), {
   message: "The date of visit must be in the past",
 });
 
-export const createdAtSchema = z.date().refine((d) => d <= new Date(), {
+export const CreatedAtSchema = z.date().refine((d) => d <= new Date(), {
   message: "The creation date must be in the past",
 });
 
-export const confirmedAtSchema = z.date().refine((d) => d <= new Date(), {
+export const ConfirmedAtSchema = z.date().refine((d) => d <= new Date(), {
   message: "The confirmation date must be in the past",
 });
 
-export const updatedAtSchema = z.date().refine((d) => d <= new Date(), {
+export const UpdatedAtSchema = z.date().refine((d) => d <= new Date(), {
   message: "The update date must be in the past",
 });
 
-export const reviewIdSchema = z.number().int().positive();
+export const ReviewIdSchema = z.number().int().positive();
 
-export const restaurantAddressSchema = z.string().min(1).max(255);
+export const RestaurantAddressSchema = z.string().min(1).max(255);
 
-export const restaurantDescriptionSchema = z.string().min(1).max(255);
+export const RestaurantDescriptionSchema = z.string().min(1).max(255);

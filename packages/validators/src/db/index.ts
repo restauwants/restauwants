@@ -1,50 +1,50 @@
 import { z } from "zod";
 
 import {
-  confirmedAtSchema,
-  createdAtSchema,
-  priceSchema,
-  ratingSchema,
-  restaurantAddressSchema,
-  restaurantIdSchema,
-  restaurantNameSchema,
-  reviewTextSchema,
-  updatedAtSchema,
-  userIdSchema,
-  usernameSchema,
-  visitedAtSchema,
+  ConfirmedAtSchema,
+  CreatedAtSchema,
+  PriceSchema,
+  RatingSchema,
+  RestaurantAddressSchema,
+  RestaurantIdSchema,
+  RestaurantNameSchema,
+  ReviewTextSchema,
+  UpdatedAtSchema,
+  UserIdSchema,
+  UsernameSchema,
+  VisitedAtSchema,
 } from "../atoms";
 
 export const ReviewSchema = z.object({
-  userId: userIdSchema,
-  restaurantId: restaurantIdSchema,
-  rating: ratingSchema,
-  price: priceSchema,
-  text: reviewTextSchema,
-  visitedAt: visitedAtSchema,
-  createdAt: createdAtSchema,
-  updatedAt: updatedAtSchema,
+  userId: UserIdSchema,
+  restaurantId: RestaurantIdSchema,
+  rating: RatingSchema,
+  price: PriceSchema,
+  text: ReviewTextSchema,
+  visitedAt: VisitedAtSchema,
+  createdAt: CreatedAtSchema,
+  updatedAt: UpdatedAtSchema,
 });
 
 export const ProfileSchema = z.object({
-  id: userIdSchema,
-  username: usernameSchema,
+  id: UserIdSchema,
+  username: UsernameSchema,
 });
 
 export const RestaurantSchema = z.object({
-  id: restaurantIdSchema,
-  name: restaurantNameSchema,
-  address: restaurantAddressSchema,
+  id: RestaurantIdSchema,
+  name: RestaurantNameSchema,
+  address: RestaurantAddressSchema,
 });
 
 export const FriendSchema = z.object({
-  fromUserId: userIdSchema,
-  toUserId: userIdSchema,
-  confirmedAt: confirmedAtSchema,
+  fromUserId: UserIdSchema,
+  toUserId: UserIdSchema,
+  confirmedAt: ConfirmedAtSchema,
 });
 
 export const FriendRequestSchema = z.object({
-  fromUserId: userIdSchema,
-  toUserId: userIdSchema,
-  createdAt: createdAtSchema,
+  fromUserId: UserIdSchema,
+  toUserId: UserIdSchema,
+  createdAt: CreatedAtSchema,
 });
