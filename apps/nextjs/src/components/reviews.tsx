@@ -80,6 +80,7 @@ export function CreateReviewForm() {
   const createReview = api.review.create.useMutation({
     onSuccess: async () => {
       form.reset();
+      form.setValue("visitedAt", new Date());
       await utils.review.invalidate();
       toast.success(`Review created`);
     },
@@ -114,7 +115,6 @@ function ReviewForm({
   form: ReturnType<typeof useForm<typeof ReviewFormSchema>>;
   onSubmit: (data: z.input<typeof ReviewFormSchema>) => void;
 }) {
-  // TODO(#37): retrieve the restaurant name for a restaurant ID
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
@@ -202,6 +202,7 @@ function ReviewForm({
               <FormControl>
                 <Input
                   {...field}
+                  value={field.value ?? ""}
                   type="number"
                   placeholder="$23.50"
                   onChange={(e) =>
@@ -225,7 +226,7 @@ function ReviewForm({
                 <Textarea
                   className="h-32 resize-none"
                   {...field}
-                  placeholder="I had a great time at..."
+                  placeholder="How was your experience?"
                 />
               </FormControl>
               <FormMessage />
@@ -433,7 +434,6 @@ export function ReviewCard(props: {
   onDelete?: () => void;
   onEdit?: () => void;
 }) {
-  // TODO(#37): retrieve the restaurant name for a restaurant ID
   return (
     <Card className="p-0">
       <CardContent className="p-0">
