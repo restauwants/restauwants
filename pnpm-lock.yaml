@@ -325,6 +325,9 @@ importers:
 
   packages/ui:
     dependencies:
+      '@fontsource/lily-script-one':
+        specifier: ^5.0.12
+        version: 5.0.12
       '@hookform/resolvers':
         specifier: ^3.3.4
         version: 3.3.4(react-hook-form@7.49.2)
@@ -1624,6 +1627,10 @@ packages:
 
   /@floating-ui/utils@0.1.6:
     resolution: {integrity: sha512-OfX7E2oUDYxtBvsuS4e/jSn4Q9Qb6DzgeYtsAdkPZ47znpoNsMgZw0+tVijiv3uGNR6dgNlty6r9rzIzHjtd/A==}
+    dev: false
+
+  /@fontsource/lily-script-one@5.0.12:
+    resolution: {integrity: sha512-NFtawRHVIsivSTFJkm6Hm7qSrOg+JGvsU8ztWiFqaWa1mkBE0S2GfbkJj2DiZwYUKjAjBHMY3RKCeHNQvpuDKg==}
     dev: false
 
   /@googlemaps/js-api-loader@1.16.6:

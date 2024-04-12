@@ -14,7 +14,7 @@ import { withRestrictionsBasedOnSession } from "~/actions/navigation";
 export default withRestrictionsBasedOnSession(async () => {
   return (
     <Dialog>
-      <DialogTrigger>Sign In</DialogTrigger>
+      <DialogTrigger>Sign in</DialogTrigger>
       <DialogContent>
         <DialogHeader>
           <DialogTitle style={{ textAlign: "center" }}>Sign In</DialogTitle>
