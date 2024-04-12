@@ -406,7 +406,7 @@ function AddFriendForm(props: {
                   {...field}
                 />
               </FormControl>
-              <FormMessage>&nbsp;</FormMessage>
+              <FormMessage reserve />
             </FormItem>
           )}
         />

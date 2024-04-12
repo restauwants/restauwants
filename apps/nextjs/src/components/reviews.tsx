@@ -119,7 +119,7 @@ function ReviewForm({
 }) {
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
         <FormField
           control={form.control}
           name="id"
@@ -141,7 +141,7 @@ function ReviewForm({
                   onSelect={field.onChange}
                 />
               </FormControl>
-              <FormMessage />
+              <FormMessage reserve />
             </FormItem>
           )}
         />
@@ -152,7 +152,7 @@ function ReviewForm({
             <FormItem>
               <FormLabel>Date of Visit</FormLabel>
               <DatePicker selected={field.value} onSelect={field.onChange} />
-              <FormMessage />
+              <FormMessage reserve />
             </FormItem>
           )}
         />
@@ -180,7 +180,7 @@ function ReviewForm({
                     ))}
                 </div>
               </FormControl>
-              <FormMessage />
+              <FormMessage reserve />
             </FormItem>
           )}
         />
@@ -203,7 +203,7 @@ function ReviewForm({
                   }
                 />
               </FormControl>
-              <FormMessage />
+              <FormMessage reserve />
             </FormItem>
           )}
         />
@@ -220,7 +220,7 @@ function ReviewForm({
                   placeholder="How was your experience?"
                 />
               </FormControl>
-              <FormMessage />
+              <FormMessage reserve />
             </FormItem>
           )}
         />

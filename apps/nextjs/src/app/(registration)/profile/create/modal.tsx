@@ -107,7 +107,7 @@ export const CreateProfileModal = () => {
                         {...field}
                       />
                     </FormControl>
-                    <FormMessage className="text-start">&nbsp;</FormMessage>
+                    <FormMessage reserve />
                   </FormItem>
                 )}
               />
