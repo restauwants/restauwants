@@ -239,30 +239,19 @@ const ExistingFriendsTable = withFriendTable(() => {
           onRemove={() => openRemoveModalFor(friend.username)}
         />
       ))}
-      <AlertDialog open={isRemoveModalOpen} onOpenChange={setIsRemoveModalOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>
-              Are you sure about removing this friend?
-            </AlertDialogTitle>
-            <AlertDialogDescription>
-              You will no longer be friends with {usernameToRemove!}.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={() =>
-                removeFriend.mutate(
-                  RemoveFriendSchema.parse({ username: usernameToRemove! }),
-                )
-              }
-            >
-              Remove
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <ConfirmationDialog
+        title="Are you sure about removing this friend?"
+        description={`You will no longer be friends with ${usernameToRemove!}.`}
+        cancelVerb="Cancel"
+        actionVerb="Remove"
+        onAction={() =>
+          removeFriend.mutate(
+            RemoveFriendSchema.parse({ username: usernameToRemove! }),
+          )
+        }
+        open={isRemoveModalOpen}
+        onOpenChange={setIsRemoveModalOpen}
+      />
     </>
   );
 });
