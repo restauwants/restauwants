@@ -191,17 +191,20 @@ function ReviewForm({
             <FormItem>
               <FormLabel>Price</FormLabel>
               <FormControl>
-                <Input
-                  {...field}
-                  value={field.value ?? ""}
-                  type="number"
-                  placeholder="$23.50"
-                  onChange={(e) =>
-                    field.onChange(
-                      e.target.value ? parseFloat(e.target.value) : undefined,
-                    )
-                  }
-                />
+                <div className="flex items-center gap-2">
+                  <DollarSignIcon className="size-4" />
+                  <Input
+                    {...field}
+                    value={field.value ?? ""}
+                    type="number"
+                    placeholder="23.50"
+                    onChange={(e) =>
+                      field.onChange(
+                        e.target.value ? parseFloat(e.target.value) : undefined,
+                      )
+                    }
+                  />
+                </div>
               </FormControl>
               <FormMessage reserve />
             </FormItem>
