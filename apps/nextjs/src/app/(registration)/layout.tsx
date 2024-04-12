@@ -1,11 +1,12 @@
+import { Lily_Script_One } from "next/font/google";
+
 import { ShrimpIcon } from "@restauwants/ui/icons";
-import { BottomBar } from "../../components/bottomBar";;
 
-import { Lily_Script_One } from 'next/font/google'
+import { BottomBar } from "../../components/bottomBar";
 
-const lilyScript = Lily_Script_One({ 
-  weight: '400',
-  preload: false
+const lilyScript = Lily_Script_One({
+  weight: "400",
+  preload: false,
 });
 
 export default function Layout(props: { children: React.ReactNode }) {
@@ -14,14 +15,12 @@ export default function Layout(props: { children: React.ReactNode }) {
       <div className="fixed bottom-0 -z-10 h-full w-full bg-white [background:radial-gradient(125%_125%_at_50%_10%,#fff_40%,#F16469_100%)]"></div>
 
       <nav className="fixed left-0 top-0 z-50 w-full bg-secondary shadow-md">
-        <div className="mx-auto items-center max-w-6xl px-4 py-4 sm:px-12 lg:px-16">
-          <h1 className="text-3xl text-center font-bold text-white">
-            <div className={lilyScript.className}>
-              RestauWants
-            </div>
+        <div className="mx-auto max-w-6xl items-center px-4 py-4 sm:px-12 lg:px-16">
+          <h1 className="text-center text-3xl font-bold text-white">
+            <div className={lilyScript.className}>RestauWants</div>
           </h1>
         </div>
-        <div className="hover:white/80 absolute right-4 top-1/2 h-9 -translate-y-1/2 transform rounded-md bg-white px-4 py-2 text-secondary text-center">
+        <div className="hover:white/80 absolute right-4 top-1/2 h-9 -translate-y-1/2 transform rounded-md bg-white px-4 py-2 text-center text-secondary">
           {props.children}
         </div>
       </nav>
@@ -46,14 +45,16 @@ export default function Layout(props: { children: React.ReactNode }) {
                 Uniting food lovers, one plate at a time!
               </h2>
               <p className="text-md mb-8">
-                Restauwants is a social food network, providing you reviews from friends you
-                trust. Here at Restauwants, we are committed to fostering a community where 
-                food enthusiasts can connect, explore and celebrate their culinary experiences without
-                compromising privacy. Our platform empowers users to share their love for food 
-                authentically, knowing that their reviews and interactions are kept within a 
-                trusted circle of friends. Whether you are discovering new eateries, sharing 
-                favorite recipes, or seeking recommendations, Restauwants is your go-to destination
-                for all things food-related. 
+                Restauwants is a social food network, providing you reviews from
+                friends you trust. Here at Restauwants, we are committed to
+                fostering a community where food enthusiasts can connect,
+                explore and celebrate their culinary experiences without
+                compromising privacy. Our platform empowers users to share their
+                love for food authentically, knowing that their reviews and
+                interactions are kept within a trusted circle of friends.
+                Whether you are discovering new eateries, sharing favorite
+                recipes, or seeking recommendations, Restauwants is your go-to
+                destination for all things food-related.
               </p>
               <div className="mb-8">
                 <div className="mt-2 flex items-center justify-center">
