@@ -41,6 +41,7 @@ export interface RestaurantSearchBoxWithSuggestionsProps {
 }
 
 const restaurantSearchPlaceholder = "Find a restaurant";
+const places: Libraries = ["places"];
 
 export const RestaurantSearchBoxWithSuggestions =
   withGoogleMapsScript<RestaurantSearchBoxWithSuggestionsProps>(
@@ -125,5 +126,5 @@ export const RestaurantSearchBoxWithSuggestions =
         />
       );
     },
-    ["places"],
+    places,
   );
