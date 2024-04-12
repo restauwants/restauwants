@@ -10,16 +10,6 @@ import {
   RevokeFriendRequestSchema,
   SentFriendRequestSchema,
 } from "@restauwants/schema/client";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@restauwants/ui/alert-dialog";
 import { Button } from "@restauwants/ui/button";
 import { ConfirmationDialog } from "@restauwants/ui/confirmation";
 import {
@@ -310,32 +300,21 @@ const SentFriendRequestsTable = withFriendTable(() => {
           onRevoke={() => openRevokeModalFor(sentFriendRequest.toUsername)}
         />
       ))}
-      <AlertDialog open={isRevokeModalOpen} onOpenChange={setIsRevokeModalOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>
-              Are you sure about canceling this request?
-            </AlertDialogTitle>
-            <AlertDialogDescription>
-              Your friend request to {usernameToRevoke!} will be canceled.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Don&apos;t Cancel</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={() =>
-                revokeFriendRequest.mutate(
-                  RevokeFriendRequestSchema.parse({
-                    toUsername: usernameToRevoke!,
-                  }),
-                )
-              }
-            >
-              Cancel
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <ConfirmationDialog
+        title="Are you sure about canceling this request?"
+        description={`Your friend request to ${usernameToRevoke!} will be canceled.`}
+        cancelVerb="Don't Cancel"
+        actionVerb="Cancel"
+        onAction={() =>
+          revokeFriendRequest.mutate(
+            RevokeFriendRequestSchema.parse({
+              toUsername: usernameToRevoke!,
+            }),
+          )
+        }
+        open={isRevokeModalOpen}
+        onOpenChange={setIsRevokeModalOpen}
+      />
     </>
   );
 });
