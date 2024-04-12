@@ -1,9 +1,4 @@
-//import Image from "next/image";
-
-import { Button } from "@restauwants/ui/button";
 import { ShrimpIcon } from "@restauwants/ui/icons";
-
-// import { ThemeToggle } from "@restauwants/ui/theme";
 
 import { BottomBar } from "../../components/bottomBar";
 
@@ -13,11 +8,13 @@ export default function Layout(props: { children: React.ReactNode }) {
       <div className="fixed bottom-0 -z-10 h-full w-full bg-white [background:radial-gradient(125%_125%_at_50%_10%,#fff_40%,#F16469_100%)]"></div>
 
       <nav className="fixed left-0 top-0 z-50 w-full bg-secondary shadow-md">
-        <div className="mx-auto flex max-w-6xl items-center px-4 py-4 sm:px-6 lg:px-8">
-          <h1 className="text-2xl font-bold text-white">RestauWants</h1>
-          <Button className="rounded-md bg-white py-2 text-secondary">
-            Login
-          </Button>
+        <div className="mx-auto flex max-w-6xl px-4 py-4 text-center sm:px-12 lg:px-16">
+          <h1 className="text-center text-2xl font-bold text-white">
+            RestauWants
+          </h1>
+        </div>
+        <div className="hover:white/80 absolute right-4 top-1/2 h-9 -translate-y-1/2 transform rounded-md bg-white px-4 py-2 text-secondary">
+          {props.children}
         </div>
       </nav>
 
