@@ -21,7 +21,13 @@ export const restaurantNameSchema = z.string().min(1).max(255);
 
 export const ratingSchema = z.number().int().min(1).max(5);
 
-export const priceSchema = z.number().min(0).max(1000000);
+export const priceSchema = z
+  .number()
+  .min(0)
+  .max(1000000)
+  .refine((p) => (p.toString().split(".")[1]?.length ?? 0) <= 2, {
+    message: "Price must not have more than 2 decimal places",
+  });
 
 export const reviewTextSchema = z.string().min(0).max(255);
 
