@@ -3,17 +3,16 @@ import { z } from "zod";
 import {
   PriceSchema,
   RatingSchema,
-  RestaurantAddressSchema,
   RestaurantDescriptionSchema,
-  RestaurantIdSchema,
-  RestaurantNameSchema,
   ReviewIdSchema,
   ReviewTextSchema,
   UsernameSchema,
   VisitedAtSchema,
 } from "../atoms";
+import { RestaurantSchema } from "../server/external";
 
 export {
+  RestaurantSchema,
   UserSchemaWithOptionals,
   UserSchema,
   isCompleteUser,
@@ -29,17 +28,11 @@ export {
   CreateProfileSchema,
 } from "../server/external";
 
-export const PlaceSchema = z.object({
-  id: RestaurantIdSchema,
-  address: RestaurantAddressSchema,
-  name: RestaurantNameSchema,
-});
-
-export const PlaceSchemaWithDescription = PlaceSchema.extend({
+export const RestaurantSchemaWithDescription = RestaurantSchema.extend({
   description: RestaurantDescriptionSchema,
 });
 
-export const GoogleApiToPlaceSchema = z
+export const GooglePlaceAutocompleteToRestaurantSchema = z
   .object({
     place_id: z.string(),
     structured_formatting: z.object({
@@ -53,13 +46,15 @@ export const GoogleApiToPlaceSchema = z
     address: place.structured_formatting.secondary_text,
   }));
 
-export const AddPlaceDescription = PlaceSchema.transform((place) => ({
-  ...place,
-  description: `${place.name}, ${place.address}`,
-}));
+export const AddDescriptionToRestaurantSchema = RestaurantSchema.transform(
+  (restaurant) => ({
+    ...restaurant,
+    description: `${restaurant.name}, ${restaurant.address}`,
+  }),
+);
 
 export const CreateReviewFormSchema = z.object({
-  place: PlaceSchema,
+  restaurant: RestaurantSchema,
   rating: RatingSchema,
   price: PriceSchema,
   text: ReviewTextSchema,
@@ -76,7 +71,7 @@ export const CreateProfileFormSchema = z.object({
 
 export const EditReviewFormSchema = z.object({
   id: ReviewIdSchema,
-  place: PlaceSchema,
+  restaurant: RestaurantSchema,
   rating: RatingSchema,
   price: PriceSchema,
   text: ReviewTextSchema,

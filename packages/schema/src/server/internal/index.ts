@@ -20,7 +20,7 @@ export const RestaurantDetailsSchema = z.object({
   address: RestaurantAddressSchema,
 });
 
-export const RestaurantDetailsSchemaParser = z
+export const GooglePlaceDetailsToRestaurantDetailsSchema = z
   .object({
     result: z.object({
       name: RestaurantNameSchema,

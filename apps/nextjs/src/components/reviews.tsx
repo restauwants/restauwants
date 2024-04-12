@@ -60,7 +60,7 @@ import { toast } from "@restauwants/ui/toast";
 
 import { useDialogOrDrawer } from "~/hooks/dialogOrDrawer";
 import { api } from "~/trpc/react";
-import { RestaurantSearchBoxWithSuggestions } from "./places";
+import { RestaurantSearchBoxWithSuggestions } from "./restaurants";
 
 export function CreateReviewForm() {
   const form = useForm({
@@ -93,7 +93,7 @@ export function CreateReviewForm() {
   const onSubmit = (data: z.input<typeof ReviewFormSchema>) => {
     createReview.mutate(
       CreateReviewSchema.parse({
-        restaurantId: data.place.id,
+        restaurantId: data.restaurant.id,
         rating: data.rating,
         price: data.price,
         text: data.text,
@@ -130,7 +130,7 @@ function ReviewForm({
         />
         <FormField
           control={form.control}
-          name="place"
+          name="restaurant"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Restaurant</FormLabel>
@@ -295,7 +295,7 @@ function reviewList() {
       review: RouterOutputs["review"]["all"]["reviews"][number],
     ) => {
       editReviewForm.setValue("id", review.id);
-      editReviewForm.setValue("place", {
+      editReviewForm.setValue("restaurant", {
         id: review.restaurantId,
         name: review.restaurantName,
         address: review.restaurantAddress,
@@ -339,7 +339,7 @@ function reviewList() {
       updateReview.mutate(
         EditReviewSchema.parse({
           id: data.id,
-          restaurantId: data.place.id,
+          restaurantId: data.restaurant.id,
           rating: data.rating,
           price: data.price,
           text: data.text,

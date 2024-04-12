@@ -10,7 +10,7 @@ import {
   CreateReviewSchema as CreateReviewSchemaExternal,
   EditReviewSchema as EditReviewSchemaExternal,
 } from "@restauwants/schema/server/external";
-import { RestaurantDetailsSchemaParser } from "@restauwants/schema/server/internal";
+import { GooglePlaceDetailsToRestaurantDetailsSchema } from "@restauwants/schema/server/internal";
 
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 import { areFriends } from "./friend";
@@ -227,7 +227,7 @@ const getRestaurantDetails = async (
     `https://maps.googleapis.com/maps/api/place/details/json?fields=name%2Cformatted_address&place_id=${restaurantId}&key=${process.env.GOOGLE_PLACES_API_KEY}`,
   )
     .then((res) => res.json())
-    .then((json) => RestaurantDetailsSchemaParser.parse(json));
+    .then((json) => GooglePlaceDetailsToRestaurantDetailsSchema.parse(json));
 };
 
 const createRestaurant = async (

@@ -4,17 +4,17 @@ import { useCallback, useEffect, useState } from "react";
 import { useGoogleMapsScript } from "use-google-maps-script";
 import usePlacesAutocomplete from "use-places-autocomplete";
 
-import type { PlaceSchema } from "@restauwants/schema/client";
+import type { RestaurantSchema } from "@restauwants/schema/client";
 import type { CompletionOption } from "@restauwants/ui/completions";
 import {
-  AddPlaceDescription,
-  GoogleApiToPlaceSchema,
+  AddDescriptionToRestaurantSchema,
+  GooglePlaceAutocompleteToRestaurantSchema,
 } from "@restauwants/schema/client";
 import { Completions } from "@restauwants/ui/completions";
 
 import { env } from "~/env";
 
-export type PlaceType = "bar" | "restaurant" | "cafe" | "bakery";
+export type RestaurantType = "bar" | "restaurant" | "cafe" | "bakery";
 
 interface PropsWithGoogleMapsScript {
   isGoogleMapsScriptLoaded: boolean;
@@ -35,9 +35,9 @@ const withGoogleMapsScript = <T,>(
 };
 
 export interface RestaurantSearchBoxWithSuggestionsProps {
-  selected?: z.infer<typeof PlaceSchema>;
-  onSelect: (value?: z.infer<typeof PlaceSchema>) => void;
-  types?: PlaceType[];
+  selected?: z.infer<typeof RestaurantSchema>;
+  onSelect: (value?: z.infer<typeof RestaurantSchema>) => void;
+  types?: RestaurantType[];
 }
 
 const restaurantSearchPlaceholder = "Find a restaurant";
@@ -51,8 +51,8 @@ export const RestaurantSearchBoxWithSuggestions =
       isGoogleMapsScriptLoaded,
     }: RestaurantSearchBoxWithSuggestionsProps & PropsWithGoogleMapsScript) => {
       const toValue = useCallback(
-        (place: z.infer<typeof PlaceSchema>) =>
-          AddPlaceDescription.parse(place).description,
+        (restaurant: z.infer<typeof RestaurantSchema>) =>
+          AddDescriptionToRestaurantSchema.parse(restaurant).description,
         [],
       );
 
@@ -74,13 +74,13 @@ export const RestaurantSearchBoxWithSuggestions =
         initOnMount: false,
       });
 
-      const placeToOption = useCallback(
+      const restaurantToOption = useCallback(
         (
-          place: z.infer<typeof PlaceSchema>,
-        ): CompletionOption<z.infer<typeof PlaceSchema>> => ({
-          label: AddPlaceDescription.parse(place).description,
-          value: place,
-          key: place.id,
+          restaurant: z.infer<typeof RestaurantSchema>,
+        ): CompletionOption<z.infer<typeof RestaurantSchema>> => ({
+          label: AddDescriptionToRestaurantSchema.parse(restaurant).description,
+          value: restaurant,
+          key: restaurant.id,
         }),
         [],
       );
@@ -106,16 +106,18 @@ export const RestaurantSearchBoxWithSuggestions =
         }
       }, [selected, toValue, ready, setValue]);
 
-      const suggestions: z.infer<typeof PlaceSchema>[] =
-        status === "OK" ? GoogleApiToPlaceSchema.array().parse(data) : [];
-      const options = suggestions.map(placeToOption);
+      const suggestions: z.infer<typeof RestaurantSchema>[] =
+        status === "OK"
+          ? GooglePlaceAutocompleteToRestaurantSchema.array().parse(data)
+          : [];
+      const options = suggestions.map(restaurantToOption);
 
       return (
         <Completions
           options={options}
           emptyMessage="No restaurants found"
           placeholder={restaurantSearchPlaceholder}
-          selected={selected && placeToOption(selected)}
+          selected={selected && restaurantToOption(selected)}
           value={ready ? value : skeletonValue}
           onChange={ready ? setValue : setSkeletonValue}
           onSelect={(option) => onSelect(option?.value)}

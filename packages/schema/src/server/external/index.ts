@@ -13,6 +13,7 @@ import {
 } from "../../atoms";
 
 export {
+  RestaurantSchema,
   UserSchemaWithOptionals,
   UserSchema,
   isCompleteUser,
