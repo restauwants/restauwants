@@ -166,16 +166,16 @@ function ReviewForm({
                 <div className="flex gap-0.5">
                   {Array.from({ length: 5 })
                     .map((_, index) => index + 1)
-                    .map((index) => (
+                    .map((rating) => (
                       <StarIcon
-                        key={index}
+                        key={rating}
                         className={cn(
                           "size-6",
-                          index <= field.value
+                          rating <= field.value
                             ? "fill-foreground"
                             : "fill-muted",
                         )}
-                        onClick={() => field.onChange(index)}
+                        onClick={() => field.onChange(rating)}
                       />
                     ))}
                 </div>
