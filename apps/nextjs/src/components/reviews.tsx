@@ -27,6 +27,7 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardHeader,
   CardTitle,
 } from "@restauwants/ui/card";
 import { DatePicker } from "@restauwants/ui/date-picker";
@@ -435,8 +436,8 @@ export function ReviewCard(props: {
   onEdit?: () => void;
 }) {
   return (
-    <Card className="p-0">
-      <CardContent className="p-0">
+    <Card className="divide-y">
+      <CardHeader className="p-0">
         <div className="box-content flex h-5 flex-row items-center gap-4 p-4">
           <div className="min-w-0 break-words text-sm text-muted-foreground">
             {props.review.username}
@@ -465,23 +466,22 @@ export function ReviewCard(props: {
             )}
           </div>
         </div>
-        <div className="border-t" />
-        <CardContent className="p-4">
-          <div className="grid gap-1.5">
-            <CardTitle>{props.review.restaurantName}</CardTitle>
-            <CardDescription className="whitespace-pre-wrap">
-              {props.review.text}
-            </CardDescription>
+      </CardHeader>
+      <CardContent className="p-4">
+        <div className="grid gap-1.5">
+          <CardTitle>{props.review.restaurantName}</CardTitle>
+          <CardDescription className="whitespace-pre-wrap">
+            {props.review.text}
+          </CardDescription>
+        </div>
+        <div className="mt-4 flex items-center gap-2">
+          <StarIcon className="h-6 w-6 fill-foreground" />
+          <div className="text-3xl font-semibold">{props.review.rating}</div>
+          <div className="ml-auto flex items-center gap-2">
+            <DollarSignIcon className="h-4 w-4" />
+            <span className="font-semibold">{props.review.price}</span>
           </div>
-          <div className="mt-4 flex items-center gap-2">
-            <StarIcon className="h-6 w-6 fill-secondary" />
-            <div className="text-3xl font-semibold">{props.review.rating}</div>
-            <div className="ml-auto flex items-center gap-2">
-              <DollarSignIcon className="h-4 w-4" />
-              <span className="font-semibold">{props.review.price}</span>
-            </div>
-          </div>
-        </CardContent>
+        </div>
       </CardContent>
     </Card>
   );
@@ -490,8 +490,8 @@ export function ReviewCard(props: {
 export function ReviewCardSkeleton(props: { pulse?: boolean }) {
   const { pulse = true } = props;
   return (
-    <Card className="p-0">
-      <CardContent className="p-0">
+    <Card className="divide-y">
+      <CardHeader className="p-0">
         <div className="box-content h-5 items-center p-4">
           <div
             className={cn(
@@ -502,40 +502,36 @@ export function ReviewCardSkeleton(props: { pulse?: boolean }) {
             &nbsp;
           </div>
         </div>
-        <div className="border-t" />
-        <CardContent className="p-4">
-          <div className="grid gap-1.5">
-            <CardTitle
-              className={cn(
-                "w-32 rounded bg-secondary",
-                pulse && "animate-pulse",
-              )}
-            >
-              &nbsp;
-            </CardTitle>
-            <CardDescription
-              className={cn(
-                "w-full rounded bg-muted",
-                pulse && "animate-pulse",
-              )}
-            >
-              <br />
-              <br />
-              <br />
-            </CardDescription>
-          </div>
-          <div
+      </CardHeader>
+      <CardContent className="p-4">
+        <div className="grid gap-1.5">
+          <CardTitle
             className={cn(
-              "mt-4 flex items-center gap-2",
+              "w-32 rounded bg-secondary",
               pulse && "animate-pulse",
             )}
           >
-            <div className="w-16 rounded bg-secondary text-3xl">&nbsp;</div>
-            <div className="ml-auto flex items-center gap-2">
-              <span className="w-20 rounded bg-secondary">&nbsp;</span>
-            </div>
+            &nbsp;
+          </CardTitle>
+          <CardDescription
+            className={cn("w-full rounded bg-muted", pulse && "animate-pulse")}
+          >
+            <br />
+            <br />
+            <br />
+          </CardDescription>
+        </div>
+        <div
+          className={cn(
+            "mt-4 flex items-center gap-2",
+            pulse && "animate-pulse",
+          )}
+        >
+          <div className="w-16 rounded bg-secondary text-3xl">&nbsp;</div>
+          <div className="ml-auto flex items-center gap-2">
+            <span className="w-20 rounded bg-secondary">&nbsp;</span>
           </div>
-        </CardContent>
+        </div>
       </CardContent>
     </Card>
   );
