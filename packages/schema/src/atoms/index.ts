@@ -31,21 +31,46 @@ export const PriceSchema = z
 
 export const ReviewTextSchema = z.string().min(0).max(255);
 
-export const VisitedAtSchema = z.date().refine((d) => d <= new Date(), {
-  message: "The date of visit must be in the past",
-});
+const isDateBefore = (maximum: Date) => (date: Date) => date <= maximum;
+const isDateInThePast = (date: Date) => isDateBefore(new Date())(date);
+const isDateAfter = (minimum: Date) => (date: Date) => date >= minimum;
+const startOfYear2000 = new Date("2000-01-01");
 
-export const CreatedAtSchema = z.date().refine((d) => d <= new Date(), {
-  message: "The creation date must be in the past",
-});
+export const VisitedAtSchema = z
+  .date()
+  .refine(isDateInThePast, {
+    message: "The date of visit must be in the past",
+  })
+  .refine(isDateAfter(startOfYear2000), {
+    message: "The date of visit must be after the start of year 2000",
+  });
 
-export const ConfirmedAtSchema = z.date().refine((d) => d <= new Date(), {
-  message: "The confirmation date must be in the past",
-});
+export const CreatedAtSchema = z
+  .date()
+  .refine(isDateInThePast, {
+    message: "The creation date must be in the past",
+  })
+  .refine(isDateAfter(startOfYear2000), {
+    message: "The creation date must be after the start of year 2000",
+  });
 
-export const UpdatedAtSchema = z.date().refine((d) => d <= new Date(), {
-  message: "The update date must be in the past",
-});
+export const ConfirmedAtSchema = z
+  .date()
+  .refine(isDateInThePast, {
+    message: "The confirmation date must be in the past",
+  })
+  .refine(isDateAfter(startOfYear2000), {
+    message: "The confirmation date must be after the start of year 2000",
+  });
+
+export const UpdatedAtSchema = z
+  .date()
+  .refine(isDateInThePast, {
+    message: "The update date must be in the past",
+  })
+  .refine(isDateAfter(startOfYear2000), {
+    message: "The update date must be after the start of year 2000",
+  });
 
 export const ReviewIdSchema = z.number().int().positive();
 

@@ -6,6 +6,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 
 import type { RouterOutputs } from "@restauwants/api";
 import type { ReviewSchema } from "@restauwants/schema/client";
+import { VisitedAtSchema } from "@restauwants/schema/atoms";
 import {
   CreateReviewFormSchema,
   CreateReviewSchema,
@@ -142,7 +143,13 @@ function ReviewForm({
           render={({ field }) => (
             <FormItem>
               <FormLabel>Date of Visit</FormLabel>
-              <DatePicker selected={field.value} onSelect={field.onChange} />
+              <DatePicker
+                selected={field.value}
+                onSelect={field.onChange}
+                isDateDisabled={(date) =>
+                  !VisitedAtSchema.safeParse(date).success
+                }
+              />
               <FormMessage reserve />
             </FormItem>
           )}
