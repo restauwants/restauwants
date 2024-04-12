@@ -142,7 +142,7 @@ export const reviewRouter = createTRPCRouter({
         }),
       );
 
-      return parseInt(reviewTable.insertId);
+      return reviewTable[0].insertId;
     }),
 
   delete: protectedProcedure

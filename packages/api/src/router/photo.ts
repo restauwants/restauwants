@@ -1,3 +1,5 @@
+import { Storage } from "@google-cloud/storage";
+import { v4 as uuidv4 } from "uuid";
 import { z } from "zod";
 
 import type { Database } from "@restauwants/db";
@@ -7,81 +9,50 @@ import { CreatePhotosSchema as CreatePhotosSchemaExternal } from "@restauwants/v
 
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
+
 export const photoRouter = createTRPCRouter({
   getSignedUploadUrl: protectedProcedure
-    .input(
-      z
-        .number()
-        .nonnegative()
-        .lt(3 * 1024 * 1024),
-    )
+    .input(z.number().nonnegative().lt(MAX_FILE_SIZE))
     .mutation(async ({ input }) => {
-      const res = await fetch(
-        getBaseUrl() + `/api/photo?action=upload&size=${input}`,
-      );
-      const { presignedUrl } = (await res.json()) as { presignedUrl: string };
-      return presignedUrl;
+      return getSignedUploadUrl(input);
     }),
-
-  /*
-  create: protectedProcedure
-    .input(CreatePhotoSchemaExternal)
-    .mutation(async ({ ctx, input }) => {
-        await ctx.db.insert(schema.photo).values(
-          PhotoSchemaDatabase.parse({
-            ...input,
-            createdAt: new Date(),
-          }),
-        );
-      }),
-      */
 
   addPhotosToReview: protectedProcedure
     .input(CreatePhotosSchemaExternal)
     .mutation(async ({ ctx, input }) => {
-      // If the user does not own the review, or the review does not exist,
-      // do not move their file to the prod bucket
       const review = await ctx.db.query.review.findFirst({
         where: eq(schema.review.id, input.reviewId),
       });
+
+      // Error checking
       if (!review) {
         throw new Error("Review not found");
-      }
-      if (review.userId !== ctx.session.user.id) {
+      } else if (review.userId !== ctx.session.user.id) {
         throw new Error("Not authorized");
+      } else if (input.signedUrls.length !== input.sizes.length) {
+        throw new Error("signedUrls and sizes must be the same length");
       }
 
-      const filenames = [] as string[];
-      // Move every file to prod bucket
-      // TODO: verify signedUrls and size are same length
+      const filenames: Promise<string>[] = [];
       for (let i = 0; i < input.signedUrls.length; i++) {
-        const signedUrl = input.signedUrls[i];
-        const size = input.sizes[i];
-        if (!signedUrl || !size) {
-          throw new Error("signedUrl and size query parameters are required");
-        }
-        /*
-        const res = await fetch(
-          getBaseUrl() +
-            `/api/photo?action=move&signedUrl=${encodeURIComponent(
-              signedUrl,
-            )}&size=${size}`,
-        );
-
-        const { success } = (await res.json()) as { success: boolean };*/
-        const success = true;
-        if (success) {
-          // This is safe as long as the "move" action in the above fetch verifies the URL
-          const url = new URL(signedUrl);
-          const filename = url.pathname.split("/").pop();
-          if (filename) {
-            filenames.push(filename);
-          }
-        }
+        const filename = getFileFromSignedUrl(
+          input.signedUrls[i]!,
+          input.sizes[i]!,
+        )
+          .then((filename) =>
+            moveFile(
+              filename,
+              "restauwants_staging",
+              "restauwants_production",
+            ).then(() => filename),
+          )
+          .catch((e) => {
+            throw new Error(`Error adding photos to review: ${e}`);
+          });
+        filenames.push(filename);
       }
-      addPhotosToReviewInDB(ctx, input.reviewId, filenames).catch((e) => {
-        throw e;
-      });
+      addPhotosToReviewInDB(ctx, input.reviewId, await Promise.all(filenames));
     }),
 
   // TODO: needs to also delete the files from the production storage bucket
@@ -108,8 +79,19 @@ export const photoRouter = createTRPCRouter({
     }),
 });
 
+async function getFileFromSignedUrl(
+  signedUrl: string,
+  size: number,
+): Promise<string> {
+  if (await verifySignedUrl(signedUrl, size)) {
+    return new URL(signedUrl).pathname.split("/").pop()!;
+  } else {
+    throw new Error("Invalid signed URL");
+  }
+}
+
 // PRECONDITION: The user must own the review
-async function addPhotosToReviewInDB(
+function addPhotosToReviewInDB(
   ctx: {
     session: {
       user: {
@@ -127,6 +109,11 @@ async function addPhotosToReviewInDB(
     id: string;
     createdAt: Date;
   }
+
+  if (photoIds.length === 0) {
+    return;
+  }
+
   const rows = [] as row[];
   for (const id of photoIds) {
     rows.push(
@@ -138,7 +125,12 @@ async function addPhotosToReviewInDB(
     );
   }
 
-  return ctx.db.insert(schema.photo).values(rows);
+  ctx.db
+    .insert(schema.photo)
+    .values(rows)
+    .catch((e) => {
+      throw new Error(`Error adding photos to review: ${e}`);
+    });
 }
 
 // Precondition: user owns the review
@@ -146,16 +138,16 @@ export const deleteByReviewId = async (db: Database, reviewId: number) => {
   const photos = await db.query.photo.findMany({
     where: eq(schema.photo.reviewId, reviewId),
   });
-  for (const filename of photos) {
-    const res = await fetch(
-      getBaseUrl() +
-        `/api/photo?action=delete&filename=${encodeURIComponent(filename.id)}`,
-    );
 
+  for (const photo of photos) {
+    const filename = photo.id;
     // TODO: What if some files are deleted and others aren't?
-    (await res.json()) as { success: boolean };
+    // Current behaviour is to continue trying to delete the remaining photos
+    deleteFile(filename, "restauwants_production").catch(() => {
+      console.error(`Error deleting photo ${filename}`);
+    });
+    await db.delete(schema.photo).where(eq(schema.photo.reviewId, reviewId));
   }
-  await db.delete(schema.photo).where(eq(schema.photo.reviewId, reviewId));
 };
 
 // PRECONDITION: reviewid is valid
@@ -164,24 +156,173 @@ export const byReviewId = async (db: Database, reviewId: number) => {
   const photos = await db.query.photo.findMany({
     where: eq(schema.photo.reviewId, reviewId),
   });
-  // get the signed urls for the photos
-  const signedUrls = photos.map(async (photo) => {
-    const res = await fetch(
-      getBaseUrl() + `/api/photo?action=download&photoId=${photo.id}`,
-      { next: { revalidate: 3600 } },
-    );
+  // TODO: What is the expected behaviour if one of the signed urls fails to be generated?
+  // Right now in that case all photos fail to load
+  const signedUrls = photos.map((photo) =>
+    getSignedDownloadUrl(photo.id).catch((e) => {
+      throw new Error(`Error getting signed url for photo ${photo.id}: ${e}`);
+    }),
+  );
 
-    if (!res.ok) {
-      throw new Error("Failed to fetch presigned URL");
-    }
-    const { presignedUrl } = (await res.json()) as { presignedUrl: string };
-    return presignedUrl;
-  });
   return Promise.all(signedUrls);
 };
 
-function getBaseUrl() {
-  if (typeof window !== "undefined") return window.location.origin;
-  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
-  return `http://localhost:${process.env.PORT ?? 3000}`;
+function getStorage() {
+  return new Storage({
+    projectId: "nifty-edge-415820",
+    credentials: {
+      client_email: process.env.GCS_CLIENT_EMAIL,
+      private_key: process.env.GCS_PRIVATE_KEY?.split(String.raw`\n`).join(
+        "\n",
+      ),
+    },
+  });
+}
+
+// TODO: Validation is all messed up because the route handler is not typed :(
+async function getSignedDownloadUrl(filename: string) {
+  const options = {
+    action: "read" as const,
+    expires: Date.now() + 3600 * 1000, // 1 hour
+  };
+
+  const prodBucket = "restauwants_production";
+
+  return getSignedUrl(prodBucket, filename, options);
+}
+
+async function getSignedUploadUrl(fileSize: number) {
+  if (0 >= fileSize) {
+    return Promise.reject(new Error("No file attached."));
+  } else if (fileSize > MAX_FILE_SIZE) {
+    return Promise.reject(new Error("File size too large."));
+  }
+
+  const stagingBucket = "restauwants_staging";
+  // Filenames should be generated with uuids to avoid overwrite conflicts in the bucket
+  const filename = uuidv4();
+
+  const options = {
+    action: "write" as const,
+    expires: Date.now() + 600 * 1000, // 10 minutes
+    extensionHeaders: { "content-length": fileSize },
+  };
+
+  return getSignedUrl(stagingBucket, filename, options);
+}
+
+async function getSignedUrl(
+  bucketName: string,
+  filename: string,
+  inputOptions: {
+    action: "write" | "read";
+    expires: number;
+    extensionHeaders?: { "content-length": number };
+  },
+): Promise<string> {
+  const storage = getStorage();
+  const bucket = storage.bucket(bucketName);
+  const file = bucket.file(filename);
+
+  const options = {
+    version: "v4" as const,
+    ...inputOptions,
+  };
+
+  const [exists] = await file.exists();
+  if (!exists && inputOptions.action === "read") {
+    throw new Error("File does not exist.");
+  }
+
+  const [url] = await file.getSignedUrl(options);
+
+  return url;
+}
+
+async function verifySignedUrl(
+  checkUrlString: string,
+  fileSize: number,
+): Promise<boolean> {
+  const url = new URL(checkUrlString);
+  const storage = getStorage();
+
+  // valid pathname is of the form "/restauwants_staging/{uuid}"
+  const pathname_subdirs = url.pathname.split("/");
+  if (pathname_subdirs.length != 3) return false;
+  const bucketName = pathname_subdirs[1]!;
+  const filename: string = pathname_subdirs[pathname_subdirs.length - 1]!;
+
+  const bucket = storage.bucket(bucketName);
+  const file = bucket.file(filename);
+
+  // xGoogDate is the date the signed url was created, xGoogExpires is number of seconds until the url expires
+  const xGoogDate = url.searchParams.get("X-Goog-Date");
+  const xGoogExpires = url.searchParams.get("X-Goog-Expires");
+  if (xGoogDate == null || xGoogExpires == null) return false;
+
+  if (xGoogDate.length != 16) return false;
+  // xGoogDate is in the format "YYYYMMDDTHHMMSSZ"
+  // we want it formatted as "YYYY-MM-DDTHH:MM:SSZ"
+  const xGoogDate_formatted =
+    xGoogDate.substring(0, 4) +
+    "-" +
+    xGoogDate.substring(4, 6) +
+    "-" +
+    xGoogDate.substring(6, 11) +
+    ":" +
+    xGoogDate.substring(11, 13) +
+    ":" +
+    xGoogDate.substring(13, 16);
+
+  const options = {
+    version: "v4" as const,
+    action: "write" as const,
+    accessibleAt: new Date(xGoogDate_formatted),
+    expires:
+      new Date(xGoogDate_formatted).getTime() + parseInt(xGoogExpires) * 1000,
+    extensionHeaders: { "content-length": fileSize },
+  };
+
+  const [signedUrlString] = await file.getSignedUrl(options);
+
+  return signedUrlString === checkUrlString;
+}
+
+async function moveFile(
+  filename: string,
+  srcBucketName: string,
+  destBucketName: string,
+) {
+  const storage = getStorage();
+  const srcBucket = storage.bucket(srcBucketName);
+  const destBucket = storage.bucket(destBucketName);
+
+  // check if the file exists first
+  const file = srcBucket.file(filename);
+  if (!(await file.exists())) {
+    throw new Error("File to be moved was not uploaded to bucket.");
+  } else {
+    file.move(destBucket.file(filename), (e) => {
+      if (e) {
+        throw e;
+      }
+    });
+  }
+}
+
+async function deleteFile(filename: string, bucketName: string) {
+  // TODO: Verify for edge cases
+  const storage = getStorage();
+  const bucket = storage.bucket(bucketName);
+  if (!(await bucket.exists())) {
+    throw new Error("Bucket does not exist.");
+  }
+
+  // check if the file exists first
+  const file = bucket.file(filename);
+  if (!(await file.exists())) {
+    throw new Error("File to be moved was not uploaded to bucket.");
+  } else {
+    await file.delete();
+  }
 }

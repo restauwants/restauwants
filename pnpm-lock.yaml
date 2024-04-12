@@ -78,9 +78,6 @@ importers:
 
   apps/nextjs:
     dependencies:
-      '@google-cloud/storage':
-        specifier: ^7.7.0
-        version: 7.7.0
       '@restauwants/api':
         specifier: workspace:^0.1.0
         version: link:../../packages/api
@@ -159,9 +156,6 @@ importers:
       usehooks-ts:
         specifier: ^3.0.2
         version: 3.0.2(react@18.2.0)
-      uuid:
-        specifier: ^9.0.1
-        version: 9.0.1
       vaul:
         specifier: ^0.9.0
         version: 0.9.0(@types/react-dom@18.2.18)(@types/react@18.2.48)(react-dom@18.2.0)(react@18.2.0)
@@ -211,6 +205,9 @@ importers:
 
   packages/api:
     dependencies:
+      '@google-cloud/storage':
+        specifier: ^7.7.0
+        version: 7.7.0
       '@restauwants/auth':
         specifier: workspace:^0.1.0
         version: link:../auth
@@ -226,6 +223,9 @@ importers:
       superjson:
         specifier: 2.2.1
         version: 2.2.1
+      uuid:
+        specifier: ^9.0.1
+        version: 9.0.1
       zod:
         specifier: ^3.22.4
         version: 3.22.4
@@ -239,6 +239,9 @@ importers:
       '@restauwants/tsconfig':
         specifier: workspace:^0.1.0
         version: link:../../tooling/typescript
+      '@types/uuid':
+        specifier: ^9.0.8
+        version: 9.0.8
       eslint:
         specifier: ^8.56.0
         version: 8.56.0

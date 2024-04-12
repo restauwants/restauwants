@@ -14,17 +14,20 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@google-cloud/storage": "^7.7.0",
     "@restauwants/auth": "workspace:^0.1.0",
     "@restauwants/db": "workspace:^0.1.0",
     "@restauwants/validators": "workspace:^0.1.0",
     "@trpc/server": "11.0.0-next-beta.236",
     "superjson": "2.2.1",
+    "uuid": "^9.0.1",
     "zod": "^3.22.4"
   },
   "devDependencies": {
     "@restauwants/eslint-config": "workspace:^0.2.0",
     "@restauwants/prettier-config": "workspace:^0.1.0",
     "@restauwants/tsconfig": "workspace:^0.1.0",
+    "@types/uuid": "^9.0.8",
     "eslint": "^8.56.0",
     "prettier": "^3.1.1",
     "typescript": "^5.3.3"
