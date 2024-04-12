@@ -12,6 +12,7 @@ import {
 import {
   CreateReviewSchema as CreateReviewSchemaExternal,
   EditReviewSchema as EditReviewSchemaExternal,
+  ReviewSchema as ReviewSchemaExternal,
 } from "@restauwants/schema/server/external";
 import { GooglePlaceDetailsToRestaurantDetailsSchema } from "@restauwants/schema/server/internal";
 
@@ -50,20 +51,22 @@ export const reviewRouter = createTRPCRouter({
           .where(where)
           .orderBy(desc(schema.review.id))
           .limit(input.limit + 1)
-      ).map((r) => ({
-        id: r.review.id,
-        text: r.review.text,
-        rating: r.review.rating,
-        price: r.review.price,
-        visitedAt: r.review.visitedAt,
-        createdAt: r.review.createdAt,
-        updatedAt: r.review.updatedAt,
-        userId: r.friendProfile.id,
-        username: r.friendProfile.username,
-        restaurantId: r.restaurant.id,
-        restaurantName: r.restaurant.name,
-        restaurantAddress: r.restaurant.address,
-      }));
+      ).map((r) =>
+        ReviewSchemaExternal.parse({
+          id: r.review.id,
+          text: r.review.text,
+          rating: r.review.rating,
+          price: r.review.price,
+          visitedAt: r.review.visitedAt,
+          createdAt: r.review.createdAt,
+          updatedAt: r.review.updatedAt,
+          userId: r.friendProfile.id,
+          username: r.friendProfile.username,
+          restaurantId: r.restaurant.id,
+          restaurantName: r.restaurant.name,
+          restaurantAddress: r.restaurant.address,
+        }),
+      );
       const hasMore = reviews.length > input.limit;
       if (hasMore) {
         reviews.pop();
@@ -107,20 +110,22 @@ export const reviewRouter = createTRPCRouter({
           .where(where)
           .orderBy(desc(schema.review.id))
           .limit(input.limit + 1)
-      ).map((r) => ({
-        id: r.review.id,
-        text: r.review.text,
-        rating: r.review.rating,
-        price: r.review.price,
-        visitedAt: r.review.visitedAt,
-        createdAt: r.review.createdAt,
-        updatedAt: r.review.updatedAt,
-        userId: r.profile.id,
-        username: r.profile.username,
-        restaurantId: r.restaurant.id,
-        restaurantName: r.restaurant.name,
-        restaurantAddress: r.restaurant.address,
-      }));
+      ).map((r) =>
+        ReviewSchemaExternal.parse({
+          id: r.review.id,
+          text: r.review.text,
+          rating: r.review.rating,
+          price: r.review.price,
+          visitedAt: r.review.visitedAt,
+          createdAt: r.review.createdAt,
+          updatedAt: r.review.updatedAt,
+          userId: r.profile.id,
+          username: r.profile.username,
+          restaurantId: r.restaurant.id,
+          restaurantName: r.restaurant.name,
+          restaurantAddress: r.restaurant.address,
+        }),
+      );
       const hasMore = reviews.length > input.limit;
       if (hasMore) {
         reviews.pop();
@@ -178,14 +183,16 @@ export const reviewRouter = createTRPCRouter({
       const update = async (db: Database) => {
         await db
           .update(schema.review)
-          .set({
-            restaurantId: input.restaurantId,
-            rating: input.rating,
-            price: input.price,
-            text: input.text,
-            visitedAt: input.visitedAt,
-            updatedAt: new Date(),
-          })
+          .set(
+            ReviewSchemaDatabase.partial().parse({
+              restaurantId: input.restaurantId,
+              rating: input.rating,
+              price: input.price,
+              text: input.text,
+              visitedAt: input.visitedAt,
+              updatedAt: new Date(),
+            }),
+          )
           .where(eq(schema.review.id, input.id));
       };
       await withRestaurantCreationIfNecessary(

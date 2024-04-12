@@ -5,6 +5,7 @@ import { use, useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 
 import type { RouterOutputs } from "@restauwants/api";
+import type { ReviewSchema } from "@restauwants/schema/client";
 import {
   CreateReviewFormSchema,
   CreateReviewSchema,
@@ -278,9 +279,9 @@ function reviewList() {
 
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-    const [reviewToDelete, setReviewToDelete] = useState<
-      RouterOutputs["review"]["all"]["reviews"][number] | null
-    >(null);
+    const [reviewToDelete, setReviewToDelete] = useState<z.infer<
+      typeof ReviewSchema
+    > | null>(null);
 
     const editReviewForm = useForm({
       mode: "onChange",
@@ -291,9 +292,7 @@ function reviewList() {
       },
     });
 
-    const openEditModalFor = (
-      review: RouterOutputs["review"]["all"]["reviews"][number],
-    ) => {
+    const openEditModalFor = (review: z.infer<typeof ReviewSchema>) => {
       editReviewForm.setValue("id", review.id);
       editReviewForm.setValue("restaurant", {
         id: review.restaurantId,
@@ -317,9 +316,7 @@ function reviewList() {
       },
     });
 
-    const openDeleteModalFor = (
-      review: RouterOutputs["review"]["all"]["reviews"][number],
-    ) => {
+    const openDeleteModalFor = (review: z.infer<typeof ReviewSchema>) => {
       setReviewToDelete(review);
       setIsDeleteModalOpen(true);
     };
@@ -431,7 +428,7 @@ function reviewList() {
 export const ReviewList = reviewList();
 
 export function ReviewCard(props: {
-  review: RouterOutputs["review"]["all"]["reviews"][number];
+  review: z.infer<typeof ReviewSchema>;
   onDelete?: () => void;
   onEdit?: () => void;
 }) {

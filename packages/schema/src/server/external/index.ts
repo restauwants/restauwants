@@ -5,9 +5,13 @@ import {
   CreatedAtSchema,
   PriceSchema,
   RatingSchema,
+  RestaurantAddressSchema,
   RestaurantIdSchema,
+  RestaurantNameSchema,
   ReviewIdSchema,
   ReviewTextSchema,
+  UpdatedAtSchema,
+  UserIdSchema,
   UsernameSchema,
   VisitedAtSchema,
 } from "../../atoms";
@@ -21,6 +25,21 @@ export {
 
 export const RemoveFriendSchema = z.object({
   username: UsernameSchema,
+});
+
+export const ReviewSchema = z.object({
+  id: ReviewIdSchema,
+  text: ReviewTextSchema,
+  rating: RatingSchema,
+  price: PriceSchema,
+  visitedAt: VisitedAtSchema,
+  createdAt: CreatedAtSchema,
+  updatedAt: UpdatedAtSchema,
+  userId: UserIdSchema,
+  username: UsernameSchema,
+  restaurantId: RestaurantIdSchema,
+  restaurantName: RestaurantNameSchema,
+  restaurantAddress: RestaurantAddressSchema,
 });
 
 export const CreateReviewSchema = z.object({
