@@ -7,7 +7,7 @@ date = 2024-04-09T06:59:07Z
 
 The high-level architecture diagram below depicts the services that make up the RestauWants application.
 
-![Architecture Diagram](/images/architecture/architecture-diagram.png)
+![Architecture Diagram](/restauwants/images/architecture/architecture-diagram.png)
 
 The following services are part of the RestauWants application:
 - [Next.js](https://nextjs.org/): Provides the frontend and backend of the application.
