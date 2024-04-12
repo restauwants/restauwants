@@ -6,7 +6,7 @@ Track, review, wishlist, and share restaurants with friends.
 
 ## Links
 
-- [Documentation](https://restauwants.github.io/restauwants/)
+- [Documentation](https://restauwants.github.io/)
 - [Application](https://www.restauwants.com)
 
 ## Project Structure
