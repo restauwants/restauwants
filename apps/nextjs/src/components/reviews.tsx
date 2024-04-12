@@ -299,6 +299,7 @@ function reviewList() {
     ) => {
       editReviewForm.setValue("id", review.id.toString());
       editReviewForm.setValue("restaurantId", review.restaurantId.toString());
+      editReviewForm.setValue("name", review.name.toString());
       editReviewForm.setValue("rating", review.rating.toString());
       editReviewForm.setValue("price", review.price.toString());
       editReviewForm.setValue("text", review.text);
