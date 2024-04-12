@@ -5,7 +5,10 @@ import type { RestaurantIdSchema } from "@restauwants/schema/atoms";
 import type { RestaurantDetailsSchema } from "@restauwants/schema/server/internal";
 import { alias, and, desc, eq, lt, schema } from "@restauwants/db";
 import { ReviewIdSchema, UserIdSchema } from "@restauwants/schema/atoms";
-import { ReviewSchema as ReviewSchemaDatabase } from "@restauwants/schema/db";
+import {
+  RestaurantSchema as RestaurantSchemaDatabase,
+  ReviewSchema as ReviewSchemaDatabase,
+} from "@restauwants/schema/db";
 import {
   CreateReviewSchema as CreateReviewSchemaExternal,
   EditReviewSchema as EditReviewSchemaExternal,
@@ -235,9 +238,11 @@ const createRestaurant = async (
   restaurantId: z.infer<typeof RestaurantIdSchema>,
   details: z.infer<typeof RestaurantDetailsSchema>,
 ): Promise<void> => {
-  await db.insert(schema.restaurant).values({
-    id: restaurantId,
-    name: details.name,
-    address: details.address,
-  });
+  await db.insert(schema.restaurant).values(
+    RestaurantSchemaDatabase.parse({
+      id: restaurantId,
+      name: details.name,
+      address: details.address,
+    }),
+  );
 };
