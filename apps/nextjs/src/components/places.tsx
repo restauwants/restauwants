@@ -50,8 +50,14 @@ export const RestaurantSearchBoxWithSuggestions =
       types = ["bar", "restaurant", "cafe", "bakery"],
       isGoogleMapsScriptLoaded,
     }: RestaurantSearchBoxWithSuggestionsProps & PropsWithGoogleMapsScript) => {
+      const toValue = useCallback(
+        (place: z.infer<typeof PlaceSchema>) =>
+          AddPlaceDescription.parse(place).description,
+        [],
+      );
+
       const [skeletonValue, setSkeletonValue] = useState(
-        selected ? AddPlaceDescription.parse(selected).description : "",
+        selected ? toValue(selected) : "",
       );
 
       const {
@@ -90,6 +96,15 @@ export const RestaurantSearchBoxWithSuggestions =
           setValue(skeletonValue);
         }
       }, [ready, skeletonValue, setValue]);
+
+      useEffect(() => {
+        const value = selected ? toValue(selected) : "";
+        if (ready) {
+          setValue(value);
+        } else {
+          setSkeletonValue(value);
+        }
+      }, [selected, toValue, ready, setValue]);
 
       const suggestions: z.infer<typeof PlaceSchema>[] =
         status === "OK" ? GoogleApiToPlaceSchema.array().parse(data) : [];
