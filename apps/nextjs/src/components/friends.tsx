@@ -112,7 +112,7 @@ const ReceivedFriendRequestsTable = withFriendTable(() => {
   const [receivedFriendRequests] =
     api.friend.request.received.useSuspenseQuery();
   const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
-  const [usernameToReject, setUsernameToReject] = useState<string | null>(null);
+  const [usernameToReject, setUsernameToReject] = useState<string>();
 
   const utils = api.useUtils();
 
@@ -172,7 +172,7 @@ const ReceivedFriendRequestsTable = withFriendTable(() => {
               Are you sure about rejecting this request?
             </AlertDialogTitle>
             <AlertDialogDescription>
-              Your friend request from {usernameToReject} will be rejected.
+              Your friend request from {usernameToReject!} will be rejected.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -217,7 +217,7 @@ function ExistingFriendTableRow({
 const ExistingFriendsTable = withFriendTable(() => {
   const [friends] = api.friend.all.useSuspenseQuery();
   const [isRemoveModalOpen, setIsRemoveModalOpen] = useState(false);
-  const [usernameToRemove, setUsernameToRemove] = useState<string | null>(null);
+  const [usernameToRemove, setUsernameToRemove] = useState<string>();
 
   const utils = api.useUtils();
 
@@ -256,7 +256,7 @@ const ExistingFriendsTable = withFriendTable(() => {
               Are you sure about removing this friend?
             </AlertDialogTitle>
             <AlertDialogDescription>
-              You will no longer be friends with {usernameToRemove}.
+              You will no longer be friends with {usernameToRemove!}.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -299,7 +299,7 @@ function SentFriendRequestTableRow({
 const SentFriendRequestsTable = withFriendTable(() => {
   const [sentFriendRequests] = api.friend.request.sent.useSuspenseQuery();
   const [isRevokeModalOpen, setIsRevokeModalOpen] = useState(false);
-  const [usernameToRevoke, setUsernameToRevoke] = useState<string | null>(null);
+  const [usernameToRevoke, setUsernameToRevoke] = useState<string>();
 
   const utils = api.useUtils();
 
@@ -338,7 +338,7 @@ const SentFriendRequestsTable = withFriendTable(() => {
               Are you sure about canceling this request?
             </AlertDialogTitle>
             <AlertDialogDescription>
-              Your friend request to {usernameToRevoke} will be canceled.
+              Your friend request to {usernameToRevoke!} will be canceled.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

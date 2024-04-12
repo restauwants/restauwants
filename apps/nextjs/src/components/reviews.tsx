@@ -271,9 +271,8 @@ function reviewList() {
 
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-    const [reviewToDelete, setReviewToDelete] = useState<z.infer<
-      typeof ReviewSchema
-    > | null>(null);
+    const [reviewToDelete, setReviewToDelete] =
+      useState<z.infer<typeof ReviewSchema>>();
 
     const editReviewForm = useForm({
       mode: "onChange",
