@@ -106,7 +106,7 @@ export const Completions = <T,>({
         placeholder={placeholder}
         disabled={disabled}
       />
-      <div className="relative mt-1">
+      <div className="relative">
         {isOpen ? (
           <CommandList className="absolute top-0 z-10 w-full rounded-md border bg-popover shadow-lg animate-in fade-in-0 zoom-in-95">
             {isLoading ? (
