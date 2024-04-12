@@ -21,6 +21,7 @@ import {
   AlertDialogTitle,
 } from "@restauwants/ui/alert-dialog";
 import { Button } from "@restauwants/ui/button";
+import { ConfirmationDialog } from "@restauwants/ui/confirmation";
 import {
   Form,
   FormControl,
@@ -165,32 +166,21 @@ const ReceivedFriendRequestsTable = withFriendTable(() => {
           }
         />
       ))}
-      <AlertDialog open={isRejectModalOpen} onOpenChange={setIsRejectModalOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>
-              Are you sure about rejecting this request?
-            </AlertDialogTitle>
-            <AlertDialogDescription>
-              Your friend request from {usernameToReject!} will be rejected.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={() =>
-                rejectFriendRequest.mutate(
-                  RejectFriendRequestSchema.parse({
-                    fromUsername: usernameToReject!,
-                  }),
-                )
-              }
-            >
-              Reject
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <ConfirmationDialog
+        title="Are you sure about rejecting this request?"
+        description={`Your friend request from ${usernameToReject!} will be rejected.`}
+        cancelVerb="Cancel"
+        actionVerb="Reject"
+        onAction={() =>
+          rejectFriendRequest.mutate(
+            RejectFriendRequestSchema.parse({
+              fromUsername: usernameToReject!,
+            }),
+          )
+        }
+        open={isRejectModalOpen}
+        onOpenChange={setIsRejectModalOpen}
+      />
     </>
   );
 });
