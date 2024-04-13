@@ -8,6 +8,3 @@ date = 2024-04-12T21:30:00Z
 
 ## Milestone 3 Pitch Video
 {{< youtube PLCFmx98x-M >}}
-
-## Milestone 3 Release
-[View our release on GitHub.]()
