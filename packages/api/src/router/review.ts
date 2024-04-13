@@ -9,6 +9,10 @@ import {
 
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 import { areFriends } from "./friend";
+import {
+  deleteByReviewId as deletePhotosByReviewId,
+  byReviewId as photoUrlsFromReviewId,
+} from "./photo";
 
 // async function queryGooglePlaces(placeId: string) {
 //   const apiKey = process.env.GOOGLE_API_KEY;
@@ -34,23 +38,36 @@ export const reviewRouter = createTRPCRouter({
             lt(schema.review.id, input.cursor),
           )
         : eq(schema.friend.toUserId, ctx.session.user.id);
-      const reviews = (
-        await ctx.db
-          .select()
-          .from(schema.review)
-          .innerJoin(
-            schema.friend,
-            eq(schema.friend.fromUserId, schema.review.userId),
-          )
-          .innerJoin(friendProfile, eq(friendProfile.id, schema.review.userId))
-          .where(where)
-          .orderBy(desc(schema.review.id))
-          .limit(input.limit + 1)
-      ).map((r) => ({
-        ...r.review,
-        username: r.friendProfile.username,
-        name: r.review.name,
-      }));
+      const reviews = await Promise.all(
+        (
+          await ctx.db
+            .select()
+            .from(schema.review)
+            .innerJoin(
+              schema.friend,
+              eq(schema.friend.fromUserId, schema.review.userId),
+            )
+            .innerJoin(
+              friendProfile,
+              eq(friendProfile.id, schema.review.userId),
+            )
+            .where(where)
+            .orderBy(desc(schema.review.id))
+            .limit(input.limit + 1)
+        ).map(async (r) => ({
+          ...r.review,
+          photos: await photoUrlsFromReviewId(
+            ctx.db,
+            r.review.id,
+            // TODO: Think about handling this better rather than failing silently
+          ).catch((error) => {
+            console.error(error);
+            return [];
+          }),
+          username: r.friendProfile.username,
+          name: r.review.name,
+        })),
+      );
       const hasMore = reviews.length > input.limit;
       if (hasMore) {
         reviews.pop();
@@ -79,22 +96,32 @@ export const reviewRouter = createTRPCRouter({
             lt(schema.review.id, input.cursor),
           )
         : eq(schema.review.userId, input.userId);
-      const reviews = (
-        await ctx.db
-          .select()
-          .from(schema.review)
-          .innerJoin(
-            schema.profile,
-            eq(schema.profile.id, schema.review.userId),
-          )
-          .where(where)
-          .orderBy(desc(schema.review.id))
-          .limit(input.limit + 1)
-      ).map((r) => ({
-        ...r.review,
-        username: r.profile.username,
-        name: r.review.name,
-      }));
+      const reviews = await Promise.all(
+        (
+          await ctx.db
+            .select()
+            .from(schema.review)
+            .innerJoin(
+              schema.profile,
+              eq(schema.profile.id, schema.review.userId),
+            )
+            .where(where)
+            .orderBy(desc(schema.review.id))
+            .limit(input.limit + 1)
+        ).map(async (r) => ({
+          ...r.review,
+          photos: await photoUrlsFromReviewId(
+            ctx.db,
+            r.review.id,
+            // TODO: Think about handling this better rather than failing silently
+          ).catch((error) => {
+            console.error(error);
+            return [];
+          }),
+          username: r.profile.username,
+          name: r.review.name,
+        })),
+      );
       const hasMore = reviews.length > input.limit;
       if (hasMore) {
         reviews.pop();
@@ -105,7 +132,8 @@ export const reviewRouter = createTRPCRouter({
   create: protectedProcedure
     .input(CreateReviewSchemaExternal)
     .mutation(async ({ ctx, input }) => {
-      await ctx.db.insert(schema.review).values(
+      // create the review
+      const reviewTable = await ctx.db.insert(schema.review).values(
         ReviewSchemaDatabase.parse({
           ...input,
           userId: ctx.session.user.id,
@@ -113,6 +141,8 @@ export const reviewRouter = createTRPCRouter({
           updatedAt: new Date(),
         }),
       );
+
+      return reviewTable[0].insertId;
     }),
 
   delete: protectedProcedure
@@ -127,6 +157,7 @@ export const reviewRouter = createTRPCRouter({
       if (review.userId !== ctx.session.user.id) {
         throw new Error("Not authorized");
       }
+      await deletePhotosByReviewId(ctx.db, review.id);
       await ctx.db.delete(schema.review).where(eq(schema.review.id, input));
     }),
 

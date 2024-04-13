@@ -15,6 +15,18 @@ const config = {
     "@restauwants/validators",
   ],
 
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "storage.googleapis.com",
+        pathname: "/restauwants_production/*",
+        port: "",
+      },
+    ],
+    minimumCacheTTL: 3600,
+  },
+
   /** We already do linting and typechecking as separate tasks in CI */
   eslint: { ignoreDuringBuilds: true },
   typescript: { ignoreBuildErrors: true },

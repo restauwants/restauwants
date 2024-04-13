@@ -3,8 +3,8 @@ import { z } from "zod";
 import { username } from "../../common";
 
 export {
-  UserSchemaWithOptionals,
   UserSchema,
+  UserSchemaWithOptionals,
   isCompleteUser,
 } from "../internal";
 
@@ -72,4 +72,15 @@ export const CreateProfileSchema = z.object({
 export const AddRestaurantSchema = z.object({
   restaurantId: z.string(),
   name: z.string(),
+});
+
+export const CreatePhotosSchema = z.object({
+  reviewId: z.number().int().positive(),
+  signedUrls: z.string().array(),
+  sizes: z
+    .number()
+    .int()
+    .positive()
+    .lte(3 * 1024 * 1024)
+    .array(),
 });

@@ -8,6 +8,7 @@ export {
   isCompleteUser,
   RemoveFriendSchema,
   CreateReviewSchema,
+  CreatePhotosSchema,
   EditReviewSchema,
   FriendSchema,
   ReceivedFriendRequestSchema,
@@ -27,6 +28,23 @@ export const CreateReviewFormSchema = z.object({
   visitedAt: z.date().refine((d) => d <= new Date(), {
     message: "visitedAt must be in the past",
   }),
+  files: z
+    .custom<Blob>((value) => value instanceof Blob, {
+      message: "Files must be of type Blob",
+    })
+    .array()
+    .max(7)
+    .refine(
+      (files) => {
+        for (const file of files) {
+          if (file.size === 0 || file.size > 5 * 1024 * 1024) {
+            return false;
+          }
+        }
+        return true;
+      },
+      { message: "Images must be less than 5 MB in size" },
+    ),
 });
 
 export const AddFriendFormSchema = z.object({

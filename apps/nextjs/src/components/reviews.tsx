@@ -2,6 +2,7 @@
 
 import type { z } from "zod";
 import { use, useEffect, useState } from "react";
+import Image from "next/image";
 import InfiniteScroll from "react-infinite-scroll-component";
 
 import type { RouterOutputs } from "@restauwants/api";
@@ -51,6 +52,7 @@ import { Textarea } from "@restauwants/ui/textarea";
 import { fromNow } from "@restauwants/ui/time";
 import { toast } from "@restauwants/ui/toast";
 import {
+  CreatePhotosSchema,
   CreateReviewFormSchema,
   CreateReviewSchema,
   EditReviewFormSchema,
@@ -74,6 +76,7 @@ export function CreateReviewForm() {
       rating: "",
       price: "",
       text: "",
+      files: [],
     },
   });
 
@@ -83,6 +86,56 @@ export function CreateReviewForm() {
   }, [form]);
 
   const utils = api.useUtils();
+
+  const createPhotos = api.photo.addPhotosToReview.useMutation({
+    onSuccess: async () => {
+      await utils.photo.invalidate();
+    },
+    onError: () => {
+      toast.error("Failed to upload photo");
+    },
+  });
+
+  const uploadPhotos = api.photo.getSignedUploadUrl.useMutation({
+    onSuccess: async () => {
+      await utils.photo.invalidate();
+    },
+    onError: () => {
+      toast.error("Failed to upload photo");
+    },
+  });
+
+  // TODO: These things need to move into their own file...
+  async function uploadFile(file: Blob) {
+    const presignedUrl = await uploadPhotos.mutateAsync(file.size);
+    if (!presignedUrl) {
+      throw new Error("Failed to obtain a presigned upload url");
+    }
+    const res = await fetch(presignedUrl, {
+      method: "PUT",
+      body: file,
+    });
+    return res;
+  }
+
+  const addPhotosToReview = async (
+    urls: string[],
+    sizes: number[],
+    reviewId: number,
+  ) => {
+    // 1. Validate lengths of imageUrls and imageSizes clientside?
+    if (urls.length !== sizes.length) {
+      throw new Error("Image urls and sizes must be the same length");
+    }
+    // TODO: there's probably an issue if a user gives another user their signed url after they've already created a review...
+    const photo_data = {
+      reviewId: reviewId,
+      signedUrls: urls,
+      sizes: sizes,
+    };
+    // 2. Insert the image into the photos table
+    createPhotos.mutate(CreatePhotosSchema.parse(photo_data));
+  };
 
   const createReview = api.review.create.useMutation({
     onSuccess: async () => {
@@ -95,14 +148,38 @@ export function CreateReviewForm() {
     },
   });
 
-  const onSubmit = (data: z.input<typeof ReviewFormSchema>) => {
-    createReview.mutate(
-      CreateReviewSchema.parse({
-        ...data,
-        restaurantId: autocompleteData,
-        name: restoname,
-      }),
-    );
+  const onSubmit = async (data: z.input<typeof ReviewFormSchema>) => {
+    const files: Blob[] = data.files;
+    const urls: string[] = [];
+    const sizes: number[] = [];
+    // Upload every file from the form
+    for (const file of files) {
+      try {
+        const res = await uploadFile(file);
+        urls.push(res.url);
+        sizes.push(file.size);
+      } catch (error) {
+        toast.error("Failed to upload photos");
+        console.error(error);
+        return;
+      }
+    }
+
+    // add the review
+    try {
+      const reviewId = await createReview.mutateAsync(
+        CreateReviewSchema.parse({
+          ...data,
+          restaurantId: autocompleteData,
+          name: restoname,
+        }),
+      );
+
+      await addPhotosToReview(urls, sizes, reviewId);
+    } catch (error) {
+      toast.error("Failed to add photos to review");
+      console.error(error);
+    }
   };
 
   return (
@@ -132,112 +209,180 @@ function ReviewForm({
   form: ReturnType<typeof useForm<typeof ReviewFormSchema>>;
   onSubmit: (data: z.input<typeof ReviewFormSchema>) => void;
 }) {
+  // TOOD: move this to its own file
+  async function convertImages(files: FileList) {
+    if (typeof window !== "undefined") {
+      const files_arr = Array.from(files).map(async (file: Blob) => {
+        if (file.type === "image/heic" || file.type === "image/heif") {
+          const heic2any = (await import("heic2any")).default;
+          const files = await heic2any({
+            blob: file,
+            toType: "image/jpeg",
+            quality: 0.92,
+          });
+          if ("length" in files) {
+            if (files[0] === undefined) {
+              throw new Error("No file exists");
+            }
+            file = files[0];
+          } else {
+            file = files;
+          }
+        }
+        return file;
+      });
+      return Promise.all(files_arr);
+    }
+    return [];
+  }
   // TODO(#37): retrieve the restaurant name for a restaurant ID
   return (
-    <div>
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
-          <FormField
-            control={form.control}
-            name="id"
-            render={({ field }) => (
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+        <FormField
+          control={form.control}
+          name="id"
+          render={({ field }) => (
+            <FormControl>
+              <Input {...field} type="hidden" />
+            </FormControl>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="visitedAt"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Date of Visit</FormLabel>
+              <DatePicker selected={field.value} onSelect={field.onChange} />
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="rating"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Rating</FormLabel>
+              <div className="flex gap-0.5">
+                {Array.from({ length: 5 })
+                  .map((_, index) => index + 1)
+                  .map((index) => (
+                    <svg
+                      key={index}
+                      className="h-4 w-4"
+                      viewBox="0 0 20 20"
+                      xmlns="http://www.w3.org/2000/svg"
+                      onClick={() => form.setValue("rating", index.toString())}
+                    >
+                      <g id="SVGRepo_bgCarrier" strokeWidth="0" />
+                      <g
+                        id="SVGRepo_tracerCarrier"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <g id="SVGRepo_iconCarrier">
+                        <path
+                          fill={
+                            index <= parseInt(field.value)
+                              ? "#E4A72F"
+                              : "#808080"
+                          }
+                          d="M9.88993214,17.5143551 L5.67925514,19.7706633 L5.58137404,19.8151697 C4.86621614,20.0856574 4.19175783,20.0309364 3.67796741,19.5732527 C3.19576628,19.1437087 3.02114918,18.5272631 3.12106237,17.8182442 L3.82494419,12.9582802 L0.644943731,9.61635601 C0.0942731134,9.05561309 -0.12003139,8.36789942 0.0652371375,7.6475266 C0.270499931,6.8494108 0.944591599,6.38981101 1.91626844,6.23594046 L6.1429793,5.59822482 L8.35612232,1.01301762 C8.69987723,0.366097394 9.23663637,-0.0174170702 9.91131194,0.000608459089 C10.5717106,0.0182525484 11.0939504,0.422542671 11.5040044,1.14356762 L13.64475,5.62965664 L18.3837285,6.28808837 C19.1367847,6.41806637 19.6918258,6.81025062 19.9136547,7.46427289 C20.1349495,8.11672079 19.9243574,8.77699895 19.3567704,9.45065589 L15.916492,12.9606774 L16.6886186,17.8170551 C16.81148,18.6567374 16.6644875,19.3222694 16.1027873,19.7179201 C15.5971351,20.0740917 14.964405,20.0740917 14.2364881,19.8236405 L14.1161887,19.7712214 L9.88993214,17.5143551 Z"
+                        ></path>
+                      </g>
+                    </svg>
+                  ))}
+              </div>
               <FormControl>
                 <Input {...field} type="hidden" />
               </FormControl>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="visitedAt"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Date of Visit</FormLabel>
-                <DatePicker selected={field.value} onSelect={field.onChange} />
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="rating"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Rating</FormLabel>
-                <div className="flex gap-0.5">
-                  {Array.from({ length: 5 })
-                    .map((_, index) => index + 1)
-                    .map((index) => (
-                      <svg
-                        key={index}
-                        className="h-4 w-4"
-                        viewBox="0 0 20 20"
-                        xmlns="http://www.w3.org/2000/svg"
-                        onClick={() =>
-                          form.setValue("rating", index.toString())
-                        }
-                      >
-                        <g id="SVGRepo_bgCarrier" strokeWidth="0" />
-                        <g
-                          id="SVGRepo_tracerCarrier"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                        <g id="SVGRepo_iconCarrier">
-                          <path
-                            fill={
-                              index <= parseInt(field.value)
-                                ? "#E4A72F"
-                                : "#808080"
-                            }
-                            d="M9.88993214,17.5143551 L5.67925514,19.7706633 L5.58137404,19.8151697 C4.86621614,20.0856574 4.19175783,20.0309364 3.67796741,19.5732527 C3.19576628,19.1437087 3.02114918,18.5272631 3.12106237,17.8182442 L3.82494419,12.9582802 L0.644943731,9.61635601 C0.0942731134,9.05561309 -0.12003139,8.36789942 0.0652371375,7.6475266 C0.270499931,6.8494108 0.944591599,6.38981101 1.91626844,6.23594046 L6.1429793,5.59822482 L8.35612232,1.01301762 C8.69987723,0.366097394 9.23663637,-0.0174170702 9.91131194,0.000608459089 C10.5717106,0.0182525484 11.0939504,0.422542671 11.5040044,1.14356762 L13.64475,5.62965664 L18.3837285,6.28808837 C19.1367847,6.41806637 19.6918258,6.81025062 19.9136547,7.46427289 C20.1349495,8.11672079 19.9243574,8.77699895 19.3567704,9.45065589 L15.916492,12.9606774 L16.6886186,17.8170551 C16.81148,18.6567374 16.6644875,19.3222694 16.1027873,19.7179201 C15.5971351,20.0740917 14.964405,20.0740917 14.2364881,19.8236405 L14.1161887,19.7712214 L9.88993214,17.5143551 Z"
-                          ></path>
-                        </g>
-                      </svg>
-                    ))}
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="price"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Price</FormLabel>
+              <FormControl>
+                <Input {...field} type="number" placeholder="$23.50" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="text"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Description</FormLabel>
+              <FormControl>
+                <Textarea
+                  className="h-32 resize-none"
+                  {...field}
+                  placeholder="I had a great time at..."
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="files"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Upload Photos</FormLabel>
+              <FormControl>
+                <Input
+                  type="file"
+                  accept="image/jpeg, image/gif, image/png, image/heic, image/webp, image/heif"
+                  multiple
+                  onChange={async (e) => {
+                    if (e.target.files) {
+                      try {
+                        field.onChange({
+                          target: {
+                            value: await convertImages(e.target.files),
+                            name: field.name,
+                          },
+                        });
+                      } catch (error) {
+                        toast.error("Failed to upload image");
+                      }
+                    }
+                  }}
+                />
+              </FormControl>
+              <FormMessage />
+              {field.value && (
+                <div className="flex flex-wrap justify-center gap-1">
+                  {Array.from(field.value).map((image: Blob, i: number) => (
+                    <div className="relative h-32 w-32" key={i}>
+                      <Image
+                        src={URL.createObjectURL(image)}
+                        alt="Preview"
+                        className="rounded-md"
+                        layout="fill"
+                        objectFit="cover"
+                      />
+                    </div>
+                  ))}
                 </div>
-                <FormControl>
-                  <Input {...field} type="hidden" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="price"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Price</FormLabel>
-                <FormControl>
-                  <Input {...field} type="number" placeholder="$23.50" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="text"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Description</FormLabel>
-                <FormControl>
-                  <Textarea
-                    className="h-32 resize-none"
-                    {...field}
-                    placeholder="I had a great time at..."
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <Button type="submit" className="w-full">
-            Submit
-          </Button>
-        </form>
-      </Form>
-    </div>
+              )}
+            </FormItem>
+          )}
+        />
+        <Button type="submit" className="w-full">
+          Submit
+        </Button>
+      </form>
+    </Form>
   );
 }
 
@@ -464,6 +609,22 @@ export function ReviewCard(props: {
             <CardTitle>
               {props.review.name ?? props.review.restaurantId}
             </CardTitle>
+            {props.review.photos.map((photo) => (
+              <div
+                className="relative aspect-square object-cover sm:size-full xl:w-6/12"
+                key={photo}
+              >
+                <Image
+                  src={photo}
+                  alt="Review photo"
+                  className="rounded-lg"
+                  fill
+                  style={{
+                    objectFit: "cover", // cover, contain, none
+                  }}
+                />
+              </div>
+            ))}
             <CardDescription className="whitespace-pre-wrap">
               {props.review.text}
             </CardDescription>
