@@ -36,5 +36,7 @@ AUTH_GOOGLE_ID=
 AUTH_GOOGLE_SECRET=
 ```
 
+- Also consider customizing the Google Places API key (`googleMapsApiKey`) embedded in `apps/nextjs/src/components/autoComplete.tsx` to suit your needs.
+
 - Run `pnpm run dev` in your terminal
 - Visit [http://localhost:3000/](http://localhost:3000/) in your browser. You should see the app (with posts appearing, as expected)!
