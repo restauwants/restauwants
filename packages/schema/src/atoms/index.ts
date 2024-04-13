@@ -1,3 +1,4 @@
+import validator from "validator";
 import { z } from "zod";
 
 export const UsernameSchema = z
@@ -25,8 +26,8 @@ export const PriceSchema = z
   .number()
   .min(0)
   .max(1000000)
-  .refine((p) => (p.toString().split(".")[1]?.length ?? 0) <= 2, {
-    message: "Price must not have more than 2 decimal places",
+  .refine((p) => validator.isDecimal(p.toString(), { decimal_digits: "1,2" }), {
+    message: "Price must have at most 2 decimal places",
   });
 
 export const ReviewTextSchema = z.string().min(0).max(255);
