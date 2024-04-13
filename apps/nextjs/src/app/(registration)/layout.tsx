@@ -49,9 +49,10 @@ export default function Layout(props: { children: React.ReactNode }) {
                 friends you trust. Here at Restauwants, we are committed to
                 fostering a community where food enthusiasts can connect,
                 explore and celebrate their culinary experiences without
-                compromising privacy. Whether you are discovering new eateries, sharing favorite
-                recipes, or seeking recommendations, Restauwants is your go-to
-                destination for all things food-related.
+                compromising privacy. Whether you are discovering new eateries,
+                sharing favorite recipes, or seeking recommendations,
+                Restauwants is your go-to destination for all things
+                food-related.
               </p>
               <div className="mb-8">
                 <div className="mt-2 flex items-center justify-center">
