@@ -49,10 +49,7 @@ export default function Layout(props: { children: React.ReactNode }) {
                 friends you trust. Here at Restauwants, we are committed to
                 fostering a community where food enthusiasts can connect,
                 explore and celebrate their culinary experiences without
-                compromising privacy. Our platform empowers users to share their
-                love for food authentically, knowing that their reviews and
-                interactions are kept within a trusted circle of friends.
-                Whether you are discovering new eateries, sharing favorite
+                compromising privacy. Whether you are discovering new eateries, sharing favorite
                 recipes, or seeking recommendations, Restauwants is your go-to
                 destination for all things food-related.
               </p>
