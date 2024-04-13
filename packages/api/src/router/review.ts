@@ -65,6 +65,7 @@ export const reviewRouter = createTRPCRouter({
           restaurantId: r.restaurant.id,
           restaurantName: r.restaurant.name,
           restaurantAddress: r.restaurant.address,
+          restaurantUrl: r.restaurant.url ?? undefined,
         }),
       );
       const hasMore = reviews.length > input.limit;
@@ -124,6 +125,7 @@ export const reviewRouter = createTRPCRouter({
           restaurantId: r.restaurant.id,
           restaurantName: r.restaurant.name,
           restaurantAddress: r.restaurant.address,
+          restaurantUrl: r.restaurant.url ?? undefined,
         }),
       );
       const hasMore = reviews.length > input.limit;
@@ -234,7 +236,7 @@ const getRestaurantDetails = async (
   restaurantId: z.infer<typeof RestaurantIdSchema>,
 ): Promise<z.infer<typeof RestaurantDetailsSchema>> => {
   return fetch(
-    `https://maps.googleapis.com/maps/api/place/details/json?fields=name%2Cformatted_address&place_id=${restaurantId}&key=${process.env.GOOGLE_PLACES_API_KEY}`,
+    `https://maps.googleapis.com/maps/api/place/details/json?fields=name%2Curl%2Cformatted_address&place_id=${restaurantId}&key=${process.env.GOOGLE_PLACES_API_KEY}`,
   )
     .then((res) => res.json())
     .then((json) => GooglePlaceDetailsToRestaurantDetailsSchema.parse(json));
@@ -250,6 +252,7 @@ const createRestaurant = async (
       id: restaurantId,
       name: details.name,
       address: details.address,
+      url: details.url,
     }),
   );
 };

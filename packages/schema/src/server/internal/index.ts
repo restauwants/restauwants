@@ -2,7 +2,9 @@ import { z } from "zod";
 
 import {
   RestaurantAddressSchema,
+  RestaurantIdSchema,
   RestaurantNameSchema,
+  RestaurantUrlSchema,
   UserIdSchema,
   UsernameSchema,
 } from "../../atoms";
@@ -12,12 +14,19 @@ export {
   FriendSchema,
   FriendRequestSchema,
   ProfileSchema,
-  RestaurantSchema,
 } from "../../db";
+
+export const RestaurantSchema = z.object({
+  id: RestaurantIdSchema,
+  name: RestaurantNameSchema,
+  address: RestaurantAddressSchema,
+  url: RestaurantUrlSchema.optional(),
+});
 
 export const RestaurantDetailsSchema = z.object({
   name: RestaurantNameSchema,
   address: RestaurantAddressSchema,
+  url: RestaurantUrlSchema.optional(),
 });
 
 export const GooglePlaceDetailsToRestaurantDetailsSchema = z
@@ -25,11 +34,13 @@ export const GooglePlaceDetailsToRestaurantDetailsSchema = z
     result: z.object({
       name: RestaurantNameSchema,
       formatted_address: RestaurantAddressSchema,
+      url: RestaurantUrlSchema.optional(),
     }),
   })
   .transform((data) => ({
     name: data.result.name,
     address: data.result.formatted_address,
+    url: data.result.url,
   }));
 
 export const UserSchemaWithOptionals = z.object({

@@ -8,6 +8,7 @@ import {
   RestaurantAddressSchema,
   RestaurantIdSchema,
   RestaurantNameSchema,
+  RestaurantUrlSchema,
   ReviewTextSchema,
   UpdatedAtSchema,
   UserIdSchema,
@@ -35,6 +36,7 @@ export const RestaurantSchema = z.object({
   id: RestaurantIdSchema,
   name: RestaurantNameSchema,
   address: RestaurantAddressSchema,
+  url: RestaurantUrlSchema.nullable(),
 });
 
 export const FriendSchema = z.object({

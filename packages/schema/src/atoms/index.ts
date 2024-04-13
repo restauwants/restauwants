@@ -78,3 +78,7 @@ export const ReviewIdSchema = z.number().int().positive();
 export const RestaurantAddressSchema = z.string().min(1).max(255);
 
 export const RestaurantDescriptionSchema = z.string().min(1).max(255);
+
+const UrlSchema = z.string().url();
+
+export const RestaurantUrlSchema = UrlSchema;

@@ -2,6 +2,7 @@
 
 import type { z } from "zod";
 import { use, useEffect, useState } from "react";
+import Link from "next/link";
 import InfiniteScroll from "react-infinite-scroll-component";
 
 import type { RouterOutputs } from "@restauwants/api";
@@ -50,6 +51,7 @@ import { Input } from "@restauwants/ui/input";
 import { Textarea } from "@restauwants/ui/textarea";
 import { fromNow } from "@restauwants/ui/time";
 import { toast } from "@restauwants/ui/toast";
+import { ConditionalWrap } from "@restauwants/ui/wrap";
 
 import { useDialogOrDrawer } from "~/hooks/dialogOrDrawer";
 import { api } from "~/trpc/react";
@@ -287,6 +289,7 @@ function reviewList() {
         id: review.restaurantId,
         name: review.restaurantName,
         address: review.restaurantAddress,
+        url: review.restaurantUrl,
       });
       editReviewForm.setValue("rating", review.rating);
       editReviewForm.setValue("price", review.price);
@@ -441,7 +444,16 @@ export function ReviewCard(props: {
       </CardHeader>
       <CardContent className="p-4">
         <div className="grid gap-1.5">
-          <CardTitle>{props.review.restaurantName}</CardTitle>
+          <CardTitle>
+            <ConditionalWrap
+              condition={props.review.restaurantUrl !== undefined}
+              wrap={(children) => (
+                <Link href={props.review.restaurantUrl!}>{children}</Link>
+              )}
+            >
+              {props.review.restaurantName}
+            </ConditionalWrap>
+          </CardTitle>
           <CardDescription className="whitespace-pre-wrap">
             {props.review.text}
           </CardDescription>
