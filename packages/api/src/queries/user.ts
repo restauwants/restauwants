@@ -1,5 +1,5 @@
-import type { Database } from "..";
-import { eq, schema } from "..";
+import type { Database } from "@restauwants/db";
+import { eq, schema } from "@restauwants/db";
 
 export const usernameToId = async (
   db: Database,

@@ -1,13 +1,4 @@
-import type { z } from "zod";
-
-import type { Database } from "@restauwants/db";
-import type { UserIdSchema } from "@restauwants/schema/atoms";
-import { alias, and, desc, eq, or, schema } from "@restauwants/db";
-import { usernameToId } from "@restauwants/db/queries";
-import {
-  FriendRequestSchema as FriendRequestSchemaDatabase,
-  FriendSchema as FriendSchemaDatabase,
-} from "@restauwants/schema/db";
+import { alias, desc, eq, schema } from "@restauwants/db";
 import {
   AcceptFriendRequestSchema as AcceptFriendRequestSchemaExternal,
   FriendSchema as FriendSchemaExternal,
@@ -18,6 +9,16 @@ import {
   SentFriendRequestSchema as SentFriendRequestSchemaExternal,
 } from "@restauwants/schema/server/external";
 
+import {
+  areFriends,
+  createFriendship,
+  deleteFriendRequest,
+  deleteFriendRequestsBetween,
+  deleteFriendship,
+  hasSentFriendRequest,
+  sendFriendRequest,
+} from "../queries/friend";
+import { usernameToId } from "../queries/user";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 
 export const friendRouter = createTRPCRouter({
@@ -165,155 +166,3 @@ export const friendRouter = createTRPCRouter({
     });
   }),
 });
-
-export const areFriends = async (
-  db: Database,
-  userIdA: z.infer<typeof UserIdSchema>,
-  userIdB: z.infer<typeof UserIdSchema>,
-): Promise<boolean> => {
-  return (
-    (
-      await db
-        .select()
-        .from(schema.friend)
-        .where(
-          or(
-            and(
-              eq(schema.friend.fromUserId, userIdA),
-              eq(schema.friend.toUserId, userIdB),
-            ),
-            and(
-              eq(schema.friend.fromUserId, userIdB),
-              eq(schema.friend.toUserId, userIdA),
-            ),
-          ),
-        )
-    ).length > 0
-  );
-};
-
-const hasSentFriendRequest = async (
-  db: Database,
-  fromUserId: z.infer<typeof UserIdSchema>,
-  toUserId: z.infer<typeof UserIdSchema>,
-): Promise<boolean> => {
-  return (
-    (
-      await db
-        .select()
-        .from(schema.friendRequest)
-        .where(
-          and(
-            eq(schema.friendRequest.fromUserId, fromUserId),
-            eq(schema.friendRequest.toUserId, toUserId),
-          ),
-        )
-    ).length > 0
-  );
-};
-
-const createFriendship = async (
-  db: Database,
-  userIdA: z.infer<typeof UserIdSchema>,
-  userIdB: z.infer<typeof UserIdSchema>,
-): Promise<void> => {
-  if (userIdA === userIdB) {
-    throw new Error("Cannot be friends with yourself");
-  }
-  const now = new Date();
-  const bidirectional = [
-    FriendSchemaDatabase.parse({
-      fromUserId: userIdA,
-      toUserId: userIdB,
-      confirmedAt: now,
-    }),
-    FriendSchemaDatabase.parse({
-      fromUserId: userIdB,
-      toUserId: userIdA,
-      confirmedAt: now,
-    }),
-  ];
-  await db.insert(schema.friend).values(bidirectional);
-};
-
-const deleteFriendship = async (
-  db: Database,
-  userIdA: z.infer<typeof UserIdSchema>,
-  userIdB: z.infer<typeof UserIdSchema>,
-): Promise<void> => {
-  await db
-    .delete(schema.friend)
-    .where(
-      or(
-        and(
-          eq(schema.friend.fromUserId, userIdA),
-          eq(schema.friend.toUserId, userIdB),
-        ),
-        and(
-          eq(schema.friend.fromUserId, userIdB),
-          eq(schema.friend.toUserId, userIdA),
-        ),
-      ),
-    );
-};
-
-const deleteFriendRequest = async (
-  db: Database,
-  fromUserId: z.infer<typeof UserIdSchema>,
-  toUserId: z.infer<typeof UserIdSchema>,
-): Promise<void> => {
-  await db
-    .delete(schema.friendRequest)
-    .where(
-      and(
-        eq(schema.friendRequest.fromUserId, fromUserId),
-        eq(schema.friendRequest.toUserId, toUserId),
-      ),
-    );
-};
-
-const deleteFriendRequestsBetween = async (
-  db: Database,
-  userIdA: z.infer<typeof UserIdSchema>,
-  userIdB: z.infer<typeof UserIdSchema>,
-): Promise<void> => {
-  await db
-    .delete(schema.friendRequest)
-    .where(
-      or(
-        and(
-          eq(schema.friendRequest.fromUserId, userIdA),
-          eq(schema.friendRequest.toUserId, userIdB),
-        ),
-        and(
-          eq(schema.friendRequest.fromUserId, userIdB),
-          eq(schema.friendRequest.toUserId, userIdA),
-        ),
-      ),
-    );
-};
-
-const sendFriendRequest = async (
-  db: Database,
-  fromUserId: z.infer<typeof UserIdSchema>,
-  toUserId: z.infer<typeof UserIdSchema>,
-): Promise<void> => {
-  if (fromUserId === toUserId) {
-    throw new Error("Cannot send a friend request to yourself");
-  }
-  const now = new Date();
-  await db
-    .insert(schema.friendRequest)
-    .values(
-      FriendRequestSchemaDatabase.parse({
-        fromUserId,
-        toUserId,
-        createdAt: now,
-      }),
-    )
-    .onDuplicateKeyUpdate({
-      set: {
-        createdAt: now,
-      },
-    });
-};
