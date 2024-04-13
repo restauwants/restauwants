@@ -11,3 +11,9 @@ You can get started by taking a look at our repository's [README](https://github
 You can also take a look at the [script](/research/interviews/v2/script) used for our Milestone 1 research.
 
 Lastly, there are a few [UI mockups](/ui-ux/mockups) mockups available for viewing.
+
+## Links
+GitHub: https://github.com/restauwants/restauwants
+Application website: https://restauwants.com
+Documentation website: https://restauwants.github.io/restauwants/
+Team contributions (GitHub Issues): https://github.com/restauwants/restauwants/issues
