@@ -30,6 +30,10 @@ AUTH_SECRET=
 # @see https://next-auth.js.org/providers/discord
 AUTH_DISCORD_ID=
 AUTH_DISCORD_SECRET=
+
+# Google OAuth
+AUTH_GOOGLE_ID=
+AUTH_GOOGLE_SECRET=
 ```
 
 - Run `pnpm run dev` in your terminal
