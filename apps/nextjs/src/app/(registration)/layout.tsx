@@ -20,9 +20,11 @@ export default function Layout(props: { children: React.ReactNode }) {
             <div className={lilyScript.className}>RestauWants</div>
           </h1>
         </div>
+        {/*
         <div className="hover:white/80 absolute right-4 top-1/2 h-9 -translate-y-1/2 transform rounded-md bg-white px-4 py-2 text-center text-secondary">
           {props.children}
         </div>
+        */}
       </nav>
 
       <div className="z-10 mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
