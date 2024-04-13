@@ -8,7 +8,7 @@ date = 2024-04-12T21:30:00Z
 
 ## Milestone 1 Demo Video
 {{< youtube 2FDOJ4elW80 >}}
-(courtesy of Nick Badyal)
+(video created by Nick Badyal)
 
 ## Milestone 1 Release
 [View our release on GitHub.]()
