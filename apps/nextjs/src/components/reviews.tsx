@@ -275,10 +275,6 @@ function reviewList() {
 
     const editReviewForm = useForm({
       schema: ReviewFormSchema,
-      defaultValues: {
-        visitedAt: new Date(),
-        text: "",
-      },
     });
 
     const openEditModalFor = (review: z.infer<typeof ReviewSchema>) => {
