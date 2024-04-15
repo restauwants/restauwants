@@ -9,10 +9,9 @@ import type { RouterOutputs } from "@restauwants/api";
 import type { ReviewSchema } from "@restauwants/schema/client";
 import { VisitedAtSchema } from "@restauwants/schema/atoms";
 import {
-  CreateReviewFormSchema,
   CreateReviewSchema,
-  EditReviewFormSchema,
   EditReviewSchema,
+  ReviewFormSchema,
 } from "@restauwants/schema/client";
 import { cn } from "@restauwants/ui";
 import { Button } from "@restauwants/ui/button";
@@ -99,10 +98,6 @@ export function CreateReviewForm() {
   return <ReviewForm form={form} onSubmit={onSubmit} />;
 }
 
-const ReviewFormSchema = CreateReviewFormSchema.merge(
-  EditReviewFormSchema.partial({ id: true }),
-);
-
 function ReviewForm({
   form,
   onSubmit,
@@ -113,15 +108,6 @@ function ReviewForm({
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
-        <FormField
-          control={form.control}
-          name="id"
-          render={({ field }) => (
-            <FormControl>
-              <Input {...field} type="hidden" />
-            </FormControl>
-          )}
-        />
         <FormField
           control={form.control}
           name="restaurant"
@@ -273,13 +259,15 @@ function reviewList() {
     const [reviewToDelete, setReviewToDelete] =
       useState<z.infer<typeof ReviewSchema>>();
 
+    const [editReviewFormInternalFields, setEditReviewFormInternalFields] =
+      useState<z.infer<ReturnType<typeof ReviewSchema.pick<{ id: true }>>>>();
     const editReviewForm = useForm({
       schema: ReviewFormSchema,
     });
 
     const openEditModalFor = (review: z.infer<typeof ReviewSchema>) => {
+      setEditReviewFormInternalFields({ id: review.id });
       editReviewForm.reset({
-        id: review.id,
         restaurant: {
           id: review.restaurantId,
           name: review.restaurantName,
@@ -323,7 +311,7 @@ function reviewList() {
     const onEditSubmit = (data: z.input<typeof ReviewFormSchema>) => {
       updateReview.mutate(
         EditReviewSchema.parse({
-          id: data.id,
+          id: editReviewFormInternalFields!.id,
           restaurantId: data.restaurant.id,
           rating: data.rating,
           price: data.price,

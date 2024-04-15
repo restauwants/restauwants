@@ -4,7 +4,6 @@ import {
   PriceSchema,
   RatingSchema,
   RestaurantDescriptionSchema,
-  ReviewIdSchema,
   ReviewTextSchema,
   UsernameSchema,
   VisitedAtSchema,
@@ -54,7 +53,7 @@ export const AddDescriptionToRestaurantSchema = RestaurantSchema.transform(
   }),
 );
 
-export const CreateReviewFormSchema = z.object({
+export const ReviewFormSchema = z.object({
   restaurant: RestaurantSchema,
   rating: RatingSchema,
   price: PriceSchema,
@@ -68,13 +67,4 @@ export const AddFriendFormSchema = z.object({
 
 export const CreateProfileFormSchema = z.object({
   username: UsernameSchema,
-});
-
-export const EditReviewFormSchema = z.object({
-  id: ReviewIdSchema,
-  restaurant: RestaurantSchema,
-  rating: RatingSchema,
-  price: PriceSchema,
-  text: ReviewTextSchema,
-  visitedAt: VisitedAtSchema,
 });
