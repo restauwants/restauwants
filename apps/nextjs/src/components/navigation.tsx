@@ -3,8 +3,12 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { CircleFadingPlus, Home, User } from "lucide-react";
 
+import {
+  CircleFadingPlusIcon,
+  HomeIcon,
+  UserIcon,
+} from "@restauwants/ui/icons";
 import {
   NavigationMenu,
   NavigationMenuItem,
@@ -36,7 +40,7 @@ export function Navigation() {
         <NavigationMenuItem>
           <Link href={feedPagePath} legacyBehavior passHref>
             <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-              <Home
+              <HomeIcon
                 strokeWidth={`${isHomePage ? 3 : 2}`}
                 className={`size-7 ${isHomePage ? "text-secondary" : ""}`}
               />
@@ -46,7 +50,7 @@ export function Navigation() {
         <NavigationMenuItem>
           <Link href={reviewPagePath} legacyBehavior passHref>
             <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-              <CircleFadingPlus
+              <CircleFadingPlusIcon
                 strokeWidth={`${isReviewPage ? 3 : 2}`}
                 className={`size-7 ${isReviewPage ? "text-secondary" : ""}`}
               />
@@ -56,7 +60,7 @@ export function Navigation() {
         <NavigationMenuItem>
           <Link href={profilePagePath} legacyBehavior passHref>
             <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-              <User
+              <UserIcon
                 strokeWidth={`${isProfilePage ? 3 : 2}`}
                 className={`size-7 ${isProfilePage ? "text-secondary" : ""}`}
               />

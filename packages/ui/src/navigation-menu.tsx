@@ -1,13 +1,11 @@
 "use client";
 
 import * as React from "react";
-import { ChevronDownIcon } from "@radix-ui/react-icons";
 import * as NavigationMenuPrimitive from "@radix-ui/react-navigation-menu";
 import { cva } from "class-variance-authority";
 
 import { cn } from ".";
-
-export { HomeIcon, PlusCircledIcon, PersonIcon } from "@radix-ui/react-icons";
+import { ChevronDownIcon } from "./icons";
 
 const NavigationMenu = React.forwardRef<
   React.ElementRef<typeof NavigationMenuPrimitive.Root>,
