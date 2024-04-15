@@ -59,7 +59,6 @@ import { RestaurantSearchBoxWithSuggestions } from "./restaurants";
 
 export function CreateReviewForm() {
   const form = useForm({
-    mode: "onChange",
     schema: ReviewFormSchema,
     defaultValues: {
       text: "",
@@ -275,7 +274,6 @@ function reviewList() {
       useState<z.infer<typeof ReviewSchema>>();
 
     const editReviewForm = useForm({
-      mode: "onChange",
       schema: ReviewFormSchema,
       defaultValues: {
         visitedAt: new Date(),
