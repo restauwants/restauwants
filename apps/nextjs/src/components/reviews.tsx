@@ -278,17 +278,19 @@ function reviewList() {
     });
 
     const openEditModalFor = (review: z.infer<typeof ReviewSchema>) => {
-      editReviewForm.setValue("id", review.id);
-      editReviewForm.setValue("restaurant", {
-        id: review.restaurantId,
-        name: review.restaurantName,
-        address: review.restaurantAddress,
-        url: review.restaurantUrl,
+      editReviewForm.reset({
+        id: review.id,
+        restaurant: {
+          id: review.restaurantId,
+          name: review.restaurantName,
+          address: review.restaurantAddress,
+          url: review.restaurantUrl,
+        },
+        rating: review.rating,
+        price: review.price,
+        text: review.text,
+        visitedAt: review.visitedAt,
       });
-      editReviewForm.setValue("rating", review.rating);
-      editReviewForm.setValue("price", review.price);
-      editReviewForm.setValue("text", review.text);
-      editReviewForm.setValue("visitedAt", review.visitedAt);
       setIsEditModalOpen(true);
     };
 
