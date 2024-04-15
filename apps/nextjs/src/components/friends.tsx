@@ -342,10 +342,11 @@ function AddFriendForm(props: {
     },
   });
 
-  const onSubmit = (data: z.input<typeof AddFriendFormSchema>) => {
+  const onSubmit = (formInput: z.input<typeof AddFriendFormSchema>) => {
+    const formOutput = AddFriendFormSchema.parse(formInput);
     sendFriendRequest.mutate(
       SentFriendRequestSchema.parse({
-        toUsername: data.username,
+        toUsername: formOutput.username,
       }),
     );
   };

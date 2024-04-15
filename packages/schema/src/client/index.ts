@@ -1,3 +1,4 @@
+import type { ZodType } from "zod";
 import { z } from "zod";
 
 import {
@@ -53,10 +54,25 @@ export const AddDescriptionToRestaurantSchema = RestaurantSchema.transform(
   }),
 );
 
+const withNullDefaultButRequired = <T extends ZodType>(
+  schema: T,
+  messageWhenMissing: string,
+) => {
+  return schema
+    .nullable()
+    .refine((value) => value !== null, {
+      message: messageWhenMissing,
+    })
+    .pipe(schema);
+};
+
 export const ReviewFormSchema = z.object({
-  restaurant: RestaurantSchema,
-  rating: RatingSchema,
-  price: PriceSchema,
+  restaurant: withNullDefaultButRequired(
+    RestaurantSchema,
+    "Restaurant is required",
+  ),
+  rating: withNullDefaultButRequired(RatingSchema, "Rating is required"),
+  price: withNullDefaultButRequired(PriceSchema, "Price is required"),
   text: ReviewTextSchema,
   visitedAt: VisitedAtSchema,
 });

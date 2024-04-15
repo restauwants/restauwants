@@ -60,6 +60,9 @@ export function CreateReviewForm() {
   const form = useForm({
     schema: ReviewFormSchema,
     defaultValues: {
+      restaurant: null,
+      rating: null,
+      price: null,
       text: "",
     },
   });
@@ -83,14 +86,15 @@ export function CreateReviewForm() {
     },
   });
 
-  const onSubmit = (data: z.input<typeof ReviewFormSchema>) => {
+  const onSubmit = (formInput: z.input<typeof ReviewFormSchema>) => {
+    const formOutput = ReviewFormSchema.parse(formInput);
     createReview.mutate(
       CreateReviewSchema.parse({
-        restaurantId: data.restaurant.id,
-        rating: data.rating,
-        price: data.price,
-        text: data.text,
-        visitedAt: data.visitedAt,
+        restaurantId: formOutput.restaurant.id,
+        rating: formOutput.rating,
+        price: formOutput.price,
+        text: formOutput.text,
+        visitedAt: formOutput.visitedAt,
       }),
     );
   };
@@ -116,7 +120,7 @@ function ReviewForm({
               <FormLabel>Restaurant</FormLabel>
               <FormControl>
                 <RestaurantSearchBoxWithSuggestions
-                  selected={field.value}
+                  selected={field.value ?? undefined}
                   onSelect={field.onChange}
                 />
               </FormControl>
@@ -156,7 +160,7 @@ function ReviewForm({
                         key={rating}
                         className={cn(
                           "size-6",
-                          rating <= field.value
+                          field.value && rating <= field.value
                             ? "fill-foreground"
                             : "fill-muted",
                         )}
@@ -185,7 +189,7 @@ function ReviewForm({
                     placeholder="23.50"
                     onChange={(e) =>
                       field.onChange(
-                        e.target.value ? parseFloat(e.target.value) : undefined,
+                        e.target.value ? parseFloat(e.target.value) : null,
                       )
                     }
                   />
@@ -308,15 +312,16 @@ function reviewList() {
       },
     });
 
-    const onEditSubmit = (data: z.input<typeof ReviewFormSchema>) => {
+    const onEditSubmit = (formInput: z.input<typeof ReviewFormSchema>) => {
+      const formOutput = ReviewFormSchema.parse(formInput);
       updateReview.mutate(
         EditReviewSchema.parse({
           id: editReviewFormInternalFields!.id,
-          restaurantId: data.restaurant.id,
-          rating: data.rating,
-          price: data.price,
-          text: data.text,
-          visitedAt: data.visitedAt,
+          restaurantId: formOutput.restaurant.id,
+          rating: formOutput.rating,
+          price: formOutput.price,
+          text: formOutput.text,
+          visitedAt: formOutput.visitedAt,
         }),
       );
     };
