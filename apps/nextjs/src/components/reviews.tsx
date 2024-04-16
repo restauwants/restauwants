@@ -6,7 +6,7 @@ import Link from "next/link";
 import InfiniteScroll from "react-infinite-scroll-component";
 
 import type { RouterOutputs } from "@restauwants/api";
-import type { ReviewSchema } from "@restauwants/schema/client";
+import type { ReviewSchema, UserSchema } from "@restauwants/schema/client";
 import { VisitedAtSchema } from "@restauwants/schema/atoms";
 import {
   CreateReviewSchema,
@@ -248,13 +248,17 @@ function reviewList() {
 
   return function ReviewList(props: {
     reviews: Promise<RouterOutputs["review"]["all"]>;
+    currentUser: Promise<z.infer<typeof UserSchema>>;
     byUserId?: string;
   }) {
     const initialData = use(props.reviews);
+    const initialCurrentUser = use(props.currentUser);
     const infiniteReviewsQuery = useQuery(initialData, props.byUserId)();
     const reviews =
       infiniteReviewsQuery.data?.pages.flatMap((page) => page.reviews) ?? [];
-    const { data: currentUser } = api.user.current.useQuery();
+    const { data: currentUser } = api.user.current.useQuery(undefined, {
+      initialData: initialCurrentUser,
+    });
     const utils = api.useUtils();
     const dialogOrDrawer = useDialogOrDrawer();
 
@@ -355,7 +359,7 @@ function reviewList() {
           className="flex w-full flex-col space-y-6"
         >
           {reviews.map((r) => {
-            const isFromCurrentUser = currentUser?.id === r.userId;
+            const isFromCurrentUser = currentUser.id === r.userId;
             return (
               <ReviewCard
                 key={r.id}
