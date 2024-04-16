@@ -121,7 +121,7 @@ function ReviewForm({
               <FormControl>
                 <RestaurantSearchBoxWithSuggestions
                   selected={field.value ?? undefined}
-                  onSelect={field.onChange}
+                  onSelect={(r) => field.onChange(r ?? null)}
                 />
               </FormControl>
               <FormMessage reserve />
