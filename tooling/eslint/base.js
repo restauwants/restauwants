@@ -13,7 +13,7 @@ const config = {
   },
   parser: "@typescript-eslint/parser",
   parserOptions: { project: true },
-  plugins: ["@typescript-eslint", "import"],
+  plugins: ["@typescript-eslint", "import", "check-file"],
   rules: {
     "turbo/no-undeclared-env-vars": "off",
     "@typescript-eslint/no-unused-vars": [
@@ -29,6 +29,21 @@ const config = {
       { checksVoidReturn: { attributes: false } },
     ],
     "import/consistent-type-specifier-style": ["error", "prefer-top-level"],
+    "check-file/filename-naming-convention": [
+      "error",
+      {
+        "**/!(\\[).{jsx,tsx,js,ts}": "KEBAB_CASE",
+      },
+      {
+        ignoreMiddleExtensions: true,
+      },
+    ],
+    "check-file/folder-naming-convention": [
+      "error",
+      {
+        "**": "NEXT_JS_APP_ROUTER_CASE",
+      },
+    ],
   },
   ignorePatterns: [
     "**/*.config.js",

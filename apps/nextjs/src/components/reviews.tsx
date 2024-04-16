@@ -52,7 +52,7 @@ import { fromNow } from "@restauwants/ui/time";
 import { toast } from "@restauwants/ui/toast";
 import { ConditionalWrap } from "@restauwants/ui/wrap";
 
-import { useDialogOrDrawer } from "~/hooks/dialogOrDrawer";
+import { useDialogOrDrawer } from "~/hooks/dialog-or-drawer";
 import { api } from "~/trpc/react";
 import { RestaurantSearchBoxWithSuggestions } from "./restaurants";
 
