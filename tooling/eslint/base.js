@@ -28,6 +28,20 @@ const config = {
       2,
       { checksVoidReturn: { attributes: false } },
     ],
+    "@typescript-eslint/naming-convention": [
+      "error",
+      {
+        selector: "function",
+        format: [
+          // Use PascalCase for React components
+          "StrictPascalCase",
+          // Use UPPER_CASE for Next.js route handler functions
+          "UPPER_CASE",
+          // Use strictCamelCase everywhere else
+          "strictCamelCase",
+        ],
+      },
+    ],
     "import/consistent-type-specifier-style": ["error", "prefer-top-level"],
     "check-file/filename-naming-convention": [
       "error",
