@@ -86,16 +86,32 @@ const restrictPagesBasedOnSession = async (
   }
 };
 
-export const withRestrictionsBasedOnSession = <T>(
-  page: (props: T) => Promise<JSX.Element | void> | JSX.Element | void,
+type PropsWithRoute<P = unknown> = P & {
+  route: string;
+};
+
+const withRoute = <T>(
+  page: (
+    props: PropsWithRoute<T>,
+  ) => Promise<JSX.Element | void> | JSX.Element | void,
 ) => {
   return async (props: T) => {
+    return await page({ ...props, route: getPathnameFromHeaders(headers())! });
+  };
+};
+
+export const withRestrictionsBasedOnSession = <T>(
+  page: (
+    props: Omit<T, "route">,
+  ) => Promise<JSX.Element | void> | JSX.Element | void,
+) => {
+  return withRoute(async ({ route, ...props }: PropsWithRoute<T>) => {
     await restrictPagesBasedOnSession(
       auth(),
-      getPathnameFromHeaders(headers())!,
+      route,
       redirect,
       api.user.currentWithOptionals,
     );
-    return await page(props);
-  };
+    return await page({ ...props });
+  });
 };
