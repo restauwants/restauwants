@@ -10,17 +10,8 @@ import {
   RevokeFriendRequestSchema,
   SentFriendRequestSchema,
 } from "@restauwants/schema/client";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@restauwants/ui/alert-dialog";
 import { Button } from "@restauwants/ui/button";
+import { ConfirmationDialog } from "@restauwants/ui/confirmation";
 import {
   Form,
   FormControl,
@@ -112,7 +103,7 @@ const ReceivedFriendRequestsTable = withFriendTable(() => {
   const [receivedFriendRequests] =
     api.friend.request.received.useSuspenseQuery();
   const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
-  const [usernameToReject, setUsernameToReject] = useState<string | null>(null);
+  const [usernameToReject, setUsernameToReject] = useState<string>();
 
   const utils = api.useUtils();
 
@@ -165,32 +156,21 @@ const ReceivedFriendRequestsTable = withFriendTable(() => {
           }
         />
       ))}
-      <AlertDialog open={isRejectModalOpen} onOpenChange={setIsRejectModalOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>
-              Are you sure about rejecting this request?
-            </AlertDialogTitle>
-            <AlertDialogDescription>
-              Your friend request from {usernameToReject} will be rejected.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={() =>
-                rejectFriendRequest.mutate(
-                  RejectFriendRequestSchema.parse({
-                    fromUsername: usernameToReject!,
-                  }),
-                )
-              }
-            >
-              Reject
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <ConfirmationDialog
+        title="Are you sure about rejecting this request?"
+        description={`Your friend request from ${usernameToReject!} will be rejected.`}
+        cancelVerb="Cancel"
+        actionVerb="Reject"
+        onAction={() =>
+          rejectFriendRequest.mutate(
+            RejectFriendRequestSchema.parse({
+              fromUsername: usernameToReject!,
+            }),
+          )
+        }
+        open={isRejectModalOpen}
+        onOpenChange={setIsRejectModalOpen}
+      />
     </>
   );
 });
@@ -217,7 +197,7 @@ function ExistingFriendTableRow({
 const ExistingFriendsTable = withFriendTable(() => {
   const [friends] = api.friend.all.useSuspenseQuery();
   const [isRemoveModalOpen, setIsRemoveModalOpen] = useState(false);
-  const [usernameToRemove, setUsernameToRemove] = useState<string | null>(null);
+  const [usernameToRemove, setUsernameToRemove] = useState<string>();
 
   const utils = api.useUtils();
 
@@ -249,30 +229,19 @@ const ExistingFriendsTable = withFriendTable(() => {
           onRemove={() => openRemoveModalFor(friend.username)}
         />
       ))}
-      <AlertDialog open={isRemoveModalOpen} onOpenChange={setIsRemoveModalOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>
-              Are you sure about removing this friend?
-            </AlertDialogTitle>
-            <AlertDialogDescription>
-              You will no longer be friends with {usernameToRemove}.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={() =>
-                removeFriend.mutate(
-                  RemoveFriendSchema.parse({ username: usernameToRemove! }),
-                )
-              }
-            >
-              Remove
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <ConfirmationDialog
+        title="Are you sure about removing this friend?"
+        description={`You will no longer be friends with ${usernameToRemove!}.`}
+        cancelVerb="Cancel"
+        actionVerb="Remove"
+        onAction={() =>
+          removeFriend.mutate(
+            RemoveFriendSchema.parse({ username: usernameToRemove! }),
+          )
+        }
+        open={isRemoveModalOpen}
+        onOpenChange={setIsRemoveModalOpen}
+      />
     </>
   );
 });
@@ -299,7 +268,7 @@ function SentFriendRequestTableRow({
 const SentFriendRequestsTable = withFriendTable(() => {
   const [sentFriendRequests] = api.friend.request.sent.useSuspenseQuery();
   const [isRevokeModalOpen, setIsRevokeModalOpen] = useState(false);
-  const [usernameToRevoke, setUsernameToRevoke] = useState<string | null>(null);
+  const [usernameToRevoke, setUsernameToRevoke] = useState<string>();
 
   const utils = api.useUtils();
 
@@ -331,32 +300,21 @@ const SentFriendRequestsTable = withFriendTable(() => {
           onRevoke={() => openRevokeModalFor(sentFriendRequest.toUsername)}
         />
       ))}
-      <AlertDialog open={isRevokeModalOpen} onOpenChange={setIsRevokeModalOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>
-              Are you sure about canceling this request?
-            </AlertDialogTitle>
-            <AlertDialogDescription>
-              Your friend request to {usernameToRevoke} will be canceled.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Don&apos;t Cancel</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={() =>
-                revokeFriendRequest.mutate(
-                  RevokeFriendRequestSchema.parse({
-                    toUsername: usernameToRevoke!,
-                  }),
-                )
-              }
-            >
-              Cancel
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <ConfirmationDialog
+        title="Are you sure about canceling this request?"
+        description={`Your friend request to ${usernameToRevoke!} will be canceled.`}
+        cancelVerb="Don't Cancel"
+        actionVerb="Cancel"
+        onAction={() =>
+          revokeFriendRequest.mutate(
+            RevokeFriendRequestSchema.parse({
+              toUsername: usernameToRevoke!,
+            }),
+          )
+        }
+        open={isRevokeModalOpen}
+        onOpenChange={setIsRevokeModalOpen}
+      />
     </>
   );
 });

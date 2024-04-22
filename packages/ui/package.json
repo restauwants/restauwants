@@ -12,6 +12,7 @@
     "./card": "./src/card.tsx",
     "./date-picker": "./src/date-picker.tsx",
     "./command": "./src/command.tsx",
+    "./confirmation": "./src/confirmation.tsx",
     "./dialog": "./src/dialog.tsx",
     "./dropdown-menu": "./src/dropdown-menu.tsx",
     "./drawer": "./src/drawer.tsx",

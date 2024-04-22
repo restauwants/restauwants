@@ -21,7 +21,7 @@ export interface CompletionOption<T> {
   key: string;
 }
 
-export interface CompletionsProps<T> {
+interface CompletionsProps<T> {
   options: CompletionOption<T>[];
   emptyMessage?: string;
   selected?: CompletionOption<T>;

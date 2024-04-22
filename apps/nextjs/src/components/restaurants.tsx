@@ -34,7 +34,7 @@ const withGoogleMapsScript = <T,>(
   return ComponentUsingGoogleMapsScript;
 };
 
-export interface RestaurantSearchBoxWithSuggestionsProps {
+interface RestaurantSearchBoxWithSuggestionsProps {
   selected?: z.infer<typeof RestaurantSchema>;
   onSelect: (value?: z.infer<typeof RestaurantSchema>) => void;
   types?: RestaurantType[];

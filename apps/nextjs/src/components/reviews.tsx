@@ -13,16 +13,6 @@ import {
   EditReviewSchema,
 } from "@restauwants/schema/client";
 import { cn } from "@restauwants/ui";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@restauwants/ui/alert-dialog";
 import { Button } from "@restauwants/ui/button";
 import {
   Card,
@@ -31,6 +21,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@restauwants/ui/card";
+import { ConfirmationDialog } from "@restauwants/ui/confirmation";
 import { DatePicker } from "@restauwants/ui/date-picker";
 import {
   DropdownMenu,
@@ -271,9 +262,8 @@ function reviewList() {
 
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-    const [reviewToDelete, setReviewToDelete] = useState<z.infer<
-      typeof ReviewSchema
-    > | null>(null);
+    const [reviewToDelete, setReviewToDelete] =
+      useState<z.infer<typeof ReviewSchema>>();
 
     const editReviewForm = useForm({
       mode: "onChange",
@@ -389,29 +379,15 @@ function reviewList() {
             <ReviewForm form={editReviewForm} onSubmit={onEditSubmit} />
           </dialogOrDrawer.Content>
         </dialogOrDrawer.Root>
-        <AlertDialog
+        <ConfirmationDialog
+          title="Are you sure about deleting this review?"
+          description="This action cannot be undone."
+          cancelVerb="Cancel"
+          actionVerb="Delete"
+          onAction={() => deleteReview.mutate(reviewToDelete!.id)}
           open={isDeleteModalOpen}
           onOpenChange={setIsDeleteModalOpen}
-        >
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>
-                Are you sure about deleting this review?
-              </AlertDialogTitle>
-              <AlertDialogDescription>
-                This action cannot be undone.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction
-                onClick={() => deleteReview.mutate(reviewToDelete!.id)}
-              >
-                Delete
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
+        />
       </>
     );
   };

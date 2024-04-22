@@ -11,7 +11,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 
 const minimumDate = new Date("2000-01-01");
 
-export interface DatePickerProps {
+interface DatePickerProps {
   selected: Date;
   onSelect: (date?: Date) => void;
 }
