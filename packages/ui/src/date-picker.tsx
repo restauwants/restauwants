@@ -9,14 +9,17 @@ import { FormControl } from "./form";
 import { CalendarIcon } from "./icons";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 
-const minimumDate = new Date("2000-01-01");
-
 interface DatePickerProps {
   selected: Date;
   onSelect: (date?: Date) => void;
+  isDateDisabled?: (date: Date) => boolean;
 }
 
-export const DatePicker = ({ selected, onSelect }: DatePickerProps) => {
+export const DatePicker = ({
+  selected,
+  onSelect,
+  isDateDisabled,
+}: DatePickerProps) => {
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -38,7 +41,7 @@ export const DatePicker = ({ selected, onSelect }: DatePickerProps) => {
           mode="single"
           selected={selected}
           onSelect={onSelect}
-          disabled={(date) => date > new Date() || date < minimumDate}
+          disabled={isDateDisabled}
           initialFocus
         />
       </PopoverContent>

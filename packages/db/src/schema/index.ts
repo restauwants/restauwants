@@ -11,8 +11,6 @@ import {
 
 import { mySqlTable } from "./_table";
 
-// #### Auth Schema ####
-
 export const users = mySqlTable("user", {
   id: varchar("id", { length: 255 }).notNull().primaryKey(),
   name: varchar("name", { length: 255 }),
