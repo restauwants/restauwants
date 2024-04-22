@@ -119,7 +119,7 @@ function ReviewForm({
 }) {
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
         <FormField
           control={form.control}
           name="id"
@@ -141,7 +141,7 @@ function ReviewForm({
                   onSelect={field.onChange}
                 />
               </FormControl>
-              <FormMessage />
+              <FormMessage reserve />
             </FormItem>
           )}
         />
@@ -152,7 +152,7 @@ function ReviewForm({
             <FormItem>
               <FormLabel>Date of Visit</FormLabel>
               <DatePicker selected={field.value} onSelect={field.onChange} />
-              <FormMessage />
+              <FormMessage reserve />
             </FormItem>
           )}
         />
@@ -162,36 +162,25 @@ function ReviewForm({
           render={({ field }) => (
             <FormItem>
               <FormLabel>Rating</FormLabel>
-              <div className="flex gap-0.5">
-                {Array.from({ length: 5 })
-                  .map((_, index) => index + 1)
-                  .map((index) => (
-                    <svg
-                      key={index}
-                      className="h-4 w-4"
-                      viewBox="0 0 20 20"
-                      xmlns="http://www.w3.org/2000/svg"
-                      onClick={() => form.setValue("rating", index)}
-                    >
-                      <g id="SVGRepo_bgCarrier" strokeWidth="0" />
-                      <g
-                        id="SVGRepo_tracerCarrier"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                      <g id="SVGRepo_iconCarrier">
-                        <path
-                          fill={index <= field.value ? "#E4A72F" : "#808080"}
-                          d="M9.88993214,17.5143551 L5.67925514,19.7706633 L5.58137404,19.8151697 C4.86621614,20.0856574 4.19175783,20.0309364 3.67796741,19.5732527 C3.19576628,19.1437087 3.02114918,18.5272631 3.12106237,17.8182442 L3.82494419,12.9582802 L0.644943731,9.61635601 C0.0942731134,9.05561309 -0.12003139,8.36789942 0.0652371375,7.6475266 C0.270499931,6.8494108 0.944591599,6.38981101 1.91626844,6.23594046 L6.1429793,5.59822482 L8.35612232,1.01301762 C8.69987723,0.366097394 9.23663637,-0.0174170702 9.91131194,0.000608459089 C10.5717106,0.0182525484 11.0939504,0.422542671 11.5040044,1.14356762 L13.64475,5.62965664 L18.3837285,6.28808837 C19.1367847,6.41806637 19.6918258,6.81025062 19.9136547,7.46427289 C20.1349495,8.11672079 19.9243574,8.77699895 19.3567704,9.45065589 L15.916492,12.9606774 L16.6886186,17.8170551 C16.81148,18.6567374 16.6644875,19.3222694 16.1027873,19.7179201 C15.5971351,20.0740917 14.964405,20.0740917 14.2364881,19.8236405 L14.1161887,19.7712214 L9.88993214,17.5143551 Z"
-                        ></path>
-                      </g>
-                    </svg>
-                  ))}
-              </div>
               <FormControl>
-                <Input {...field} type="hidden" />
+                <div className="flex gap-0.5">
+                  {Array.from({ length: 5 })
+                    .map((_, index) => index + 1)
+                    .map((rating) => (
+                      <StarIcon
+                        key={rating}
+                        className={cn(
+                          "size-6",
+                          rating <= field.value
+                            ? "fill-foreground"
+                            : "fill-muted",
+                        )}
+                        onClick={() => field.onChange(rating)}
+                      />
+                    ))}
+                </div>
               </FormControl>
-              <FormMessage />
+              <FormMessage reserve />
             </FormItem>
           )}
         />
@@ -202,19 +191,22 @@ function ReviewForm({
             <FormItem>
               <FormLabel>Price</FormLabel>
               <FormControl>
-                <Input
-                  {...field}
-                  value={field.value ?? ""}
-                  type="number"
-                  placeholder="$23.50"
-                  onChange={(e) =>
-                    field.onChange(
-                      e.target.value ? parseFloat(e.target.value) : undefined,
-                    )
-                  }
-                />
+                <div className="flex items-center gap-2">
+                  <DollarSignIcon className="size-4" />
+                  <Input
+                    {...field}
+                    value={field.value ?? ""}
+                    type="number"
+                    placeholder="23.50"
+                    onChange={(e) =>
+                      field.onChange(
+                        e.target.value ? parseFloat(e.target.value) : undefined,
+                      )
+                    }
+                  />
+                </div>
               </FormControl>
-              <FormMessage />
+              <FormMessage reserve />
             </FormItem>
           )}
         />
@@ -231,7 +223,7 @@ function ReviewForm({
                   placeholder="How was your experience?"
                 />
               </FormControl>
-              <FormMessage />
+              <FormMessage reserve />
             </FormItem>
           )}
         />
@@ -440,7 +432,7 @@ export function ReviewCard(props: {
             {props.review.username}
           </div>
           <div className="ml-auto flex items-center gap-2 text-sm text-muted-foreground">
-            <CalendarIcon className="h-4 w-4" />
+            <CalendarIcon className="size-4" />
             <span className="text-nowrap">
               {fromNow(props.review.createdAt)}
             </span>
@@ -472,10 +464,10 @@ export function ReviewCard(props: {
           </CardDescription>
         </div>
         <div className="mt-4 flex items-center gap-2">
-          <StarIcon className="h-6 w-6 fill-foreground" />
+          <StarIcon className="size-6 fill-foreground" />
           <div className="text-3xl font-semibold">{props.review.rating}</div>
           <div className="ml-auto flex items-center gap-2">
-            <DollarSignIcon className="h-4 w-4" />
+            <DollarSignIcon className="size-4" />
             <span className="font-semibold">{props.review.price}</span>
           </div>
         </div>
