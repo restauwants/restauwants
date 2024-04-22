@@ -23,12 +23,15 @@ export const env = createEnv({
     DB_PASSWORD: z.string(),
     DB_USERNAME: z.string(),
     DB_PORT: z.coerce.number().default(3306),
+    GOOGLE_PLACES_API_KEY: z.string(),
   },
   /**
    * Specify your client-side environment variables schema here.
    * For them to be exposed to the client, prefix them with `NEXT_PUBLIC_`.
    */
   client: {
+    NEXT_PUBLIC_GOOGLE_PLACES_API_KEY: z.string(),
+
     // NEXT_PUBLIC_CLIENTVAR: z.string(),
   },
   /**
@@ -41,6 +44,10 @@ export const env = createEnv({
     DB_USERNAME: process.env.DB_USERNAME,
     PORT: process.env.PORT,
     VERCEL_URL: process.env.VERCEL_URL,
+    NEXT_PUBLIC_GOOGLE_PLACES_API_KEY:
+      process.env.NEXT_PUBLIC_GOOGLE_PLACES_API_KEY,
+    GOOGLE_PLACES_API_KEY: process.env.GOOGLE_PLACES_API_KEY,
+    DB_PORT: process.env.DB_PORT,
 
     // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
   },

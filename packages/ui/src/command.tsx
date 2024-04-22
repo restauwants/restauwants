@@ -2,8 +2,8 @@
 
 import type { DialogProps } from "@radix-ui/react-dialog";
 import * as React from "react";
-import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
 import { Command as CommandPrimitive } from "cmdk";
+import { Search } from "lucide-react";
 
 import { cn } from ".";
 import { Dialog, DialogContent } from "./dialog";
@@ -26,7 +26,7 @@ Command.displayName = CommandPrimitive.displayName;
 const CommandDialog = ({ children, ...props }: DialogProps) => {
   return (
     <Dialog {...props}>
-      <DialogContent className="overflow-hidden p-0">
+      <DialogContent className="overflow-hidden p-0 shadow-lg">
         <Command className="[&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:font-medium [&_[cmdk-group-heading]]:text-muted-foreground [&_[cmdk-group]:not([hidden])_~[cmdk-group]]:pt-0 [&_[cmdk-group]]:px-2 [&_[cmdk-input-wrapper]_svg]:h-5 [&_[cmdk-input-wrapper]_svg]:w-5 [&_[cmdk-input]]:h-12 [&_[cmdk-item]]:px-2 [&_[cmdk-item]]:py-3 [&_[cmdk-item]_svg]:h-5 [&_[cmdk-item]_svg]:w-5">
           {children}
         </Command>
@@ -40,18 +40,17 @@ const CommandInput = React.forwardRef<
   React.ComponentPropsWithoutRef<typeof CommandPrimitive.Input>
 >(({ className, ...props }, ref) => (
   <div className="flex items-center border-b px-3">
-    <MagnifyingGlassIcon className="mr-2 h-4 w-4 shrink-0 opacity-50" />
+    <Search className="mr-2 h-4 w-4 shrink-0 opacity-50" />
     <CommandPrimitive.Input
       ref={ref}
       className={cn(
-        "flex h-10 w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50",
+        "flex h-11 w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50",
         className,
       )}
       {...props}
     />
   </div>
 ));
-
 CommandInput.displayName = CommandPrimitive.Input.displayName;
 
 const CommandList = React.forwardRef<
@@ -64,7 +63,6 @@ const CommandList = React.forwardRef<
     {...props}
   />
 ));
-
 CommandList.displayName = CommandPrimitive.List.displayName;
 
 const CommandEmpty = React.forwardRef<
@@ -77,8 +75,33 @@ const CommandEmpty = React.forwardRef<
     {...props}
   />
 ));
-
 CommandEmpty.displayName = CommandPrimitive.Empty.displayName;
+
+const CommandLoading = React.forwardRef<
+  React.ElementRef<typeof CommandPrimitive.Loading>,
+  React.ComponentPropsWithoutRef<typeof CommandPrimitive.Loading>
+>((props, ref) => <CommandPrimitive.Loading ref={ref} {...props} />);
+CommandLoading.displayName = CommandPrimitive.Loading.displayName;
+
+const CommandSkeleton = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+  <div ref={ref} className={cn("bg-background p-1", className)} {...props} />
+));
+CommandSkeleton.displayName = "CommandSkeleton";
+
+const CommandSkeletonContent = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={cn("h-8 w-full animate-pulse rounded-md bg-muted", className)}
+    {...props}
+  />
+));
+CommandSkeletonContent.displayName = "CommandSkeletonContent";
 
 const CommandGroup = React.forwardRef<
   React.ElementRef<typeof CommandPrimitive.Group>,
@@ -93,7 +116,6 @@ const CommandGroup = React.forwardRef<
     {...props}
   />
 ));
-
 CommandGroup.displayName = CommandPrimitive.Group.displayName;
 
 const CommandSeparator = React.forwardRef<
@@ -115,13 +137,12 @@ const CommandItem = React.forwardRef<
   <CommandPrimitive.Item
     ref={ref}
     className={cn(
-      "relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none aria-selected:bg-accent aria-selected:text-accent-foreground",
+      "relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none aria-selected:bg-accent aria-selected:text-accent-foreground data-[disabled='true']:pointer-events-none data-[disabled='true']:opacity-50",
       className,
     )}
     {...props}
   />
 ));
-
 CommandItem.displayName = CommandPrimitive.Item.displayName;
 
 const CommandShortcut = ({
@@ -146,6 +167,9 @@ export {
   CommandInput,
   CommandList,
   CommandEmpty,
+  CommandSkeleton,
+  CommandSkeletonContent,
+  CommandLoading,
   CommandGroup,
   CommandItem,
   CommandShortcut,

@@ -18,7 +18,7 @@
     "with-env": "dotenv -e ../../.env --"
   },
   "dependencies": {
-    "@restauwants/validators": "workspace:^0.1.0",
+    "@restauwants/schema": "workspace:^0.1.0",
     "drizzle-orm": "^0.30.7",
     "mysql2": "^3.9.4",
     "zod": "^3.22.4"

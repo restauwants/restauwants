@@ -1,10 +1,10 @@
 import { eq, schema } from "@restauwants/db";
-import { ProfileSchema as ProfileSchemaDatabase } from "@restauwants/validators/db";
+import { ProfileSchema as ProfileSchemaDatabase } from "@restauwants/schema/db";
 import {
   CreateProfileSchema as CreateProfileSchemaExternal,
   UserSchema as UserSchemaExternal,
   UserSchemaWithOptionals as UserSchemaWithOptionalsExternal,
-} from "@restauwants/validators/server/external";
+} from "@restauwants/schema/server/external";
 
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 

@@ -5,9 +5,9 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
 import type { Session } from "@restauwants/auth";
-import type { UserSchemaWithOptionals } from "@restauwants/validators/server/internal";
+import type { UserSchemaWithOptionals } from "@restauwants/schema/server/internal";
 import { auth } from "@restauwants/auth";
-import { isCompleteUser } from "@restauwants/validators/server/internal";
+import { isCompleteUser } from "@restauwants/schema/server/internal";
 
 import { getPathnameFromHeaders } from "~/functions/navigation";
 import { api } from "~/trpc/server";

@@ -1,10 +1,13 @@
+import type { z } from "zod";
+
 import type { Database } from "@restauwants/db";
+import type { UserIdSchema } from "@restauwants/schema/atoms";
 import { alias, and, desc, eq, or, schema } from "@restauwants/db";
 import { usernameToId } from "@restauwants/db/queries";
 import {
   FriendRequestSchema as FriendRequestSchemaDatabase,
   FriendSchema as FriendSchemaDatabase,
-} from "@restauwants/validators/db";
+} from "@restauwants/schema/db";
 import {
   AcceptFriendRequestSchema as AcceptFriendRequestSchemaExternal,
   FriendSchema as FriendSchemaExternal,
@@ -13,7 +16,7 @@ import {
   RemoveFriendSchema as RemoveFriendSchemaExternal,
   RevokeFriendRequestSchema as RevokeFriendRequestSchemaExternal,
   SentFriendRequestSchema as SentFriendRequestSchemaExternal,
-} from "@restauwants/validators/server/external";
+} from "@restauwants/schema/server/external";
 
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 
@@ -165,8 +168,8 @@ export const friendRouter = createTRPCRouter({
 
 export const areFriends = async (
   db: Database,
-  userIdA: string,
-  userIdB: string,
+  userIdA: z.infer<typeof UserIdSchema>,
+  userIdB: z.infer<typeof UserIdSchema>,
 ): Promise<boolean> => {
   return (
     (
@@ -191,8 +194,8 @@ export const areFriends = async (
 
 const hasSentFriendRequest = async (
   db: Database,
-  fromUserId: string,
-  toUserId: string,
+  fromUserId: z.infer<typeof UserIdSchema>,
+  toUserId: z.infer<typeof UserIdSchema>,
 ): Promise<boolean> => {
   return (
     (
@@ -211,8 +214,8 @@ const hasSentFriendRequest = async (
 
 const createFriendship = async (
   db: Database,
-  userIdA: string,
-  userIdB: string,
+  userIdA: z.infer<typeof UserIdSchema>,
+  userIdB: z.infer<typeof UserIdSchema>,
 ): Promise<void> => {
   if (userIdA === userIdB) {
     throw new Error("Cannot be friends with yourself");
@@ -235,8 +238,8 @@ const createFriendship = async (
 
 const deleteFriendship = async (
   db: Database,
-  userIdA: string,
-  userIdB: string,
+  userIdA: z.infer<typeof UserIdSchema>,
+  userIdB: z.infer<typeof UserIdSchema>,
 ): Promise<void> => {
   await db
     .delete(schema.friend)
@@ -256,8 +259,8 @@ const deleteFriendship = async (
 
 const deleteFriendRequest = async (
   db: Database,
-  fromUserId: string,
-  toUserId: string,
+  fromUserId: z.infer<typeof UserIdSchema>,
+  toUserId: z.infer<typeof UserIdSchema>,
 ): Promise<void> => {
   await db
     .delete(schema.friendRequest)
@@ -271,8 +274,8 @@ const deleteFriendRequest = async (
 
 const deleteFriendRequestsBetween = async (
   db: Database,
-  userIdA: string,
-  userIdB: string,
+  userIdA: z.infer<typeof UserIdSchema>,
+  userIdB: z.infer<typeof UserIdSchema>,
 ): Promise<void> => {
   await db
     .delete(schema.friendRequest)
@@ -292,8 +295,8 @@ const deleteFriendRequestsBetween = async (
 
 const sendFriendRequest = async (
   db: Database,
-  fromUserId: string,
-  toUserId: string,
+  fromUserId: z.infer<typeof UserIdSchema>,
+  toUserId: z.infer<typeof UserIdSchema>,
 ): Promise<void> => {
   if (fromUserId === toUserId) {
     throw new Error("Cannot send a friend request to yourself");

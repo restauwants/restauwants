@@ -1,5 +1,5 @@
 {
-  "name": "@restauwants/validators",
+  "name": "@restauwants/schema",
   "private": true,
   "version": "0.1.0",
   "type": "module",
@@ -7,7 +7,8 @@
     "./client": "./src/client/index.ts",
     "./server/external": "./src/server/external/index.ts",
     "./server/internal": "./src/server/internal/index.ts",
-    "./db": "./src/db/index.ts"
+    "./db": "./src/db/index.ts",
+    "./atoms": "./src/atoms/index.ts"
   },
   "license": "MIT",
   "scripts": {

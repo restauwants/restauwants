@@ -6,6 +6,7 @@
   "exports": {
     ".": "./src/index.ts",
     "./alert-dialog": "./src/alert-dialog.tsx",
+    "./completions": "./src/completions.tsx",
     "./button": "./src/button.tsx",
     "./calendar": "./src/calendar.tsx",
     "./card": "./src/card.tsx",
@@ -20,7 +21,6 @@
     "./label": "./src/label.tsx",
     "./navigation-menu": "./src/navigation-menu.tsx",
     "./popover": "./src/popover.tsx",
-    "./select": "./src/select.tsx",
     "./scroll-area": "./src/scroll-area.tsx",
     "./table": "./src/table.tsx",
     "./textarea": "./src/textarea.tsx",
@@ -46,7 +46,6 @@
     "@radix-ui/react-navigation-menu": "^1.1.4",
     "@radix-ui/react-popover": "^1.0.7",
     "@radix-ui/react-scroll-area": "^1.0.5",
-    "@radix-ui/react-select": "^2.0.0",
     "@radix-ui/react-slot": "^1.0.2",
     "class-variance-authority": "^0.7.0",
     "cmdk": "^1.0.0",

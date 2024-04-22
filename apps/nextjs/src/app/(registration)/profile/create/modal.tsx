@@ -3,6 +3,10 @@
 import type { z } from "zod";
 import { useEffect, useState } from "react";
 
+import {
+  CreateProfileFormSchema,
+  CreateProfileSchema,
+} from "@restauwants/schema/client";
 import { Button } from "@restauwants/ui/button";
 import {
   Dialog,
@@ -21,10 +25,6 @@ import {
 } from "@restauwants/ui/form";
 import { Input } from "@restauwants/ui/input";
 import { toast } from "@restauwants/ui/toast";
-import {
-  CreateProfileFormSchema,
-  CreateProfileSchema,
-} from "@restauwants/validators/client";
 
 import { signOut } from "~/actions/auth";
 import { navigate } from "~/actions/navigation";

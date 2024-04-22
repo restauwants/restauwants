@@ -1,22 +1,23 @@
 import { z } from "zod";
 
+import type { Database } from "@restauwants/db";
+import type { RestaurantIdSchema } from "@restauwants/schema/atoms";
+import type { RestaurantDetailsSchema } from "@restauwants/schema/server/internal";
 import { alias, and, desc, eq, lt, schema } from "@restauwants/db";
-import { ReviewSchema as ReviewSchemaDatabase } from "@restauwants/validators/db";
+import { ReviewIdSchema, UserIdSchema } from "@restauwants/schema/atoms";
+import {
+  RestaurantSchema as RestaurantSchemaDatabase,
+  ReviewSchema as ReviewSchemaDatabase,
+} from "@restauwants/schema/db";
 import {
   CreateReviewSchema as CreateReviewSchemaExternal,
   EditReviewSchema as EditReviewSchemaExternal,
-} from "@restauwants/validators/server/external";
+  ReviewSchema as ReviewSchemaExternal,
+} from "@restauwants/schema/server/external";
+import { GooglePlaceDetailsToRestaurantDetailsSchema } from "@restauwants/schema/server/internal";
 
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 import { areFriends } from "./friend";
-
-// async function queryGooglePlaces(placeId: string) {
-//   const apiKey = process.env.GOOGLE_API_KEY;
-//   const url = `https://maps.googleapis.com/maps/api/place/details/json?fields=name&place_id=${placeId}&key=${apiKey}`;
-//   const response = await fetch(url);
-//   const data = await response.json();
-//   return data.result.name;
-// }
 
 export const reviewRouter = createTRPCRouter({
   all: protectedProcedure
@@ -43,14 +44,29 @@ export const reviewRouter = createTRPCRouter({
             eq(schema.friend.fromUserId, schema.review.userId),
           )
           .innerJoin(friendProfile, eq(friendProfile.id, schema.review.userId))
+          .innerJoin(
+            schema.restaurant,
+            eq(schema.restaurant.id, schema.review.restaurantId),
+          )
           .where(where)
           .orderBy(desc(schema.review.id))
           .limit(input.limit + 1)
-      ).map((r) => ({
-        ...r.review,
-        username: r.friendProfile.username,
-        name: r.review.name,
-      }));
+      ).map((r) =>
+        ReviewSchemaExternal.parse({
+          id: r.review.id,
+          text: r.review.text,
+          rating: r.review.rating,
+          price: r.review.price,
+          visitedAt: r.review.visitedAt,
+          createdAt: r.review.createdAt,
+          updatedAt: r.review.updatedAt,
+          userId: r.friendProfile.id,
+          username: r.friendProfile.username,
+          restaurantId: r.restaurant.id,
+          restaurantName: r.restaurant.name,
+          restaurantAddress: r.restaurant.address,
+        }),
+      );
       const hasMore = reviews.length > input.limit;
       if (hasMore) {
         reviews.pop();
@@ -61,7 +77,7 @@ export const reviewRouter = createTRPCRouter({
   byUserId: protectedProcedure
     .input(
       z.object({
-        userId: z.string(),
+        userId: UserIdSchema,
         limit: z.number().int().min(1).max(100).default(50),
         cursor: z.number().int().optional(),
       }),
@@ -87,14 +103,29 @@ export const reviewRouter = createTRPCRouter({
             schema.profile,
             eq(schema.profile.id, schema.review.userId),
           )
+          .innerJoin(
+            schema.restaurant,
+            eq(schema.restaurant.id, schema.review.restaurantId),
+          )
           .where(where)
           .orderBy(desc(schema.review.id))
           .limit(input.limit + 1)
-      ).map((r) => ({
-        ...r.review,
-        username: r.profile.username,
-        name: r.review.name,
-      }));
+      ).map((r) =>
+        ReviewSchemaExternal.parse({
+          id: r.review.id,
+          text: r.review.text,
+          rating: r.review.rating,
+          price: r.review.price,
+          visitedAt: r.review.visitedAt,
+          createdAt: r.review.createdAt,
+          updatedAt: r.review.updatedAt,
+          userId: r.profile.id,
+          username: r.profile.username,
+          restaurantId: r.restaurant.id,
+          restaurantName: r.restaurant.name,
+          restaurantAddress: r.restaurant.address,
+        }),
+      );
       const hasMore = reviews.length > input.limit;
       if (hasMore) {
         reviews.pop();
@@ -105,18 +136,25 @@ export const reviewRouter = createTRPCRouter({
   create: protectedProcedure
     .input(CreateReviewSchemaExternal)
     .mutation(async ({ ctx, input }) => {
-      await ctx.db.insert(schema.review).values(
-        ReviewSchemaDatabase.parse({
-          ...input,
-          userId: ctx.session.user.id,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        }),
+      const insert = async (db: Database) => {
+        await db.insert(schema.review).values(
+          ReviewSchemaDatabase.parse({
+            ...input,
+            userId: ctx.session.user.id,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          }),
+        );
+      };
+      await withRestaurantCreationIfNecessary(
+        ctx.db,
+        insert,
+        input.restaurantId,
       );
     }),
 
   delete: protectedProcedure
-    .input(z.number())
+    .input(ReviewIdSchema)
     .mutation(async ({ ctx, input }) => {
       const review = await ctx.db.query.review.findFirst({
         where: eq(schema.review.id, input),
@@ -142,16 +180,76 @@ export const reviewRouter = createTRPCRouter({
       if (review.userId !== ctx.session.user.id) {
         throw new Error("Not authorized");
       }
-      return ctx.db
-        .update(schema.review)
-        .set({
-          restaurantId: input.restaurantId,
-          rating: input.rating,
-          price: input.price,
-          text: input.text,
-          visitedAt: input.visitedAt,
-          updatedAt: new Date(),
-        })
-        .where(eq(schema.review.id, input.id));
+      const update = async (db: Database) => {
+        await db
+          .update(schema.review)
+          .set(
+            ReviewSchemaDatabase.partial().parse({
+              restaurantId: input.restaurantId,
+              rating: input.rating,
+              price: input.price,
+              text: input.text,
+              visitedAt: input.visitedAt,
+              updatedAt: new Date(),
+            }),
+          )
+          .where(eq(schema.review.id, input.id));
+      };
+      await withRestaurantCreationIfNecessary(
+        ctx.db,
+        update,
+        input.restaurantId,
+      );
     }),
 });
+
+const withRestaurantCreationIfNecessary = async (
+  db: Database,
+  statement: (db: Database) => Promise<void>,
+  restaurantId: z.infer<typeof RestaurantIdSchema>,
+) => {
+  if (!(await doesRestaurantExist(db, restaurantId))) {
+    const restaurantDetails = await getRestaurantDetails(restaurantId);
+    await db.transaction(async (tx) => {
+      await createRestaurant(tx, restaurantId, restaurantDetails);
+      await statement(tx);
+    });
+  } else {
+    await statement(db);
+  }
+};
+
+const doesRestaurantExist = async (
+  db: Database,
+  restaurantId: z.infer<typeof RestaurantIdSchema>,
+): Promise<boolean> => {
+  return (
+    (await db.query.restaurant.findFirst({
+      where: eq(schema.restaurant.id, restaurantId),
+    })) !== undefined
+  );
+};
+
+const getRestaurantDetails = async (
+  restaurantId: z.infer<typeof RestaurantIdSchema>,
+): Promise<z.infer<typeof RestaurantDetailsSchema>> => {
+  return fetch(
+    `https://maps.googleapis.com/maps/api/place/details/json?fields=name%2Cformatted_address&place_id=${restaurantId}&key=${process.env.GOOGLE_PLACES_API_KEY}`,
+  )
+    .then((res) => res.json())
+    .then((json) => GooglePlaceDetailsToRestaurantDetailsSchema.parse(json));
+};
+
+const createRestaurant = async (
+  db: Database,
+  restaurantId: z.infer<typeof RestaurantIdSchema>,
+  details: z.infer<typeof RestaurantDetailsSchema>,
+): Promise<void> => {
+  await db.insert(schema.restaurant).values(
+    RestaurantSchemaDatabase.parse({
+      id: restaurantId,
+      name: details.name,
+      address: details.address,
+    }),
+  );
+};

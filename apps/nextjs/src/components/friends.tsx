@@ -4,6 +4,13 @@ import type { z } from "zod";
 import { useState } from "react";
 
 import {
+  AddFriendFormSchema,
+  RejectFriendRequestSchema,
+  RemoveFriendSchema,
+  RevokeFriendRequestSchema,
+  SentFriendRequestSchema,
+} from "@restauwants/schema/client";
+import {
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
@@ -25,13 +32,6 @@ import {
 import { Input } from "@restauwants/ui/input";
 import { Table, TableBody, TableCell, TableRow } from "@restauwants/ui/table";
 import { toast } from "@restauwants/ui/toast";
-import {
-  AddFriendFormSchema,
-  RejectFriendRequestSchema,
-  RemoveFriendSchema,
-  RevokeFriendRequestSchema,
-  SentFriendRequestSchema,
-} from "@restauwants/validators/client";
 
 import { api } from "~/trpc/react";
 
@@ -69,8 +69,8 @@ const PlaceholderFriendTableRow = ({
   );
 };
 
-const withFriendTable = (FriendTableRows: React.FC) => {
-  const FriendTable: React.FC = () => {
+const withFriendTable = (FriendTableRows: React.ComponentType) => {
+  const FriendTable = () => {
     return (
       <Table>
         <TableBody>
