@@ -27,7 +27,8 @@
     "./textarea": "./src/textarea.tsx",
     "./theme": "./src/theme.tsx",
     "./time": "./src/time.tsx",
-    "./toast": "./src/toast.tsx"
+    "./toast": "./src/toast.tsx",
+    "./wrap": "./src/wrap.tsx"
   },
   "license": "MIT",
   "scripts": {

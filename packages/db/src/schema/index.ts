@@ -124,6 +124,7 @@ export const restaurant = mySqlTable("restaurant", {
   id: varchar("id", { length: 255 }).notNull().primaryKey(),
   name: varchar("name", { length: 255 }).notNull(),
   address: varchar("address", { length: 255 }).notNull(),
+  url: varchar("url", { length: 255 }),
 });
 
 export const restaurantRelations = relations(restaurant, ({ many }) => ({

@@ -8,6 +8,7 @@ import {
   RestaurantAddressSchema,
   RestaurantIdSchema,
   RestaurantNameSchema,
+  RestaurantUrlSchema,
   ReviewIdSchema,
   ReviewTextSchema,
   UpdatedAtSchema,
@@ -40,6 +41,7 @@ export const ReviewSchema = z.object({
   restaurantId: RestaurantIdSchema,
   restaurantName: RestaurantNameSchema,
   restaurantAddress: RestaurantAddressSchema,
+  restaurantUrl: RestaurantUrlSchema.optional(),
 });
 
 export const CreateReviewSchema = z.object({
