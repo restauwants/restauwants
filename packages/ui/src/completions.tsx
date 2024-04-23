@@ -31,6 +31,7 @@ interface CompletionsProps<T> {
   isLoading?: boolean;
   disabled?: boolean;
   placeholder?: string;
+  filter?: boolean;
 }
 
 export const Completions = <T,>({
@@ -43,10 +44,21 @@ export const Completions = <T,>({
   onChange,
   disabled,
   isLoading = false,
+  filter = false,
 }: CompletionsProps<T>) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const [isOpen, setOpen] = useState(false);
+
+  const handleChange = useCallback(
+    (value: string) => {
+      if (value !== selected?.label) {
+        onSelect?.(undefined);
+      }
+      onChange(value);
+    },
+    [onChange, onSelect, selected],
+  );
 
   const handleKeyDown = useCallback(
     (event: KeyboardEvent<HTMLDivElement>) => {
@@ -81,7 +93,7 @@ export const Completions = <T,>({
     setOpen(false);
   }, []);
 
-  const handleSelectOption = useCallback(
+  const handleSelect = useCallback(
     (selectedOption: CompletionOption<T>) => {
       onChange(selectedOption.label);
       onSelect?.(selectedOption);
@@ -96,11 +108,15 @@ export const Completions = <T,>({
   );
 
   return (
-    <Command className="overflow-visible" onKeyDown={handleKeyDown}>
+    <Command
+      className="overflow-visible"
+      onKeyDown={handleKeyDown}
+      shouldFilter={filter}
+    >
       <CommandInput
         ref={inputRef}
         value={value}
-        onValueChange={onChange}
+        onValueChange={handleChange}
         onBlur={handleBlur}
         onFocus={() => setOpen(true)}
         placeholder={placeholder}
@@ -110,43 +126,78 @@ export const Completions = <T,>({
         {isOpen ? (
           <CommandList className="absolute top-0 z-10 w-full rounded-md border bg-popover shadow-lg animate-in fade-in-0 zoom-in-95">
             {isLoading ? (
-              <CommandLoading>
-                <CommandSkeleton>
-                  <CommandSkeletonContent />
-                </CommandSkeleton>
-              </CommandLoading>
-            ) : null}
-            {options.length > 0 && !isLoading ? (
-              <CommandGroup>
-                {options.map((option) => {
-                  const isSelected = selected?.key == option.key;
-                  return (
-                    <CommandItem
-                      key={option.key}
-                      value={option.label}
-                      onMouseDown={(event) => {
-                        event.preventDefault();
-                        event.stopPropagation();
-                      }}
-                      onSelect={() => handleSelectOption(option)}
-                      className={cn(
-                        "flex w-full items-center gap-2",
-                        !isSelected ? "pl-8" : null,
-                      )}
-                    >
-                      {isSelected ? <CheckIcon className="w-4" /> : null}
-                      {option.label}
-                    </CommandItem>
-                  );
-                })}
-              </CommandGroup>
-            ) : null}
-            {!isLoading ? <CommandEmpty>{emptyMessage}</CommandEmpty> : null}
+              <LoadingCompletions />
+            ) : (
+              <>
+                <CompletionsList
+                  options={options}
+                  selected={selected}
+                  onSelect={handleSelect}
+                />
+                <EmptyCompletions emptyMessage={emptyMessage} />
+              </>
+            )}
           </CommandList>
         ) : (
           <CommandList />
         )}
       </div>
     </Command>
+  );
+};
+
+const LoadingCompletions = () => {
+  return (
+    <CommandLoading>
+      <CommandSkeleton>
+        <CommandSkeletonContent />
+      </CommandSkeleton>
+    </CommandLoading>
+  );
+};
+
+interface EmptyCompletionsProps {
+  emptyMessage?: string;
+}
+
+const EmptyCompletions = ({ emptyMessage }: EmptyCompletionsProps) => {
+  return <CommandEmpty>{emptyMessage}</CommandEmpty>;
+};
+
+interface CompletionsListProps<T> {
+  options: CompletionOption<T>[];
+  selected?: CompletionOption<T>;
+  onSelect: (option: CompletionOption<T>) => void;
+}
+
+const CompletionsList = <T,>({
+  options,
+  selected,
+  onSelect,
+}: CompletionsListProps<T>) => {
+  return (
+    <CommandGroup>
+      {options.map((option) => {
+        const isSelected = selected?.key == option.key;
+        return (
+          <CommandItem
+            key={option.key}
+            value={option.label}
+            onMouseDown={(event) => {
+              event.preventDefault();
+              event.stopPropagation();
+            }}
+            onSelect={() => onSelect(option)}
+            className={cn(
+              "flex w-full items-center gap-2",
+              !isSelected ? "pl-8" : null,
+            )}
+          >
+            {isSelected ? <CheckIcon className="w-4" /> : null}
+            {option.label}
+          </CommandItem>
+        );
+      })}
+    </CommandGroup>
   );
 };

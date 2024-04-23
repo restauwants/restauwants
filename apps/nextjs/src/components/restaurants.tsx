@@ -99,7 +99,8 @@ export const RestaurantSearchBoxWithSuggestions =
       }, [ready, skeletonValue, setValue]);
 
       useEffect(() => {
-        const value = selected ? toValue(selected) : "";
+        if (!selected) return;
+        const value = toValue(selected);
         if (ready) {
           setValue(value);
         } else {

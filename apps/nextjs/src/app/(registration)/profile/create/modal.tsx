@@ -67,9 +67,10 @@ export const CreateProfileModal = () => {
     },
   });
 
-  const onSubmit = (data: z.infer<typeof CreateProfileFormSchema>) => {
+  const onSubmit = (formInput: z.input<typeof CreateProfileFormSchema>) => {
+    const formOutput = CreateProfileFormSchema.parse(formInput);
     setIsLoading(true);
-    createProfile.mutate(CreateProfileSchema.parse(data));
+    createProfile.mutate(CreateProfileSchema.parse(formOutput));
   };
 
   if (isLoading) {

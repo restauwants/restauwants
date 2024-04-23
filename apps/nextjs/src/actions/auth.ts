@@ -1,10 +1,10 @@
 "use server";
 
 import {
-  signOut as _signOut,
+  signOut as __signOut,
   signIn as signInWithProvider,
 } from "@restauwants/auth";
 
 export const signInWithDiscord = () => signInWithProvider("discord");
 export const signInWithGoogle = () => signInWithProvider("google");
-export const signOut = () => _signOut();
+export const signOut = () => __signOut();

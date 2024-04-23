@@ -9,10 +9,9 @@ import type { RouterOutputs } from "@restauwants/api";
 import type { ReviewSchema } from "@restauwants/schema/client";
 import { VisitedAtSchema } from "@restauwants/schema/atoms";
 import {
-  CreateReviewFormSchema,
   CreateReviewSchema,
-  EditReviewFormSchema,
   EditReviewSchema,
+  ReviewFormSchema,
 } from "@restauwants/schema/client";
 import { cn } from "@restauwants/ui";
 import { Button } from "@restauwants/ui/button";
@@ -59,9 +58,11 @@ import { RestaurantSearchBoxWithSuggestions } from "./restaurants";
 
 export function CreateReviewForm() {
   const form = useForm({
-    mode: "onChange",
     schema: ReviewFormSchema,
     defaultValues: {
+      restaurant: null,
+      rating: null,
+      price: null,
       text: "",
     },
   });
@@ -85,24 +86,21 @@ export function CreateReviewForm() {
     },
   });
 
-  const onSubmit = (data: z.input<typeof ReviewFormSchema>) => {
+  const onSubmit = (formInput: z.input<typeof ReviewFormSchema>) => {
+    const formOutput = ReviewFormSchema.parse(formInput);
     createReview.mutate(
       CreateReviewSchema.parse({
-        restaurantId: data.restaurant.id,
-        rating: data.rating,
-        price: data.price,
-        text: data.text,
-        visitedAt: data.visitedAt,
+        restaurantId: formOutput.restaurant.id,
+        rating: formOutput.rating,
+        price: formOutput.price,
+        text: formOutput.text,
+        visitedAt: formOutput.visitedAt,
       }),
     );
   };
 
   return <ReviewForm form={form} onSubmit={onSubmit} />;
 }
-
-const ReviewFormSchema = CreateReviewFormSchema.merge(
-  EditReviewFormSchema.partial({ id: true }),
-);
 
 function ReviewForm({
   form,
@@ -116,23 +114,14 @@ function ReviewForm({
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
         <FormField
           control={form.control}
-          name="id"
-          render={({ field }) => (
-            <FormControl>
-              <Input {...field} type="hidden" />
-            </FormControl>
-          )}
-        />
-        <FormField
-          control={form.control}
           name="restaurant"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Restaurant</FormLabel>
               <FormControl>
                 <RestaurantSearchBoxWithSuggestions
-                  selected={field.value}
-                  onSelect={field.onChange}
+                  selected={field.value ?? undefined}
+                  onSelect={(r) => field.onChange(r ?? null)}
                 />
               </FormControl>
               <FormMessage reserve />
@@ -171,7 +160,7 @@ function ReviewForm({
                         key={rating}
                         className={cn(
                           "size-6",
-                          rating <= field.value
+                          field.value && rating <= field.value
                             ? "fill-foreground"
                             : "fill-muted",
                         )}
@@ -200,7 +189,7 @@ function ReviewForm({
                     placeholder="23.50"
                     onChange={(e) =>
                       field.onChange(
-                        e.target.value ? parseFloat(e.target.value) : undefined,
+                        e.target.value ? parseFloat(e.target.value) : null,
                       )
                     }
                   />
@@ -274,27 +263,26 @@ function reviewList() {
     const [reviewToDelete, setReviewToDelete] =
       useState<z.infer<typeof ReviewSchema>>();
 
+    const [editReviewFormInternalFields, setEditReviewFormInternalFields] =
+      useState<z.infer<ReturnType<typeof ReviewSchema.pick<{ id: true }>>>>();
     const editReviewForm = useForm({
-      mode: "onChange",
       schema: ReviewFormSchema,
-      defaultValues: {
-        visitedAt: new Date(),
-        text: "",
-      },
     });
 
     const openEditModalFor = (review: z.infer<typeof ReviewSchema>) => {
-      editReviewForm.setValue("id", review.id);
-      editReviewForm.setValue("restaurant", {
-        id: review.restaurantId,
-        name: review.restaurantName,
-        address: review.restaurantAddress,
-        url: review.restaurantUrl,
+      setEditReviewFormInternalFields({ id: review.id });
+      editReviewForm.reset({
+        restaurant: {
+          id: review.restaurantId,
+          name: review.restaurantName,
+          address: review.restaurantAddress,
+          url: review.restaurantUrl,
+        },
+        rating: review.rating,
+        price: review.price,
+        text: review.text,
+        visitedAt: review.visitedAt,
       });
-      editReviewForm.setValue("rating", review.rating);
-      editReviewForm.setValue("price", review.price);
-      editReviewForm.setValue("text", review.text);
-      editReviewForm.setValue("visitedAt", review.visitedAt);
       setIsEditModalOpen(true);
     };
 
@@ -324,15 +312,16 @@ function reviewList() {
       },
     });
 
-    const onEditSubmit = (data: z.input<typeof ReviewFormSchema>) => {
+    const onEditSubmit = (formInput: z.input<typeof ReviewFormSchema>) => {
+      const formOutput = ReviewFormSchema.parse(formInput);
       updateReview.mutate(
         EditReviewSchema.parse({
-          id: data.id,
-          restaurantId: data.restaurant.id,
-          rating: data.rating,
-          price: data.price,
-          text: data.text,
-          visitedAt: data.visitedAt,
+          id: editReviewFormInternalFields!.id,
+          restaurantId: formOutput.restaurant.id,
+          rating: formOutput.rating,
+          price: formOutput.price,
+          text: formOutput.text,
+          visitedAt: formOutput.visitedAt,
         }),
       );
     };

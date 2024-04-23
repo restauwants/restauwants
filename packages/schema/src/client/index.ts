@@ -1,10 +1,10 @@
+import type { ZodType } from "zod";
 import { z } from "zod";
 
 import {
   PriceSchema,
   RatingSchema,
   RestaurantDescriptionSchema,
-  ReviewIdSchema,
   ReviewTextSchema,
   UsernameSchema,
   VisitedAtSchema,
@@ -54,10 +54,25 @@ export const AddDescriptionToRestaurantSchema = RestaurantSchema.transform(
   }),
 );
 
-export const CreateReviewFormSchema = z.object({
-  restaurant: RestaurantSchema,
-  rating: RatingSchema,
-  price: PriceSchema,
+const withNullDefaultButRequired = <T extends ZodType>(
+  schema: T,
+  messageWhenMissing: string,
+) => {
+  return schema
+    .nullable()
+    .refine((value) => value !== null, {
+      message: messageWhenMissing,
+    })
+    .pipe(schema);
+};
+
+export const ReviewFormSchema = z.object({
+  restaurant: withNullDefaultButRequired(
+    RestaurantSchema,
+    "Restaurant is required",
+  ),
+  rating: withNullDefaultButRequired(RatingSchema, "Rating is required"),
+  price: withNullDefaultButRequired(PriceSchema, "Price is required"),
   text: ReviewTextSchema,
   visitedAt: VisitedAtSchema,
 });
@@ -68,13 +83,4 @@ export const AddFriendFormSchema = z.object({
 
 export const CreateProfileFormSchema = z.object({
   username: UsernameSchema,
-});
-
-export const EditReviewFormSchema = z.object({
-  id: ReviewIdSchema,
-  restaurant: RestaurantSchema,
-  rating: RatingSchema,
-  price: PriceSchema,
-  text: ReviewTextSchema,
-  visitedAt: VisitedAtSchema,
 });
