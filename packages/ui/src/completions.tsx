@@ -1,6 +1,5 @@
 import type { KeyboardEvent } from "react";
 import { useCallback, useRef, useState } from "react";
-import { Check } from "lucide-react";
 
 import { cn } from ".";
 import {
@@ -14,6 +13,7 @@ import {
   CommandSkeleton,
   CommandSkeletonContent,
 } from "./command";
+import { CheckIcon } from "./icons";
 
 export interface CompletionOption<T> {
   label: string;
@@ -134,7 +134,7 @@ export const Completions = <T,>({
                         !isSelected ? "pl-8" : null,
                       )}
                     >
-                      {isSelected ? <Check className="w-4" /> : null}
+                      {isSelected ? <CheckIcon className="w-4" /> : null}
                       {option.label}
                     </CommandItem>
                   );

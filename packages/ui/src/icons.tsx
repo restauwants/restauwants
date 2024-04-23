@@ -8,6 +8,18 @@ export {
   StarIcon,
   CalendarIcon,
   DollarSignIcon,
+  CircleFadingPlusIcon,
+  HomeIcon,
+  UserIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  ChevronDownIcon,
+  SearchIcon,
+  CheckIcon,
+  XIcon,
+  DotIcon,
+  SunIcon,
+  MoonIcon,
 } from "lucide-react";
 
 const ShrimpIcon = React.forwardRef<
