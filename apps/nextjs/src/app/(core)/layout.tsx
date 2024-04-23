@@ -1,6 +1,6 @@
 // import { ThemeToggle } from "@restauwants/ui/theme";
 
-import { BottomBar } from "../../components/bottomBar";
+import { BottomBar } from "../../components/bottom-bar";
 import { Navigation } from "../../components/navigation";
 
 export default function Layout(props: { children: React.ReactNode }) {

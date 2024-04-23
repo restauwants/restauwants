@@ -13,7 +13,7 @@ const config = {
   },
   parser: "@typescript-eslint/parser",
   parserOptions: { project: true },
-  plugins: ["@typescript-eslint", "import"],
+  plugins: ["@typescript-eslint", "import", "check-file"],
   rules: {
     "turbo/no-undeclared-env-vars": "off",
     "@typescript-eslint/no-unused-vars": [
@@ -28,7 +28,36 @@ const config = {
       2,
       { checksVoidReturn: { attributes: false } },
     ],
+    "@typescript-eslint/naming-convention": [
+      "error",
+      {
+        selector: "function",
+        format: [
+          // Use PascalCase for React components
+          "StrictPascalCase",
+          // Use UPPER_CASE for Next.js route handler functions
+          "UPPER_CASE",
+          // Use strictCamelCase everywhere else
+          "strictCamelCase",
+        ],
+      },
+    ],
     "import/consistent-type-specifier-style": ["error", "prefer-top-level"],
+    "check-file/filename-naming-convention": [
+      "error",
+      {
+        "**/!(\\[).{jsx,tsx,js,ts}": "KEBAB_CASE",
+      },
+      {
+        ignoreMiddleExtensions: true,
+      },
+    ],
+    "check-file/folder-naming-convention": [
+      "error",
+      {
+        "**": "NEXT_JS_APP_ROUTER_CASE",
+      },
+    ],
   },
   ignorePatterns: [
     "**/*.config.js",

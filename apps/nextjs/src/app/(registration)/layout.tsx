@@ -2,7 +2,7 @@ import { Lily_Script_One } from "next/font/google";
 
 import { ShrimpIcon } from "@restauwants/ui/icons";
 
-import { BottomBar } from "../../components/bottomBar";
+import { BottomBar } from "../../components/bottom-bar";
 
 const lilyScript = Lily_Script_One({
   weight: "400",

@@ -14,7 +14,7 @@ import {
 import { SettingsIcon } from "@restauwants/ui/icons";
 
 import { signOut } from "~/actions/auth";
-import { useDialogOrDrawer } from "~/hooks/dialogOrDrawer";
+import { useDialogOrDrawer } from "~/hooks/dialog-or-drawer";
 import { ManageFriends } from "../../../components/friends";
 
 export function Settings() {
