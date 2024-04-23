@@ -16,12 +16,12 @@ import { env } from "~/env";
 
 export type RestaurantType = "bar" | "restaurant" | "cafe" | "bakery";
 
-interface PropsWithGoogleMapsScript {
+type PropsWithGoogleMapsScript<P = unknown> = P & {
   isGoogleMapsScriptLoaded: boolean;
-}
+};
 
 const withGoogleMapsScript = <T,>(
-  Component: React.ComponentType<T & PropsWithGoogleMapsScript>,
+  Component: React.ComponentType<PropsWithGoogleMapsScript<T>>,
   libraries: Libraries,
 ) => {
   const ComponentUsingGoogleMapsScript = (props: T) => {
@@ -50,7 +50,7 @@ export const RestaurantSearchBoxWithSuggestions =
       onSelect,
       types = ["bar", "restaurant", "cafe", "bakery"],
       isGoogleMapsScriptLoaded,
-    }: RestaurantSearchBoxWithSuggestionsProps & PropsWithGoogleMapsScript) => {
+    }: PropsWithGoogleMapsScript<RestaurantSearchBoxWithSuggestionsProps>) => {
       const toValue = useCallback(
         (restaurant: z.infer<typeof RestaurantSchema>) =>
           AddDescriptionToRestaurantSchema.parse(restaurant).description,

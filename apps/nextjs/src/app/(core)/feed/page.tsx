@@ -6,6 +6,7 @@ import { ReviewList, ReviewListSkeleton } from "../../../components/reviews";
 
 export default withRestrictionsBasedOnSession(() => {
   const reviews = api.review.all({});
+  const currentUser = api.user.current();
 
   return (
     <>
@@ -15,7 +16,7 @@ export default withRestrictionsBasedOnSession(() => {
           <div className="w-full">
             <div className="mt-20">
               <Suspense fallback={<ReviewListSkeleton count={3} />}>
-                <ReviewList reviews={reviews} />
+                <ReviewList reviews={reviews} currentUser={currentUser} />
               </Suspense>
             </div>
           </div>
