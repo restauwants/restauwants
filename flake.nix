@@ -12,7 +12,12 @@
         devShells.default = pkgs.mkShell {
           packages = with pkgs; [
             nodejs_20
+            corepack_20
           ];
+
+          shellHook = ''
+            ${pkgs.corepack_20}/bin/pnpm i;
+          '';
         };
       }
     );
