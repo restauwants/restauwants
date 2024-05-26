@@ -69,8 +69,9 @@ cp apps/auth-proxy/.env.example apps/auth-proxy/.env
 To run the project locally, run the following in the root of the project:
 
 ```bash
-pnpm run dev
 docker compose up
+pnpm run db:push
+pnpm run dev
 ```
 
 The Next.js application will be available on [http://localhost:3000](http://localhost:3000). The docker-compose command will start the MySQL database and Adminer. The Adminer interface will be available on [http://localhost:8080](http://localhost:8080).

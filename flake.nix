@@ -13,6 +13,7 @@
           packages = with pkgs; [
             nodejs_20
             corepack_20
+            docker
           ];
 
           shellHook = ''
