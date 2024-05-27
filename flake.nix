@@ -15,10 +15,6 @@
             corepack_20
             docker
           ];
-
-          shellHook = ''
-            ${pkgs.corepack_20}/bin/pnpm i;
-          '';
         };
       }
     );
