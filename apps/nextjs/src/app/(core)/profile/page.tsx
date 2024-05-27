@@ -12,7 +12,7 @@ export default withRestrictionsBasedOnSession(async () => {
   return (
     <>
       <div className="bg-profile-background absolute -z-50 h-screen w-screen bg-cover bg-right-bottom bg-no-repeat" />
-      <div className="container flex flex-row items-start justify-between pt-4">
+      <div className="container flex flex-row items-center justify-between pt-4">
         <p className="min-w-0 break-words text-2xl font-bold text-primary-foreground">
           {(await user).username}
         </p>
