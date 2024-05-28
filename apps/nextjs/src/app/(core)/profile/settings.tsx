@@ -17,7 +17,7 @@ export function Settings() {
     <div className="flex flex-row gap-2 md:gap-4">
       <dialogOrDrawer.Root>
         <dialogOrDrawer.Trigger asChild>
-          <Button>
+          <Button size="icon">
             <FriendsIcon />
           </Button>
         </dialogOrDrawer.Trigger>
@@ -28,7 +28,7 @@ export function Settings() {
           Footer={dialogOrDrawer.Footer}
         />
       </dialogOrDrawer.Root>
-      <Button onClick={() => setIsSignOutModalOpen(true)}>
+      <Button onClick={() => setIsSignOutModalOpen(true)} size="icon">
         <SignOutIcon />
       </Button>
       <ConfirmationDialog

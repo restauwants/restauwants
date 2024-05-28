@@ -43,6 +43,7 @@ import {
   CalendarIcon,
   DollarSignIcon,
   DotsVerticalIcon,
+  MapPinIcon,
   ShrimpIcon,
   StarIcon,
 } from "@restauwants/ui/icons";
@@ -50,7 +51,6 @@ import { Input } from "@restauwants/ui/input";
 import { Textarea } from "@restauwants/ui/textarea";
 import { fromNow } from "@restauwants/ui/time";
 import { toast } from "@restauwants/ui/toast";
-import { ConditionalWrap } from "@restauwants/ui/wrap";
 
 import { useDialogOrDrawer } from "~/hooks/dialog-or-drawer";
 import { api } from "~/trpc/react";
@@ -437,15 +437,21 @@ export function ReviewCard(props: {
       </CardHeader>
       <CardContent className="p-4">
         <div className="grid gap-1.5">
-          <CardTitle>
-            <ConditionalWrap
-              condition={props.review.restaurantUrl !== undefined}
-              wrap={(children) => (
-                <Link href={props.review.restaurantUrl!}>{children}</Link>
-              )}
-            >
+          <CardTitle className="flex min-h-9 flex-row items-start gap-1">
+            <span className="flex min-h-full flex-col justify-center">
               {props.review.restaurantName}
-            </ConditionalWrap>
+            </span>
+            {props.review.restaurantUrl !== undefined && (
+              <Button asChild variant="ghost" size="icon">
+                <Link
+                  href={props.review.restaurantUrl}
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
+                  <MapPinIcon />
+                </Link>
+              </Button>
+            )}
           </CardTitle>
           <CardDescription className="whitespace-pre-wrap">
             {props.review.text}

@@ -7,6 +7,7 @@ export {
   LogOutIcon as SignOutIcon,
   MoreVerticalIcon as DotsVerticalIcon,
   StarIcon,
+  MapPinIcon,
   CalendarIcon,
   DollarSignIcon,
   CircleFadingPlusIcon,
