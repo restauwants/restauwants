@@ -16,7 +16,6 @@ export default {
       },
       backgroundImage: {
         "feed-background": "url('/background.jpg')",
-        "profile-background": "url('/background-profile.jpg')",
       },
     },
   },

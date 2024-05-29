@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import Image from "next/image";
 
 import { withRestrictionsBasedOnSession } from "~/actions/navigation";
 import { api } from "~/trpc/server";
@@ -11,7 +12,9 @@ export default withRestrictionsBasedOnSession(async () => {
 
   return (
     <>
-      <div className="bg-profile-background absolute -z-50 h-screen w-screen bg-cover bg-right-bottom bg-no-repeat" />
+      <div className="absolute -z-50 h-28 w-full">
+        <Image src="/wavy-variant-1.svg" layout="fill" alt="" />
+      </div>
       <div className="container flex flex-row items-center justify-between pt-4">
         <p className="min-w-0 break-words text-2xl font-bold text-primary-foreground">
           {(await user).username}
