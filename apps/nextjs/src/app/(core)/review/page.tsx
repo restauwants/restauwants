@@ -1,10 +1,17 @@
+import { WavyBackground } from "@restauwants/ui/backgrounds";
+
 import { withRestrictionsBasedOnSession } from "~/actions/navigation";
 import { CreateReviewForm } from "../../../components/reviews";
 
 export default withRestrictionsBasedOnSession(async () => {
   return (
-    <div className="container min-h-dvh pb-20 pt-12">
-      <CreateReviewForm />
-    </div>
+    <>
+      <div className="absolute -z-50 h-28 w-full">
+        <WavyBackground variant={2} />
+      </div>
+      <div className="container pb-20 pt-24">
+        <CreateReviewForm />
+      </div>
+    </>
   );
 });

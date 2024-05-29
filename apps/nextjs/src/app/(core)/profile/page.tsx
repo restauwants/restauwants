@@ -14,7 +14,7 @@ export default withRestrictionsBasedOnSession(async () => {
   return (
     <>
       <div className="absolute -z-50 h-28 w-full">
-        <WavyBackground variant="blue-inner-pink-outer" />
+        <WavyBackground variant={0} />
       </div>
       <div className="container flex flex-row items-center justify-between pt-4">
         <p className="min-w-0 break-words text-2xl font-bold text-primary-foreground">
