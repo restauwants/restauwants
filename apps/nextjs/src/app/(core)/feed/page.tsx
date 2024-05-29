@@ -1,5 +1,7 @@
 import { Suspense } from "react";
 
+import { WavyBackground } from "@restauwants/ui/backgrounds";
+
 import { withRestrictionsBasedOnSession } from "~/actions/navigation";
 import { api } from "~/trpc/server";
 import { ReviewList, ReviewListSkeleton } from "../../../components/reviews";
@@ -10,17 +12,18 @@ export default withRestrictionsBasedOnSession(() => {
 
   return (
     <>
-      <div className="bg-feed-background absolute -z-50 h-full w-screen bg-cover bg-bottom bg-no-repeat" />
-      <div className="container min-h-dvh pb-20 pt-12">
-        <div className="flex flex-col items-center justify-center gap-4">
-          <div className="w-full">
-            <div className="mt-20">
-              <Suspense fallback={<ReviewListSkeleton count={3} />}>
-                <ReviewList reviews={reviews} currentUser={currentUser} />
-              </Suspense>
-            </div>
-          </div>
+      <div className="flex h-20 w-full justify-center">
+        <div className="absolute -z-50 h-28 w-full">
+          <WavyBackground variant="pink-inner-blue-outer" />
         </div>
+        <h1 className="font-brand pt-4 text-4xl text-background sm:text-5xl">
+          RestauWants
+        </h1>
+      </div>
+      <div className="container pb-20 pt-9">
+        <Suspense fallback={<ReviewListSkeleton count={3} />}>
+          <ReviewList reviews={reviews} currentUser={currentUser} />
+        </Suspense>
       </div>
     </>
   );

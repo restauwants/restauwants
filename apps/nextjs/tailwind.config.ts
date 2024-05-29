@@ -13,9 +13,7 @@ export default {
       fontFamily: {
         sans: ["var(--font-geist-sans)", ...fontFamily.sans],
         mono: ["var(--font-geist-mono)", ...fontFamily.mono],
-      },
-      backgroundImage: {
-        "feed-background": "url('/background.jpg')",
+        brand: ["var(--font-lily-script-one)"],
       },
     },
   },

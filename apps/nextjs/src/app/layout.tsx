@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Lily_Script_One } from "next/font/google";
 import { GeistMono } from "geist/font/mono";
 import { GeistSans } from "geist/font/sans";
 
@@ -9,6 +10,12 @@ import { env } from "~/env";
 import { TrpcReactProvider } from "~/trpc/react";
 
 import "~/app/globals.css";
+
+const lilyScriptOne = Lily_Script_One({
+  subsets: ["latin"],
+  weight: "400",
+  variable: "--font-lily-script-one",
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL(
@@ -34,6 +41,7 @@ export default function RootLayout(props: { children: React.ReactNode }) {
           "bg-background font-sans text-foreground antialiased",
           GeistSans.variable,
           GeistMono.variable,
+          lilyScriptOne.variable,
         )}
       >
         <TrpcReactProvider>
