@@ -20,7 +20,7 @@ export default withRestrictionsBasedOnSession(() => {
           RestauWants
         </h1>
       </div>
-      <div className="container pb-20 pt-9">
+      <div className="container max-w-[48rem] pb-20 pt-9">
         <Suspense fallback={<ReviewListSkeleton count={3} />}>
           <ReviewList reviews={reviews} currentUser={currentUser} />
         </Suspense>
