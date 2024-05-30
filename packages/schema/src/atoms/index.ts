@@ -24,13 +24,16 @@ export const RatingSchema = z.number().int().min(1).max(5);
 
 export const PriceSchema = z
   .number()
-  .min(0)
-  .max(1000000)
+  .min(0, { message: "Price must be at least 0" })
+  .max(1000000, { message: "Price must be at most 1000000" })
   .refine((p) => validator.isDecimal(p.toString(), { decimal_digits: "1,2" }), {
     message: "Price must have at most 2 decimal places",
   });
 
-export const ReviewTextSchema = z.string().min(0).max(255);
+export const ReviewTextSchema = z
+  .string()
+  .min(0)
+  .max(255, { message: "Text must be at most 255 characters long" });
 
 const isDateBefore = (maximum: Date) => (date: Date) => date <= maximum;
 const isDateInThePast = (date: Date) => isDateBefore(new Date())(date);
