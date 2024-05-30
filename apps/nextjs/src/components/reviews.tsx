@@ -491,17 +491,13 @@ export function ReviewCardSkeleton(props: { pulse?: boolean }) {
         <div className="grid gap-1.5">
           <CardTitle
             className={cn(
-              "w-32 rounded bg-secondary",
+              "min-h-9 w-32 rounded bg-secondary",
               pulse && "animate-pulse",
             )}
-          >
-            &nbsp;
-          </CardTitle>
+          />
           <CardDescription
             className={cn("w-full rounded bg-muted", pulse && "animate-pulse")}
           >
-            <br />
-            <br />
             <br />
           </CardDescription>
         </div>
