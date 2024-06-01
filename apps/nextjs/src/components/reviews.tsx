@@ -484,7 +484,7 @@ export function ReviewCardSkeleton(props: { pulse?: boolean }) {
         <div className="grid gap-1.5">
           <CardTitle
             className={cn(
-              "min-h-9 w-32 rounded bg-secondary",
+              "min-h-9 w-32 rounded bg-muted-foreground",
               pulse && "animate-pulse",
             )}
           />
@@ -500,9 +500,11 @@ export function ReviewCardSkeleton(props: { pulse?: boolean }) {
             pulse && "animate-pulse",
           )}
         >
-          <div className="w-16 rounded bg-secondary text-3xl">&nbsp;</div>
+          <div className="w-16 rounded bg-muted-foreground text-3xl">
+            &nbsp;
+          </div>
           <div className="ml-auto flex items-center gap-2">
-            <span className="w-20 rounded bg-secondary">&nbsp;</span>
+            <span className="w-20 rounded bg-muted-foreground">&nbsp;</span>
           </div>
         </div>
       </CardContent>

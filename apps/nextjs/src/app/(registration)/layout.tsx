@@ -14,17 +14,12 @@ export default function Layout(props: { children: React.ReactNode }) {
     <>
       <div className="fixed bottom-0 -z-10 h-full w-full bg-white [background:radial-gradient(125%_125%_at_50%_10%,#fff_40%,#F16469_100%)]"></div>
 
-      <nav className="fixed left-0 top-0 z-50 w-full bg-secondary shadow-md">
+      <nav className="fixed left-0 top-0 z-50 w-full bg-primary shadow-md">
         <div className="mx-auto max-w-6xl items-center px-4 py-4 sm:px-12 lg:px-16">
           <h1 className="text-center text-3xl font-bold text-white">
             <div className={lilyScript.className}>RestauWants</div>
           </h1>
         </div>
-        {/*
-        <div className="hover:white/80 absolute right-4 top-1/2 h-9 -translate-y-1/2 transform rounded-md bg-white px-4 py-2 text-center text-secondary">
-          {props.children}
-        </div>
-        */}
       </nav>
 
       <div className="z-10 mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
@@ -58,7 +53,7 @@ export default function Layout(props: { children: React.ReactNode }) {
               </p>
               <div className="mb-8">
                 <div className="mt-2 flex items-center justify-center">
-                  <div className="w-1/2 space-y-2 rounded-3xl border-2 bg-secondary p-8 text-center font-bold text-white shadow-2xl">
+                  <div className="w-1/2 space-y-2 rounded-3xl border-2 bg-primary p-8 text-center font-bold text-white shadow-2xl">
                     {props.children}
                   </div>
                 </div>
