@@ -16,7 +16,7 @@ export default withRestrictionsBasedOnSession(() => {
         <div className="absolute -z-50 h-28 w-full">
           <WavyBackground variant={1} />
         </div>
-        <h1 className="font-brand pt-4 text-4xl text-background sm:text-5xl">
+        <h1 className="font-brand pt-4 text-4xl text-primary-foreground sm:text-5xl">
           RestauWants
         </h1>
       </div>

@@ -17,7 +17,7 @@ export default withRestrictionsBasedOnSession(async () => {
         <WavyBackground variant={0} />
       </div>
       <div className="container flex max-w-[48rem] flex-row items-center justify-between pt-4">
-        <span className="min-w-0 break-words text-2xl font-bold text-background">
+        <span className="min-w-0 break-words text-2xl font-bold text-secondary-foreground">
           {(await user).username}
         </span>
         <Settings />
