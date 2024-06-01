@@ -23,9 +23,6 @@ importers:
       '@turbo/gen':
         specifier: ^1.11.3
         version: 1.11.3(@types/node@20.11.7)(typescript@5.3.3)
-      eslint:
-        specifier: 8.56.0
-        version: 8.56.0
       husky:
         specifier: ^9.0.10
         version: 9.0.10

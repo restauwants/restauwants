@@ -333,19 +333,12 @@ function reviewList() {
 
     if (reviews.length === 0) {
       return (
-        <div className="relative flex w-full flex-col items-center gap-4">
-          <div className="mt-20 max-w-xs">
-            <div className="mt-20 max-w-xs">
-              <p className="text-l text-center">
-                Your feed is looking a bit{" "}
-                <span className="italic">hungry...</span> maybe it&apos;s time
-                to find a place to eat!
-              </p>
-              <div className="mt-5 flex justify-center">
-                <ShrimpIcon className="size-20" />
-              </div>
-            </div>
-          </div>
+        <div className="mt-10 flex flex-col items-center gap-5">
+          <p className="max-w-xs text-center">
+            Your feed is looking a bit <span className="italic">hungry...</span>{" "}
+            maybe it&#39;s time to add friends!
+          </p>
+          <ShrimpIcon className="size-36" />
         </div>
       );
     }
