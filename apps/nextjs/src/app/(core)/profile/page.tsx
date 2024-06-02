@@ -28,6 +28,12 @@ export default withRestrictionsBasedOnSession(async () => {
             reviews={reviews}
             currentUser={user}
             byUserId={(await user).id}
+            emptyMessage={
+              <p className="text-center">
+                You haven&#39;t written any reviews yet. Get out there and start
+                eating!
+              </p>
+            }
           />
         </Suspense>
       </div>

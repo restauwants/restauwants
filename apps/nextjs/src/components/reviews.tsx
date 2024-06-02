@@ -251,6 +251,7 @@ function reviewList() {
     reviews: Promise<RouterOutputs["review"]["all"]>;
     currentUser: Promise<z.infer<typeof UserSchema>>;
     byUserId?: string;
+    emptyMessage: React.ReactNode;
   }) {
     const initialData = use(props.reviews);
     const initialCurrentUser = use(props.currentUser);
@@ -333,11 +334,8 @@ function reviewList() {
 
     if (reviews.length === 0) {
       return (
-        <div className="mt-10 flex flex-col items-center gap-5">
-          <p className="max-w-xs text-center">
-            Your feed is looking a bit <span className="italic">hungry...</span>{" "}
-            maybe it&#39;s time to add friends!
-          </p>
+        <div className="mx-auto mt-10 flex max-w-xs flex-col items-center gap-5">
+          {props.emptyMessage}
           <ShrimpIcon className="size-36" />
         </div>
       );
