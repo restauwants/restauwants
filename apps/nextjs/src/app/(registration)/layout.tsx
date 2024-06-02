@@ -2,8 +2,6 @@ import { Lily_Script_One } from "next/font/google";
 
 import { ShrimpIcon } from "@restauwants/ui/icons";
 
-import { BottomBar } from "../../components/bottom-bar";
-
 const lilyScript = Lily_Script_One({
   weight: "400",
   preload: false,
@@ -62,11 +60,6 @@ export default function Layout(props: { children: React.ReactNode }) {
           </div>
         </div>
       </div>
-      <BottomBar>
-        <div />
-        <div />
-        <div className="ml-auto mr-4">{/* <ThemeToggle /> */}</div>
-      </BottomBar>
     </>
   );
 }
