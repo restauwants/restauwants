@@ -26,7 +26,6 @@ export const usersRelations = relations(users, ({ one, many }) => ({
   accounts: many(accounts),
   reviews: many(review),
   profile: one(profile),
-  comments: many(comment),
   friends: many(friend),
   friendRequests: many(friendRequest),
 }));
@@ -129,24 +128,6 @@ export const restaurant = mySqlTable("restaurant", {
 
 export const restaurantRelations = relations(restaurant, ({ many }) => ({
   reviews: many(review),
-}));
-
-export const comment = mySqlTable("comment", {
-  id: int("id").autoincrement().notNull().primaryKey(),
-  userId: varchar("userId", { length: 255 }).notNull(),
-  reviewId: int("reviewId").notNull(),
-  text: varchar("text", { length: 255 }).notNull(),
-  createdAt: timestamp("createdAt")
-    .notNull()
-    .default(sql`CURRENT_TIMESTAMP`),
-  updatedAt: timestamp("updatedAt")
-    .notNull()
-    .default(sql`CURRENT_TIMESTAMP`),
-});
-
-export const commentRelations = relations(comment, ({ one }) => ({
-  user: one(users),
-  review: one(review),
 }));
 
 export const friend = mySqlTable(
