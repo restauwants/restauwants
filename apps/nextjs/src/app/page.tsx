@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { WavyBackground } from "@restauwants/ui/backgrounds";
 import { Button } from "@restauwants/ui/button";
 import { ShrimpIcon } from "@restauwants/ui/icons";
 
@@ -29,12 +30,19 @@ export default withRestrictionsBasedOnSession(() => {
           A better way to discover and share restaurants
         </h1>
         <p className="mt-5 max-w-[34rem] text-center leading-snug text-muted-foreground sm:text-lg">
-          Record your dining experiences, share your findings with friends, and
+          Review your dining experiences, share your findings with friends, and
           receive recommendations from the people you trust&nbsp;most.
         </p>
         <Button size="lg" variant="primary" className="mt-8">
           Start reviewing for free
         </Button>
+      </div>
+      <div className="relative pt-64">
+        <WavyBackground
+          variant={0}
+          className="absolute top-32 -z-50 h-36 w-full rotate-180"
+        />
+        <div className="h-96 w-full bg-secondary" />
       </div>
     </div>
   );
