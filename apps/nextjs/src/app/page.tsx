@@ -1,6 +1,41 @@
-import { redirect } from "next/navigation";
+import Link from "next/link";
 
-import { feedPage as feedPagePath } from "~/app/paths";
+import { Button } from "@restauwants/ui/button";
+import { ShrimpIcon } from "@restauwants/ui/icons";
+
+import { landingPage } from "~/app/paths";
 import { withRestrictionsBasedOnSession } from "../actions/navigation";
 
-export default withRestrictionsBasedOnSession(() => redirect(feedPagePath));
+export default withRestrictionsBasedOnSession(() => {
+  return (
+    <div className="flex flex-col">
+      <div className="container relative flex h-16 max-w-[76rem] flex-row justify-between py-4">
+        <Link href={landingPage} className="flex flex-row items-center">
+          <ShrimpIcon className="size-8" />
+          <span className="font-brand">RestauWants</span>
+        </Link>
+        <div className="flex flex-row items-center gap-4">
+          <Button size="sm" variant="ghost">
+            Sign in
+          </Button>
+          <Button size="sm" variant="outline">
+            Get started
+          </Button>
+        </div>
+        <div className="absolute inset-x-0 top-full mt-px h-px bg-muted" />
+      </div>
+      <div className="container flex max-w-[32rem] flex-col items-center pt-24 sm:max-w-[40rem] lg:max-w-[60rem]">
+        <h1 className="text-center text-4xl font-bold sm:text-6xl lg:text-7xl/tight">
+          A better way to discover and share restaurants
+        </h1>
+        <p className="mt-5 max-w-[34rem] text-center leading-snug text-muted-foreground sm:text-lg">
+          Record your dining experiences, share your findings with friends, and
+          receive recommendations from the people you trust&nbsp;most.
+        </p>
+        <Button size="lg" variant="primary" className="mt-8">
+          Start reviewing for free
+        </Button>
+      </div>
+    </div>
+  );
+});

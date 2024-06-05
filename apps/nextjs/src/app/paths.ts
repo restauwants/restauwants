@@ -1,3 +1,4 @@
+export const landingPage = "/";
 export const signInPage = "/signin";
 export const profilePage = "/profile";
 export const profileCreationPage = "/profile/create";
