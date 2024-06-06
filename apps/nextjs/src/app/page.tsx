@@ -2,7 +2,6 @@ import Link from "next/link";
 
 import { WavyBackground } from "@restauwants/ui/backgrounds";
 import { Button } from "@restauwants/ui/button";
-import { ShrimpIcon } from "@restauwants/ui/icons";
 
 import { landingPage } from "~/app/paths";
 import { withRestrictionsBasedOnSession } from "../actions/navigation";
@@ -10,16 +9,15 @@ import { withRestrictionsBasedOnSession } from "../actions/navigation";
 export default withRestrictionsBasedOnSession(() => {
   return (
     <div className="flex flex-col">
-      <div className="container relative flex h-16 max-w-[76rem] flex-row justify-between py-4">
+      <div className="container relative flex max-w-[76rem] flex-row justify-between py-4">
         <Link href={landingPage} className="flex flex-row items-center">
-          <ShrimpIcon className="size-8" />
-          <span className="font-brand">RestauWants</span>
+          <span className="font-brand text-lg">RestauWants</span>
         </Link>
         <div className="flex flex-row items-center gap-4">
-          <Button size="sm" variant="ghost">
+          <Button className="h-10" variant="ghost">
             Sign in
           </Button>
-          <Button size="sm" variant="outline">
+          <Button className="h-10" variant="outline">
             Get started
           </Button>
         </div>
