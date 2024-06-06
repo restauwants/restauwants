@@ -1,7 +1,5 @@
 import * as React from "react";
 
-import { cn } from ".";
-
 const WavyBackground = React.forwardRef<
   SVGSVGElement,
   React.SVGProps<SVGSVGElement> & {
@@ -17,7 +15,7 @@ const WavyBackground = React.forwardRef<
           fill="none"
           preserveAspectRatio="none"
           xmlns="http://www.w3.org/2000/svg"
-          className={cn("h-full w-full", className)}
+          className={className}
           {...props}
         >
           <path
@@ -38,7 +36,7 @@ const WavyBackground = React.forwardRef<
           fill="none"
           preserveAspectRatio="none"
           xmlns="http://www.w3.org/2000/svg"
-          className={cn("h-full w-full", className)}
+          className={className}
           {...props}
         >
           <path
@@ -59,7 +57,7 @@ const WavyBackground = React.forwardRef<
           fill="none"
           preserveAspectRatio="none"
           xmlns="http://www.w3.org/2000/svg"
-          className={cn("h-full w-full", className)}
+          className={className}
           {...props}
         >
           <path

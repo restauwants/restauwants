@@ -4,6 +4,7 @@ import { WavyBackground } from "@restauwants/ui/backgrounds";
 import { Button } from "@restauwants/ui/button";
 
 import { landingPage } from "~/app/paths";
+import { CreateReviewForm } from "~/components/reviews";
 import { withRestrictionsBasedOnSession } from "../actions/navigation";
 
 export default withRestrictionsBasedOnSession(() => {
@@ -27,20 +28,33 @@ export default withRestrictionsBasedOnSession(() => {
         <h1 className="text-center text-4xl font-bold sm:text-6xl lg:text-7xl/tight">
           A better way to discover and share restaurants
         </h1>
-        <p className="mt-5 max-w-[34rem] text-center leading-snug text-muted-foreground sm:text-lg">
+        <p className="mt-5 max-w-[38rem] text-center leading-snug text-muted-foreground sm:text-xl">
           Review your dining experiences, share your findings with friends, and
           receive recommendations from the people you trust&nbsp;most.
         </p>
-        <Button size="lg" variant="primary" className="mt-8">
+        <Button variant="primary" className="mt-8 h-10 sm:text-lg">
           Start reviewing for free
         </Button>
       </div>
-      <div className="relative pt-64">
+      <div className="relative pt-[400px]">
         <WavyBackground
           variant={0}
           className="absolute top-32 -z-50 h-36 w-full rotate-180"
         />
-        <div className="h-96 w-full bg-secondary" />
+        <div className="absolute top-64 -z-50 h-[1300px] w-full bg-secondary" />
+        <div className="container flex max-w-[76rem] flex-wrap gap-y-8">
+          <div className="w-full sm:w-1/2">
+            <h2 className="text-4xl font-bold text-secondary-foreground sm:text-5xl">
+              Reviews, created in seconds
+            </h2>
+            <p className="mt-5 leading-snug text-secondary-foreground/80 sm:text-xl">
+              Spend your time on the information that matters most.
+            </p>
+          </div>
+          <div className="w-full rounded-2xl border-2 bg-background p-4 sm:w-1/2">
+            <CreateReviewForm skipSubmit />
+          </div>
+        </div>
       </div>
     </div>
   );
