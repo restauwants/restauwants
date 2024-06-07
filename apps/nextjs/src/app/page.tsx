@@ -25,18 +25,18 @@ export default withRestrictionsBasedOnSession(() => {
         <div className="absolute inset-x-0 top-full mt-px h-px bg-muted" />
       </div>
       <div className="container flex max-w-[32rem] flex-col items-center pt-24 sm:max-w-[40rem] lg:max-w-[60rem]">
-        <h1 className="text-center text-4xl font-bold sm:text-6xl lg:text-7xl/tight">
+        <h1 className="text-center text-3xl font-bold sm:text-5xl lg:text-6xl/tight">
           A better way to discover and share restaurants
         </h1>
-        <p className="mt-5 max-w-[38rem] text-center leading-snug text-muted-foreground sm:text-xl">
+        <p className="mt-5 max-w-[38rem] text-center leading-snug text-muted-foreground sm:text-lg">
           Review your dining experiences, share your findings with friends, and
           receive recommendations from the people you trust&nbsp;most.
         </p>
-        <Button variant="primary" className="mt-8 h-10 sm:text-lg">
+        <Button variant="primary" className="sm:text-md mt-8 h-10">
           Start reviewing for free
         </Button>
       </div>
-      <div className="relative py-[400px]">
+      <div className="relative py-[500px]">
         <WavyBackground
           variant={0}
           className="absolute top-[180px] -z-50 h-[200px] w-full rotate-180"
@@ -46,11 +46,11 @@ export default withRestrictionsBasedOnSession(() => {
         </div>
         <div className="container grid max-w-[76rem] grid-cols-1 gap-x-12 gap-y-16 md:grid-cols-5">
           <div className="col-span-2">
-            <h2 className="text-4xl font-bold text-secondary-foreground sm:text-5xl">
+            <h2 className="text-3xl font-bold text-secondary-foreground sm:text-4xl">
               Reviews, created in seconds
             </h2>
-            <p className="mt-5 leading-snug text-secondary-foreground/80 sm:text-xl">
-              Spend your time on the information that matters most.
+            <p className="mt-5 leading-snug text-secondary-foreground/80 sm:text-lg">
+              Spend your time on the information that matters&nbsp;most.
             </p>
           </div>
           <div className="hover:shadow-3xl duration-800 col-span-3 rounded-2xl border-2 bg-background p-4 shadow-xl shadow-primary/10 transition-shadow ease-in-out hover:shadow-primary/20">
