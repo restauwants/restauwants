@@ -36,14 +36,16 @@ export default withRestrictionsBasedOnSession(() => {
           Start reviewing for free
         </Button>
       </div>
-      <div className="relative pt-[400px]">
+      <div className="relative py-[400px]">
         <WavyBackground
           variant={0}
-          className="absolute top-32 -z-50 h-36 w-full rotate-180"
+          className="absolute top-[180px] -z-50 h-[200px] w-full rotate-180"
         />
-        <div className="absolute top-64 -z-50 h-[1300px] w-full bg-secondary" />
-        <div className="container flex max-w-[76rem] flex-wrap gap-y-8">
-          <div className="w-full sm:w-1/2">
+        <div className="absolute top-0 -z-50 h-full w-full pt-[379px]">
+          <div className="h-full w-full bg-secondary" />
+        </div>
+        <div className="container grid max-w-[76rem] grid-cols-1 gap-x-12 gap-y-16 md:grid-cols-5">
+          <div className="col-span-2">
             <h2 className="text-4xl font-bold text-secondary-foreground sm:text-5xl">
               Reviews, created in seconds
             </h2>
@@ -51,7 +53,7 @@ export default withRestrictionsBasedOnSession(() => {
               Spend your time on the information that matters most.
             </p>
           </div>
-          <div className="w-full rounded-2xl border-2 bg-background p-4 sm:w-1/2">
+          <div className="hover:shadow-3xl duration-800 col-span-3 rounded-2xl border-2 bg-background p-4 shadow-xl shadow-primary/10 transition-shadow ease-in-out hover:shadow-primary/20">
             <CreateReviewForm skipSubmit />
           </div>
         </div>
