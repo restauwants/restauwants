@@ -18,6 +18,7 @@ export {
   isCompleteUser,
   RemoveFriendSchema,
   ReviewSchema,
+  ExampleReviewSchema,
   CreateReviewSchema,
   EditReviewSchema,
   ReceivedFriendRequestSchema,

@@ -7,14 +7,46 @@ import { ReviewSchema as ReviewSchemaDatabase } from "@restauwants/schema/db";
 import {
   CreateReviewSchema as CreateReviewSchemaExternal,
   EditReviewSchema as EditReviewSchemaExternal,
+  ExampleReviewSchema as ExampleReviewSchemaExternal,
   ReviewSchema as ReviewSchemaExternal,
 } from "@restauwants/schema/server/external";
 
 import { areFriends } from "../queries/friend";
 import { withRestaurantCreationIfNecessary } from "../queries/review";
-import { createTRPCRouter, protectedProcedure } from "../trpc";
+import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 
 export const reviewRouter = createTRPCRouter({
+  example: createTRPCRouter({
+    all: publicProcedure
+      .input(
+        z.object({
+          limit: z.number().int().min(1).max(3).default(1),
+        }),
+      )
+      .query(({ input }) => {
+        const reviews = [
+          {
+            id: 1,
+            text: "Foo",
+            rating: 4,
+            price: 12.83,
+            visitedAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2),
+            createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2),
+            updatedAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2),
+            userId: "0",
+            username: "joey",
+            restaurantId: "ChIJ_-4oJVpxj1QR9fuYXnfroNg",
+            restaurantName: "Mac's",
+            restaurantAddress:
+              "MacLaurin Building, 3800 Finnerty Rd, Victoria, BC V8P 4X2, Canada",
+            restaurantUrl:
+              "https://www.uvic.ca/services/food/where/macs/index.php",
+          },
+        ].map((r) => ExampleReviewSchemaExternal.parse(r));
+        return reviews.slice(0, input.limit);
+      }),
+  }),
+
   all: protectedProcedure
     .input(
       z.object({
