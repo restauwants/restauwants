@@ -44,8 +44,6 @@ export const ReviewSchema = z.object({
   restaurantUrl: RestaurantUrlSchema.optional(),
 });
 
-export const ExampleReviewSchema = ReviewSchema;
-
 export const CreateReviewSchema = z.object({
   restaurantId: RestaurantIdSchema,
   rating: RatingSchema,

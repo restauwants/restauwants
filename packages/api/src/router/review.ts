@@ -7,45 +7,14 @@ import { ReviewSchema as ReviewSchemaDatabase } from "@restauwants/schema/db";
 import {
   CreateReviewSchema as CreateReviewSchemaExternal,
   EditReviewSchema as EditReviewSchemaExternal,
-  ExampleReviewSchema as ExampleReviewSchemaExternal,
   ReviewSchema as ReviewSchemaExternal,
 } from "@restauwants/schema/server/external";
 
 import { areFriends } from "../queries/friend";
 import { withRestaurantCreationIfNecessary } from "../queries/review";
-import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
+import { createTRPCRouter, protectedProcedure } from "../trpc";
 
 export const reviewRouter = createTRPCRouter({
-  example: createTRPCRouter({
-    all: publicProcedure
-      .input(
-        z.object({
-          limit: z.number().int().min(1).max(3).default(1),
-        }),
-      )
-      .query(({ input }) => {
-        const reviews = [
-          {
-            id: 1,
-            text: "Awesome sandwich bar, right on campus. Has been a game changer for me on the days I don't bring a lunch. I recommend ordering the wrap and packing in all the veggies.",
-            rating: 4,
-            price: 10.0,
-            visitedAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2),
-            createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2),
-            updatedAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2),
-            userId: "0",
-            username: "daphne",
-            restaurantId: "ChIJ_-4oJVpxj1QR9fuYXnfroNg",
-            restaurantName: "Mac's",
-            restaurantAddress:
-              "MacLaurin Building, 3800 Finnerty Rd, Victoria, BC V8P 4X2, Canada",
-            restaurantUrl: "https://maps.google.com/?cid=15609735206386858997",
-          },
-        ].map((r) => ExampleReviewSchemaExternal.parse(r));
-        return reviews.slice(0, input.limit);
-      }),
-  }),
-
   all: protectedProcedure
     .input(
       z.object({

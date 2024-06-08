@@ -1,19 +1,12 @@
 import { z } from "zod";
 
 import {
-  CreatedAtSchema,
-  PriceSchema,
-  RatingSchema,
   RestaurantAddressSchema,
   RestaurantIdSchema,
   RestaurantNameSchema,
   RestaurantUrlSchema,
-  ReviewIdSchema,
-  ReviewTextSchema,
-  UpdatedAtSchema,
   UserIdSchema,
   UsernameSchema,
-  VisitedAtSchema,
 } from "../../atoms";
 
 export {
@@ -65,16 +58,3 @@ export const isCompleteUser = (
 ): user is z.infer<typeof UserSchema> => {
   return user.username !== undefined;
 };
-
-export const ExampleReviewSchema = z.object({
-  id: ReviewIdSchema,
-  username: UsernameSchema,
-  userId: UserIdSchema,
-  restaurantId: RestaurantIdSchema,
-  rating: RatingSchema,
-  price: PriceSchema,
-  text: ReviewTextSchema,
-  visitedAt: VisitedAtSchema,
-  createdAt: CreatedAtSchema,
-  updatedAt: UpdatedAtSchema,
-});

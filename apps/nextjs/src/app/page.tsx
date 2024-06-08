@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { ReviewSchema } from "@restauwants/schema/client";
 import { WavyBackground } from "@restauwants/ui/backgrounds";
 import { Button } from "@restauwants/ui/button";
 
@@ -9,11 +10,27 @@ import {
   ReviewCard,
   ReviewCardSkeleton,
 } from "~/components/reviews";
-import { api } from "~/trpc/server";
 import { withRestrictionsBasedOnSession } from "../actions/navigation";
 
 export default withRestrictionsBasedOnSession(async () => {
-  const exampleReviews = await api.review.example.all({ limit: 3 });
+  const reviews = [
+    {
+      id: 1,
+      text: "Awesome sandwich bar, right on campus. Has been a game changer for me on the days I don't bring a lunch. I recommend ordering the wrap and packing in all the veggies.",
+      rating: 4,
+      price: 10.0,
+      visitedAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2),
+      createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2),
+      updatedAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2),
+      userId: "0",
+      username: "daphne",
+      restaurantId: "ChIJ_-4oJVpxj1QR9fuYXnfroNg",
+      restaurantName: "Mac's",
+      restaurantAddress:
+        "MacLaurin Building, 3800 Finnerty Rd, Victoria, BC V8P 4X2, Canada",
+      restaurantUrl: "https://maps.google.com/?cid=15609735206386858997",
+    },
+  ].map((r) => ReviewSchema.parse(r));
 
   return (
     <div className="flex flex-col">
@@ -74,22 +91,22 @@ export default withRestrictionsBasedOnSession(async () => {
           </p>
           <div className="grid w-full grid-cols-1 gap-4 pt-16 md:grid-cols-10 md:grid-rows-4">
             <div className="hover:shadow-3xl duration-800 shadow-xl shadow-primary/10 transition-shadow ease-in-out hover:shadow-primary/20 md:col-start-1 md:col-end-7 md:row-start-1 md:row-end-3">
-              {exampleReviews[0] ? (
-                <ReviewCard review={exampleReviews[0]} />
+              {reviews[0] ? (
+                <ReviewCard review={reviews[0]} />
               ) : (
                 <ReviewCardSkeleton />
               )}
             </div>
             <div className="hover:shadow-3xl duration-800 shadow-xl shadow-primary/10 transition-shadow ease-in-out hover:shadow-primary/20 md:col-start-7 md:col-end-11 md:row-start-2 md:row-end-4">
-              {exampleReviews[1] ? (
-                <ReviewCard review={exampleReviews[1]} />
+              {reviews[1] ? (
+                <ReviewCard review={reviews[1]} />
               ) : (
                 <ReviewCardSkeleton />
               )}
             </div>
             <div className="hover:shadow-3xl duration-800 shadow-xl shadow-primary/10 transition-shadow ease-in-out hover:shadow-primary/20 md:col-start-2 md:col-end-7 md:row-start-3 md:row-end-5">
-              {exampleReviews[1] ? (
-                <ReviewCard review={exampleReviews[1]} />
+              {reviews[2] ? (
+                <ReviewCard review={reviews[2]} />
               ) : (
                 <ReviewCardSkeleton />
               )}
