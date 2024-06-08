@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ReviewSchema } from "@restauwants/schema/client";
 import { WavyBackground } from "@restauwants/ui/backgrounds";
 import { Button } from "@restauwants/ui/button";
+import { ShrimpIcon } from "@restauwants/ui/icons";
 
 import { landingPage } from "~/app/paths";
 import {
@@ -86,7 +87,7 @@ export default withRestrictionsBasedOnSession(async () => {
           Review your dining experiences, share your findings with friends, and
           receive recommendations from the people you trust&nbsp;most.
         </p>
-        <Button variant="primary" className="sm:text-md mt-8 h-10">
+        <Button variant="primary" className="mt-8 h-10">
           Start reviewing for free
         </Button>
       </div>
@@ -152,6 +153,20 @@ export default withRestrictionsBasedOnSession(async () => {
               </div>
             </div>
           </div>
+        </div>
+      </div>
+      <div className="container flex flex-col items-center py-24">
+        <div className="relative flex flex-col items-center rounded-2xl border-2 bg-background px-6 py-16 shadow-xl sm:px-10">
+          <ShrimpIcon className="absolute -left-[95px] -top-[105px] -z-50 hidden size-52 md:block" />
+          <h2 className="text-center text-3xl font-bold sm:text-4xl">
+            Why not give it a&nbsp;try?
+          </h2>
+          <p className="mt-5 text-center leading-snug text-muted-foreground sm:text-lg">
+            Create an account and start reviewing, completely&nbsp;free.
+          </p>
+          <Button variant="primary" className="mt-8 h-10 w-52">
+            Start reviewing
+          </Button>
         </div>
       </div>
     </div>
