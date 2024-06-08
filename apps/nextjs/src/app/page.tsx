@@ -90,17 +90,17 @@ export default withRestrictionsBasedOnSession(async () => {
           Start reviewing for free
         </Button>
       </div>
-      <div className="relative py-[500px]">
+      <div className="relative pb-[300px] pt-[500px]">
         <WavyBackground
           variant={0}
           className="absolute top-[180px] -z-50 h-[200px] w-full rotate-180"
         />
-        <div className="absolute top-0 -z-40 h-full w-full py-[379px]">
+        <div className="absolute top-0 -z-40 h-full w-full pb-[199px] pt-[379px]">
           <div className="h-full w-full bg-secondary" />
         </div>
         <WavyBackground
           variant={3}
-          className="absolute bottom-[180px] -z-50 h-[200px] w-full"
+          className="absolute bottom-0 -z-50 h-[200px] w-full"
         />
         <div className="container grid max-w-[76rem] grid-cols-1 gap-x-12 gap-y-16 md:grid-cols-5">
           <div className="md:col-span-2">
