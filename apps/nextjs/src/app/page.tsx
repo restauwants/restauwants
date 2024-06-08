@@ -120,26 +120,32 @@ export default withRestrictionsBasedOnSession(async () => {
             next vacation, and&nbsp;more.
           </p>
           <div className="grid w-full grid-cols-1 gap-4 pt-16 md:grid-cols-10 md:grid-rows-4">
-            <div className="hover:shadow-3xl duration-800 shadow-xl shadow-primary/10 transition-shadow ease-in-out hover:shadow-primary/20 md:col-start-1 md:col-end-7 md:row-start-1 md:row-end-3">
-              {reviews[0] ? (
-                <ReviewCard review={reviews[0]} />
-              ) : (
-                <ReviewCardSkeleton />
-              )}
+            <div className="md:col-start-1 md:col-end-7 md:row-start-1 md:row-end-3">
+              <div className="hover:shadow-3xl duration-800 shadow-xl shadow-primary/10 transition-shadow ease-in-out hover:shadow-primary/20">
+                {reviews[0] ? (
+                  <ReviewCard review={reviews[0]} />
+                ) : (
+                  <ReviewCardSkeleton />
+                )}
+              </div>
             </div>
-            <div className="hover:shadow-3xl duration-800 shadow-xl shadow-primary/10 transition-shadow ease-in-out hover:shadow-primary/20 md:col-start-7 md:col-end-11 md:row-start-2 md:row-end-4">
-              {reviews[1] ? (
-                <ReviewCard review={reviews[1]} />
-              ) : (
-                <ReviewCardSkeleton />
-              )}
+            <div className="md:col-start-7 md:col-end-11 md:row-start-2 md:row-end-4">
+              <div className="hover:shadow-3xl duration-800 shadow-xl shadow-primary/10 transition-shadow ease-in-out hover:shadow-primary/20">
+                {reviews[1] ? (
+                  <ReviewCard review={reviews[1]} />
+                ) : (
+                  <ReviewCardSkeleton />
+                )}
+              </div>
             </div>
-            <div className="hover:shadow-3xl duration-800 shadow-xl shadow-primary/10 transition-shadow ease-in-out hover:shadow-primary/20 md:col-start-2 md:col-end-7 md:row-start-3 md:row-end-5">
-              {reviews[2] ? (
-                <ReviewCard review={reviews[2]} />
-              ) : (
-                <ReviewCardSkeleton />
-              )}
+            <div className="md:col-start-2 md:col-end-7 md:row-start-3 md:row-end-5">
+              <div className="hover:shadow-3xl duration-800 shadow-xl shadow-primary/10 transition-shadow ease-in-out hover:shadow-primary/20">
+                {reviews[2] ? (
+                  <ReviewCard review={reviews[2]} />
+                ) : (
+                  <ReviewCardSkeleton />
+                )}
+              </div>
             </div>
           </div>
         </div>
