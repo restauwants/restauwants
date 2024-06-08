@@ -119,7 +119,7 @@ export default withRestrictionsBasedOnSession(async () => {
             Discover hidden gems near your home, learn about favorites for your
             next vacation, and&nbsp;more.
           </p>
-          <div className="grid w-full grid-cols-1 gap-4 pt-16 md:grid-cols-10 md:grid-rows-4">
+          <div className="grid w-full grid-cols-1 gap-x-16 gap-y-4 pt-16 md:grid-cols-10 md:grid-rows-4 md:gap-y-16">
             <div className="md:col-start-1 md:col-end-7 md:row-start-1 md:row-end-3">
               <div className="hover:shadow-3xl duration-800 shadow-xl shadow-primary/10 transition-shadow ease-in-out hover:shadow-primary/20">
                 {reviews[0] ? (
