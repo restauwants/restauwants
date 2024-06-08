@@ -24,6 +24,8 @@ export {
   MoonIcon,
 } from "lucide-react";
 
+export { SiGithub as GitHubIcon } from "@icons-pack/react-simple-icons";
+
 const ShrimpIcon = React.forwardRef<
   SVGSVGElement,
   React.SVGProps<SVGSVGElement>

@@ -3,7 +3,7 @@ import Link from "next/link";
 import { ReviewSchema } from "@restauwants/schema/client";
 import { WavyBackground } from "@restauwants/ui/backgrounds";
 import { Button } from "@restauwants/ui/button";
-import { ShrimpIcon } from "@restauwants/ui/icons";
+import { GitHubIcon, ShrimpIcon } from "@restauwants/ui/icons";
 
 import { landingPage } from "~/app/paths";
 import {
@@ -14,6 +14,7 @@ import {
 import { withRestrictionsBasedOnSession } from "../actions/navigation";
 
 export default withRestrictionsBasedOnSession(async () => {
+  const githubHref = "https://github.com/restauwants/restauwants";
   const reviews = [
     {
       id: 1,
@@ -155,7 +156,7 @@ export default withRestrictionsBasedOnSession(async () => {
           </div>
         </div>
       </div>
-      <div className="container flex flex-col items-center py-24">
+      <div className="container flex flex-col items-center pt-20 md:pt-48">
         <div className="relative flex flex-col items-center rounded-2xl border-2 bg-background px-6 py-16 shadow-xl sm:px-10">
           <ShrimpIcon className="absolute -left-[95px] -top-[105px] -z-50 hidden size-52 md:block" />
           <h2 className="text-center text-3xl font-bold sm:text-4xl">
@@ -168,6 +169,13 @@ export default withRestrictionsBasedOnSession(async () => {
             Start reviewing
           </Button>
         </div>
+      </div>
+      <div className="container relative mt-24 flex max-w-[76rem] flex-row justify-between pb-20 pt-5">
+        <div className="absolute inset-x-0 bottom-full mb-px h-px bg-muted" />
+        <p className="text-sm text-muted-foreground">RestauWants</p>
+        <Link href={githubHref} rel="noopener noreferrer" target="_blank">
+          <GitHubIcon className="fill-muted-foreground" />
+        </Link>
       </div>
     </div>
   );
