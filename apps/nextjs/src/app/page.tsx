@@ -45,6 +45,21 @@ export default withRestrictionsBasedOnSession(async () => {
       restaurantAddress: '1819 S Kihei Rd Building "A, Kihei, HI 96753, USA',
       restaurantUrl: "https://maps.google.com/?cid=5537190176773330351",
     },
+    {
+      id: 3,
+      text: "Beautiful building, right in the middle of ByWard Market. I ordered the jerk chicken sandwich and enjoyed it - the pineapple-kiwi salsa was yummy. I'll be coming back soon to try and get a seat on their balcony!",
+      rating: 4,
+      price: 36.0,
+      visitedAt: new Date(),
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      userId: "2",
+      username: "louis",
+      restaurantId: "ChIJTZABIwIFzkwR-T2FWcHUN2k",
+      restaurantName: "Aulde Dubliner & Pour House - ByWard Market, Ottawa ON",
+      restaurantAddress: "62 William St, Ottawa, ON K1N 7A3, Canada",
+      restaurantUrl: "https://maps.google.com/?cid=7581762424597200377",
+    },
   ].map((r) => ReviewSchema.parse(r));
 
   return (
