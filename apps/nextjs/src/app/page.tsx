@@ -30,6 +30,21 @@ export default withRestrictionsBasedOnSession(async () => {
         "MacLaurin Building, 3800 Finnerty Rd, Victoria, BC V8P 4X2, Canada",
       restaurantUrl: "https://maps.google.com/?cid=15609735206386858997",
     },
+    {
+      id: 2,
+      text: "The sushi here is incredible. Arrive around 4:00 pm and wait in line to get 50% off! The caterpillar roll was my personal fave.",
+      rating: 5,
+      price: 46.0,
+      visitedAt: new Date(Date.now() - 1000 * 60 * 3),
+      createdAt: new Date(Date.now() - 1000 * 60 * 3),
+      updatedAt: new Date(Date.now() - 1000 * 60 * 3),
+      userId: "1",
+      username: "aliya",
+      restaurantId: "ChIJm6YnFHPQVHkRr1Vb5CAN2Ew",
+      restaurantName: "Sansei Seafood Restaurant & Sushi Bar",
+      restaurantAddress: '1819 S Kihei Rd Building "A, Kihei, HI 96753, USA',
+      restaurantUrl: "https://maps.google.com/?cid=5537190176773330351",
+    },
   ].map((r) => ReviewSchema.parse(r));
 
   return (
