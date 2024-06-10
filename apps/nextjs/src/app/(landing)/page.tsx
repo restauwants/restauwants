@@ -10,10 +10,10 @@ import { Button } from "@restauwants/ui/button";
 import { GitHubIcon, ShrimpIcon } from "@restauwants/ui/icons";
 
 import { landingPage, profilePage } from "~/app/paths";
-import { CreateReviewForm } from "~/components/reviews";
 import { useDialogOrDrawer } from "~/hooks/dialog-or-drawer";
 import { api } from "~/trpc/react";
 import { ReviewExamples } from "./review-examples";
+import { ReviewFormExample } from "./review-form-example";
 
 export default function LandingPage() {
   const dialogOrDrawer = useDialogOrDrawer();
@@ -85,19 +85,7 @@ export default function LandingPage() {
             variant={3}
             className="absolute bottom-0 -z-50 h-[200px] w-full"
           />
-          <div className="container grid max-w-[76rem] grid-cols-1 gap-x-12 gap-y-16 md:grid-cols-5">
-            <div className="md:col-span-2">
-              <h2 className="text-3xl font-bold text-secondary-foreground sm:text-4xl">
-                Reviews, created in seconds
-              </h2>
-              <p className="mt-5 leading-snug text-secondary-foreground/80 sm:text-lg">
-                Spend your time on the information that matters&nbsp;most.
-              </p>
-            </div>
-            <div className="hover:shadow-3xl duration-800 rounded-2xl border-2 bg-background p-4 shadow-xl shadow-primary/10 transition-shadow ease-in-out hover:shadow-primary/20 md:col-span-3">
-              <CreateReviewForm skipSubmit />
-            </div>
-          </div>
+          <ReviewFormExample />
           <ReviewExamples />
         </div>
         <div className="container flex flex-col items-center pt-20 md:pt-48">
