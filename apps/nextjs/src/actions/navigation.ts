@@ -18,10 +18,6 @@ import {
   signInPage,
 } from "../app/paths";
 
-export async function navigate(page: string) {
-  redirect(page);
-}
-
 const isAtPath = (currentPath: string, targetPath: string) => {
   return currentPath === targetPath;
 };
@@ -41,7 +37,7 @@ const handleMissingSession = async (
   onRedirect: (path: string) => Promise<void>,
 ) => {
   await restrictTo(currentPath, [landingPage, signInPage], () =>
-    onRedirect(landingPage),
+    onRedirect(signInPage),
   );
 };
 

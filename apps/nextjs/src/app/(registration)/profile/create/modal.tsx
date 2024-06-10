@@ -27,8 +27,6 @@ import { Input } from "@restauwants/ui/input";
 import { toast } from "@restauwants/ui/toast";
 
 import { signOut } from "~/actions/auth";
-import { navigate } from "~/actions/navigation";
-import { profilePage as profilePagePage } from "~/app/paths";
 import { api } from "~/trpc/react";
 
 export const CreateProfileModal = () => {
@@ -59,7 +57,6 @@ export const CreateProfileModal = () => {
   const createProfile = api.user.profile.create.useMutation({
     onSuccess: async () => {
       await utils.user.invalidate();
-      await navigate(profilePagePage);
     },
     onError: () => {
       toast.error("Failed to create profile");
