@@ -1,8 +1,6 @@
-import { PropsWithChildren } from "react";
-
 import { WavyBackground } from "@restauwants/ui/backgrounds";
 
-export const ExamplesBackground = ({ children }: PropsWithChildren) => {
+export const ExamplesBackground = ({ children }: React.PropsWithChildren) => {
   return (
     <div className="relative pb-[300px] pt-[500px]">
       <WavyBackground
