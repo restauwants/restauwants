@@ -1,8 +1,12 @@
+import { useContext } from "react";
+
 import { Button } from "@restauwants/ui/button";
 import { ShrimpIcon } from "@restauwants/ui/icons";
 
+import { AuthProgressContext } from "./auth";
+
 export const CallToAction = () => {
-  // TODO(99): add behavior to button
+  const authProgress = useContext(AuthProgressContext);
   return (
     <div className="container flex flex-col items-center pt-20 md:pt-48">
       <div className="relative flex flex-col items-center rounded-2xl border-2 bg-background px-6 py-16 shadow-xl sm:px-10">
@@ -13,7 +17,11 @@ export const CallToAction = () => {
         <p className="mt-5 text-center leading-snug text-muted-foreground sm:text-lg">
           Create an account and start reviewing, completely&nbsp;free.
         </p>
-        <Button variant="primary" className="mt-8 h-10 w-52">
+        <Button
+          variant="primary"
+          className="mt-8 h-10 w-52"
+          onClick={() => authProgress.setIsInProgress?.(true)}
+        >
           Start reviewing
         </Button>
       </div>
