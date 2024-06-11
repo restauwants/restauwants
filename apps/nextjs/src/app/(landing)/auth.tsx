@@ -60,22 +60,25 @@ interface AuthProps {
 }
 
 export const Auth = (props: AuthProps) => {
-  const initialUser = use(props.user);
+  const router = useRouter();
   const dialogOrDrawer = useDialogOrDrawer();
   const authProgress = useContext(AuthProgressContext);
+  const initialUser = use(props.user);
   const { data: user } = api.user.currentWithOptionals.useQuery(undefined, {
     initialData: initialUser,
   });
+
+  const utils = api.useUtils();
   const form = useForm({
     schema: CreateProfileFormSchema,
     defaultValues: {
       username: "",
     },
   });
-  const utils = api.useUtils();
   const createProfile = api.user.profile.create.useMutation({
     onSuccess: async () => {
       await utils.user.invalidate();
+      router.push(profilePage);
     },
     onError: () => {
       toast.error("Failed to create profile");
@@ -87,10 +90,11 @@ export const Auth = (props: AuthProps) => {
     const formOutput = CreateProfileFormSchema.parse(formInput);
     createProfile.mutate(CreateProfileSchema.parse(formOutput));
   };
-  const router = useRouter();
+
   if (authProgress.isInProgress && user && isCompleteUser(user)) {
     router.push(profilePage);
   }
+
   return (
     <dialogOrDrawer.Root
       open={authProgress.isInProgress}
