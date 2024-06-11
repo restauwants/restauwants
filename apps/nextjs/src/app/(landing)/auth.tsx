@@ -1,8 +1,12 @@
 "use client";
 
-import { createContext, useContext, useState } from "react";
+import type { z } from "zod";
+import { createContext, use, useContext, useState } from "react";
+
+import type { UserSchemaWithOptionals } from "@restauwants/schema/client";
 
 import { useDialogOrDrawer } from "~/hooks/dialog-or-drawer";
+import { api } from "~/trpc/react";
 
 interface AuthProgressContextType {
   isInProgress: boolean;
@@ -30,9 +34,18 @@ export const AuthProgressContextProvider = ({
   );
 };
 
-export const Auth = () => {
+interface AuthProps {
+  user: Promise<z.infer<typeof UserSchemaWithOptionals> | undefined>;
+}
+
+export const Auth = (props: AuthProps) => {
+  const initialUser = use(props.user);
   const dialogOrDrawer = useDialogOrDrawer();
   const authProgress = useContext(AuthProgressContext);
+  const { data: user } = api.user.currentWithOptionals.useQuery(undefined, {
+    initialData: initialUser,
+  });
+  console.log(user); // TODO(99)
   return (
     <dialogOrDrawer.Root
       open={authProgress.isInProgress}

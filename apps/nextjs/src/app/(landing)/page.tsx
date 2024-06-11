@@ -1,5 +1,4 @@
-"use client";
-
+import { api } from "~/trpc/server";
 import { Auth, AuthProgressContextProvider } from "./auth";
 import { CallToAction } from "./call-to-action";
 import { ExamplesBackground } from "./examples-background";
@@ -10,11 +9,11 @@ import { ReviewExamples } from "./review-examples";
 import { ReviewFormExample } from "./review-form-example";
 
 export default function LandingPage() {
-  // TODO(99): pass initial state from server component and remove disabled state in buttons
+  const user = api.user.currentWithOptionals().catch((e) => void e);
   return (
     <AuthProgressContextProvider>
       <div className="flex flex-col">
-        <Auth />
+        <Auth user={user} />
         <Header />
         <Hero />
         <ExamplesBackground>

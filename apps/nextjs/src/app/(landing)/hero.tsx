@@ -1,3 +1,5 @@
+"use client";
+
 import { useContext } from "react";
 
 import { Button } from "@restauwants/ui/button";
