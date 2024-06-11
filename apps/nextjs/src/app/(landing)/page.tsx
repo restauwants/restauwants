@@ -2,16 +2,14 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 
-import { isCompleteUser } from "@restauwants/schema/client";
 import { Button } from "@restauwants/ui/button";
 import { GitHubIcon, ShrimpIcon } from "@restauwants/ui/icons";
 
-import { landingPage, profilePage } from "~/app/paths";
 import { useDialogOrDrawer } from "~/hooks/dialog-or-drawer";
 import { api } from "~/trpc/react";
 import { ExamplesBackground } from "./examples-background";
+import { Header } from "./header";
 import { Hero } from "./hero";
 import { ReviewExamples } from "./review-examples";
 import { ReviewFormExample } from "./review-form-example";
@@ -24,17 +22,6 @@ export default function LandingPage() {
     isSignInOrCreateProfilePopoverOpen,
     setSignInOrCreateProfilePopoverOpen,
   ] = useState(false);
-  const router = useRouter();
-
-  const hasCreatedProfile = currentUser && isCompleteUser(currentUser);
-
-  const handleSignInAndGetStarted = () => {
-    if (hasCreatedProfile) {
-      router.push(profilePage);
-    } else {
-      setSignInOrCreateProfilePopoverOpen(true);
-    }
-  };
 
   const githubHref = "https://github.com/restauwants/restauwants";
 
@@ -44,24 +31,7 @@ export default function LandingPage() {
       onOpenChange={setSignInOrCreateProfilePopoverOpen}
     >
       <div className="flex flex-col">
-        <div className="container relative flex max-w-[76rem] flex-row justify-between py-4">
-          <Link href={landingPage} className="flex flex-row items-center">
-            <span className="font-brand text-lg">RestauWants</span>
-          </Link>
-          <div className="flex flex-row items-center gap-4">
-            <Button
-              className="h-10"
-              variant="ghost"
-              onClick={handleSignInAndGetStarted}
-            >
-              Sign in
-            </Button>
-            <Button className="h-10" variant="outline">
-              Get started
-            </Button>
-          </div>
-          <div className="absolute inset-x-0 top-full mt-px h-px bg-muted" />
-        </div>
+        <Header />
         <Hero />
         <ExamplesBackground>
           <ReviewFormExample />
