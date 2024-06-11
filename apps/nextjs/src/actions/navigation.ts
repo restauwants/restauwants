@@ -11,12 +11,7 @@ import { isCompleteUser } from "@restauwants/schema/server/internal";
 
 import { getPathnameFromHeaders } from "~/functions/navigation";
 import { api } from "~/trpc/server";
-import {
-  landingPage,
-  profileCreationPage,
-  profilePage,
-  signInPage,
-} from "../app/paths";
+import { landingPage } from "../app/paths";
 
 const isAtPath = (currentPath: string, targetPath: string) => {
   return currentPath === targetPath;
@@ -36,9 +31,7 @@ const handleMissingSession = async (
   currentPath: string,
   onRedirect: (path: string) => Promise<void>,
 ) => {
-  await restrictTo(currentPath, [landingPage, signInPage], () =>
-    onRedirect(signInPage),
-  );
+  await restrictTo(currentPath, [landingPage], () => onRedirect(landingPage));
 };
 
 const hasCreatedProfile = async (
@@ -61,14 +54,7 @@ const handleExistingSession = async (
   >,
 ) => {
   if (!(await hasCreatedProfile(getCurrentUserWithOptionals))) {
-    await restrictTo(currentPath, [landingPage, profileCreationPage], () =>
-      onRedirect(landingPage),
-    );
-  } else if (
-    isAtPath(currentPath, profileCreationPage) ||
-    isAtPath(currentPath, signInPage)
-  ) {
-    await onRedirect(profilePage);
+    await restrictTo(currentPath, [landingPage], () => onRedirect(landingPage));
   }
 };
 
