@@ -11,7 +11,7 @@ import { isCompleteUser } from "@restauwants/schema/server/internal";
 
 import { getPathnameFromHeaders } from "~/functions/navigation";
 import { api } from "~/trpc/server";
-import { landingPage } from "../app/paths";
+import { feedPage, landingPage, profilePage, reviewPage } from "../app/paths";
 
 const isAtPath = (currentPath: string, targetPath: string) => {
   return currentPath === targetPath;
@@ -55,6 +55,10 @@ const handleExistingSession = async (
 ) => {
   if (!(await hasCreatedProfile(getCurrentUserWithOptionals))) {
     await restrictTo(currentPath, [landingPage], () => onRedirect(landingPage));
+  } else {
+    await restrictTo(currentPath, [feedPage, reviewPage, profilePage], () =>
+      onRedirect(profilePage),
+    );
   }
 };
 
