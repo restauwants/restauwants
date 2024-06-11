@@ -3,11 +3,11 @@
 import { useState } from "react";
 import Link from "next/link";
 
-import { Button } from "@restauwants/ui/button";
-import { GitHubIcon, ShrimpIcon } from "@restauwants/ui/icons";
+import { GitHubIcon } from "@restauwants/ui/icons";
 
 import { useDialogOrDrawer } from "~/hooks/dialog-or-drawer";
 import { api } from "~/trpc/react";
+import { CallToAction } from "./call-to-action";
 import { ExamplesBackground } from "./examples-background";
 import { Header } from "./header";
 import { Hero } from "./hero";
@@ -37,20 +37,7 @@ export default function LandingPage() {
           <ReviewFormExample />
           <ReviewExamples />
         </ExamplesBackground>
-        <div className="container flex flex-col items-center pt-20 md:pt-48">
-          <div className="relative flex flex-col items-center rounded-2xl border-2 bg-background px-6 py-16 shadow-xl sm:px-10">
-            <ShrimpIcon className="absolute -left-[95px] -top-[105px] -z-50 hidden size-52 md:block" />
-            <h2 className="text-center text-3xl font-bold sm:text-4xl">
-              Why not give it a&nbsp;try?
-            </h2>
-            <p className="mt-5 text-center leading-snug text-muted-foreground sm:text-lg">
-              Create an account and start reviewing, completely&nbsp;free.
-            </p>
-            <Button variant="primary" className="mt-8 h-10 w-52">
-              Start reviewing
-            </Button>
-          </div>
-        </div>
+        <CallToAction />
         <div className="container relative mt-24 flex max-w-[76rem] flex-row justify-between pb-20 pt-5">
           <div className="absolute inset-x-0 bottom-full mb-px h-px bg-muted" />
           <p className="text-sm text-muted-foreground">RestauWants</p>
