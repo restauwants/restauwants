@@ -2,11 +2,13 @@
 
 import type { z } from "zod";
 import { createContext, use, useContext, useState } from "react";
+import { useRouter } from "next/navigation";
 
 import type { UserSchemaWithOptionals } from "@restauwants/schema/client";
 import {
   CreateProfileFormSchema,
   CreateProfileSchema,
+  isCompleteUser,
 } from "@restauwants/schema/client";
 import { Button } from "@restauwants/ui/button";
 import {
@@ -25,6 +27,7 @@ import { toast } from "@restauwants/ui/toast";
 import { signInWithDiscord, signInWithGoogle, signOut } from "~/actions/auth";
 import { useDialogOrDrawer } from "~/hooks/dialog-or-drawer";
 import { api } from "~/trpc/react";
+import { profilePage } from "../paths";
 
 interface AuthProgressContextType {
   isInProgress: boolean;
@@ -84,6 +87,10 @@ export const Auth = (props: AuthProps) => {
     const formOutput = CreateProfileFormSchema.parse(formInput);
     createProfile.mutate(CreateProfileSchema.parse(formOutput));
   };
+  const router = useRouter();
+  if (authProgress.isInProgress && user && isCompleteUser(user)) {
+    router.push(profilePage);
+  }
   return (
     <dialogOrDrawer.Root
       open={authProgress.isInProgress}
