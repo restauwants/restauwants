@@ -12,6 +12,7 @@ import { landingPage, profilePage } from "~/app/paths";
 import { useDialogOrDrawer } from "~/hooks/dialog-or-drawer";
 import { api } from "~/trpc/react";
 import { ExamplesBackground } from "./examples-background";
+import { Hero } from "./hero";
 import { ReviewExamples } from "./review-examples";
 import { ReviewFormExample } from "./review-form-example";
 
@@ -61,18 +62,7 @@ export default function LandingPage() {
           </div>
           <div className="absolute inset-x-0 top-full mt-px h-px bg-muted" />
         </div>
-        <div className="container flex max-w-[32rem] flex-col items-center pt-24 sm:max-w-[40rem] lg:max-w-[60rem]">
-          <h1 className="text-center text-3xl font-bold sm:text-5xl lg:text-6xl/tight">
-            A better way to discover and share restaurants
-          </h1>
-          <p className="mt-5 max-w-[38rem] text-center leading-snug text-muted-foreground sm:text-lg">
-            Review your dining experiences, share your findings with friends,
-            and receive recommendations from the people you trust&nbsp;most.
-          </p>
-          <Button variant="primary" className="mt-8 h-10">
-            Start reviewing for free
-          </Button>
-        </div>
+        <Hero />
         <ExamplesBackground>
           <ReviewFormExample />
           <ReviewExamples />
