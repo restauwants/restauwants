@@ -1,3 +1,4 @@
+import { withRestrictionsBasedOnSession } from "~/actions/navigation";
 import { api } from "~/trpc/server";
 import { Auth, AuthProgressContextProvider } from "./auth";
 import { CallToAction } from "./call-to-action";
@@ -8,7 +9,7 @@ import { Hero } from "./hero";
 import { ReviewExamples } from "./review-examples";
 import { ReviewFormExample } from "./review-form-example";
 
-export default function LandingPage() {
+export default withRestrictionsBasedOnSession(() => {
   const user = api.user.currentWithOptionals().catch((e) => void e);
   return (
     <AuthProgressContextProvider>
@@ -25,4 +26,4 @@ export default function LandingPage() {
       </div>
     </AuthProgressContextProvider>
   );
-}
+});
