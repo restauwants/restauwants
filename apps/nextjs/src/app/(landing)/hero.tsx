@@ -1,7 +1,11 @@
+import { useContext } from "react";
+
 import { Button } from "@restauwants/ui/button";
 
+import { AuthProgressContext } from "./auth";
+
 export const Hero = () => {
-  // TODO(99): add behavior to button
+  const authProgress = useContext(AuthProgressContext);
   return (
     <div className="container flex max-w-[32rem] flex-col items-center pt-24 sm:max-w-[40rem] lg:max-w-[60rem]">
       <h1 className="text-center text-3xl font-bold sm:text-5xl lg:text-6xl/tight">
@@ -11,7 +15,11 @@ export const Hero = () => {
         Review your dining experiences, share your findings with friends, and
         receive recommendations from the people you trust&nbsp;most.
       </p>
-      <Button variant="primary" className="mt-8 h-10">
+      <Button
+        variant="primary"
+        className="mt-8 h-10"
+        onClick={() => authProgress.setIsInProgress?.(true)}
+      >
         Start reviewing for free
       </Button>
     </div>
