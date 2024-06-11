@@ -1,8 +1,8 @@
 "use client";
 
 import type { z } from "zod";
-import { createContext, use, useContext, useState } from "react";
-import { useRouter } from "next/navigation";
+import { createContext, use, useContext, useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 
 import type { UserSchemaWithOptionals } from "@restauwants/schema/client";
 import {
@@ -61,12 +61,20 @@ interface AuthProps {
 
 export const Auth = (props: AuthProps) => {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const dialogOrDrawer = useDialogOrDrawer();
   const authProgress = useContext(AuthProgressContext);
   const initialUser = use(props.user);
   const { data: user } = api.user.currentWithOptionals.useQuery(undefined, {
     initialData: initialUser,
   });
+
+  useEffect(() => {
+    if (searchParams.get("callback") && user) {
+      // user just signed in
+      authProgress.setIsInProgress?.(true);
+    }
+  }, [searchParams, authProgress]);
 
   const utils = api.useUtils();
   const form = useForm({

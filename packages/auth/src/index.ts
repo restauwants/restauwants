@@ -36,5 +36,8 @@ export const {
         },
       };
     },
+    redirect: () => {
+      return "/?callback=true";
+    },
   },
 });
