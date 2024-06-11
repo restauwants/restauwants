@@ -3,7 +3,7 @@ import Link from "next/link";
 import { GitHubIcon } from "@restauwants/ui/icons";
 
 export const Footer = () => {
-  // TODO(99): move github href to constants module
+  // TODO: create shared module for constants
   const githubHref = "https://github.com/restauwants/restauwants";
 
   return (

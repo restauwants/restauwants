@@ -8,11 +8,17 @@ import { FriendsIcon, SignOutIcon } from "@restauwants/ui/icons";
 
 import { signOut } from "~/actions/auth";
 import { useDialogOrDrawer } from "~/hooks/dialog-or-drawer";
+import { api } from "~/trpc/react";
 import { ManageFriends } from "../../../components/friends";
 
 export function Settings() {
   const dialogOrDrawer = useDialogOrDrawer();
   const [isSignOutModalOpen, setIsSignOutModalOpen] = useState(false);
+  const utils = api.useUtils();
+  const handleSignOut = async () => {
+    await utils.user.invalidate();
+    await signOut();
+  };
   return (
     <div className="flex flex-row gap-2 md:gap-4">
       <dialogOrDrawer.Root>
@@ -36,7 +42,7 @@ export function Settings() {
         description="Are you sure you want to sign out?"
         cancelVerb="Cancel"
         actionVerb="Sign Out"
-        onAction={() => signOut()}
+        onAction={handleSignOut}
         open={isSignOutModalOpen}
         onOpenChange={setIsSignOutModalOpen}
       />

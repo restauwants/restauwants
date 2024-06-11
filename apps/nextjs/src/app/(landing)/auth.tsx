@@ -74,7 +74,7 @@ export const Auth = (props: AuthProps) => {
       // user just signed in
       authProgress.setIsInProgress?.(true);
     }
-  }, [searchParams, authProgress]);
+  }, [searchParams, authProgress, user]);
 
   const utils = api.useUtils();
   const form = useForm({
