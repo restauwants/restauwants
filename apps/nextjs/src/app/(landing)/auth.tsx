@@ -4,10 +4,25 @@ import type { z } from "zod";
 import { createContext, use, useContext, useState } from "react";
 
 import type { UserSchemaWithOptionals } from "@restauwants/schema/client";
+import {
+  CreateProfileFormSchema,
+  CreateProfileSchema,
+} from "@restauwants/schema/client";
 import { Button } from "@restauwants/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+  useForm,
+} from "@restauwants/ui/form";
 import { DiscordIcon, GoogleIcon } from "@restauwants/ui/icons";
+import { Input } from "@restauwants/ui/input";
+import { toast } from "@restauwants/ui/toast";
 
-import { signInWithDiscord, signInWithGoogle } from "~/actions/auth";
+import { signInWithDiscord, signInWithGoogle, signOut } from "~/actions/auth";
 import { useDialogOrDrawer } from "~/hooks/dialog-or-drawer";
 import { api } from "~/trpc/react";
 
@@ -48,6 +63,27 @@ export const Auth = (props: AuthProps) => {
   const { data: user } = api.user.currentWithOptionals.useQuery(undefined, {
     initialData: initialUser,
   });
+  const form = useForm({
+    schema: CreateProfileFormSchema,
+    defaultValues: {
+      username: "",
+    },
+  });
+  const utils = api.useUtils();
+  const createProfile = api.user.profile.create.useMutation({
+    onSuccess: async () => {
+      await utils.user.invalidate();
+    },
+    onError: () => {
+      toast.error("Failed to create profile");
+    },
+  });
+  const onCreateProfileFormSubmit = (
+    formInput: z.input<typeof CreateProfileFormSchema>,
+  ) => {
+    const formOutput = CreateProfileFormSchema.parse(formInput);
+    createProfile.mutate(CreateProfileSchema.parse(formOutput));
+  };
   return (
     <dialogOrDrawer.Root
       open={authProgress.isInProgress}
@@ -55,7 +91,45 @@ export const Auth = (props: AuthProps) => {
     >
       <dialogOrDrawer.Content className="md:max-w-[25rem]">
         {user ? (
-          <p />
+          <>
+            <dialogOrDrawer.Header>
+              <dialogOrDrawer.Title className="text-center">
+                Create Profile
+              </dialogOrDrawer.Title>
+            </dialogOrDrawer.Header>
+            <div className="flex flex-col gap-2">
+              <Form {...form}>
+                <form
+                  onSubmit={form.handleSubmit(onCreateProfileFormSubmit)}
+                  id="create-profile"
+                >
+                  <FormField
+                    control={form.control}
+                    name="username"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Username</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage reserve />
+                      </FormItem>
+                    )}
+                  />
+                </form>
+              </Form>
+              <div className="flex flex-row justify-end gap-2">
+                <form>
+                  <Button formAction={signOut} variant="outline">
+                    Cancel
+                  </Button>
+                </form>
+                <Button type="submit" form="create-profile">
+                  Create
+                </Button>
+              </div>
+            </div>
+          </>
         ) : (
           <>
             <dialogOrDrawer.Header>
