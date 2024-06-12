@@ -1,9 +1,8 @@
-import type { Metadata, Viewport } from "next";
+import type { Metadata } from "next";
 import { GeistMono } from "geist/font/mono";
 import { GeistSans } from "geist/font/sans";
 
 import { cn } from "@restauwants/ui";
-// import { ThemeProvider } from "@restauwants/ui/theme";
 import { Toaster } from "@restauwants/ui/toast";
 
 import { env } from "~/env";
@@ -18,25 +17,13 @@ export const metadata: Metadata = {
       : "http://localhost:3000",
   ),
   title: "RestauWants",
-  description: "Simple monorepo with shared backend for web & mobile apps",
+  description: "Track, review, wishlist, and share restaurants with friends",
   openGraph: {
     title: "RestauWants",
-    description: "Simple monorepo with shared backend for web & mobile apps",
+    description: "Track, review, wishlist, and share restaurants with friends",
     url: "https://www.restauwants.com",
     siteName: "RestauWants",
   },
-  twitter: {
-    card: "summary_large_image",
-    site: "@jullerino",
-    creator: "@jullerino",
-  },
-};
-
-export const viewport: Viewport = {
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "white" },
-    { media: "(prefers-color-scheme: dark)", color: "black" },
-  ],
 };
 
 export default function RootLayout(props: { children: React.ReactNode }) {
@@ -49,12 +36,10 @@ export default function RootLayout(props: { children: React.ReactNode }) {
           GeistMono.variable,
         )}
       >
-        {/* <ThemeProvider attribute="class" defaultTheme="system" enableSystem> */}
         <TrpcReactProvider>
           <main>{props.children}</main>
         </TrpcReactProvider>
         <Toaster />
-        {/* </ThemeProvider> */}
       </body>
     </html>
   );
