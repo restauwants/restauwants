@@ -159,7 +159,7 @@ function ReviewForm({
                       <StarIcon
                         key={rating}
                         className={cn(
-                          "size-6",
+                          "size-7",
                           field.value && rating <= field.value
                             ? "fill-foreground"
                             : "fill-muted",
