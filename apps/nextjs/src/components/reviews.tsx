@@ -186,6 +186,7 @@ function ReviewForm({
                     {...field}
                     value={field.value ?? ""}
                     type="number"
+                    step="any"
                     placeholder="23.50"
                     onChange={(e) =>
                       field.onChange(
