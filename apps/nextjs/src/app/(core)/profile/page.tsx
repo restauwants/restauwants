@@ -1,5 +1,7 @@
 import { Suspense } from "react";
 
+import { WavyBackground } from "@restauwants/ui/backgrounds";
+
 import { withRestrictionsBasedOnSession } from "~/actions/navigation";
 import { api } from "~/trpc/server";
 import { ReviewList, ReviewListSkeleton } from "../../../components/reviews";
@@ -11,23 +13,23 @@ export default withRestrictionsBasedOnSession(async () => {
 
   return (
     <>
-      <div className="bg-profile-background absolute -z-50 h-screen w-screen bg-cover bg-right-bottom bg-no-repeat" />
+      <div className="absolute -z-50 h-28 w-full">
+        <WavyBackground variant={0} />
+      </div>
       <div className="container flex flex-row items-center justify-between pt-4">
         <p className="min-w-0 break-words text-2xl font-bold text-primary-foreground">
           {(await user).username}
         </p>
         <Settings />
       </div>
-      <div className="flex w-full flex-col items-center  pb-20 pt-12">
-        <div className="container pt-4">
-          <Suspense fallback={<ReviewListSkeleton count={3} />}>
-            <ReviewList
-              reviews={reviews}
-              currentUser={user}
-              byUserId={(await user).id}
-            />
-          </Suspense>
-        </div>
+      <div className="container pb-20 pt-16">
+        <Suspense fallback={<ReviewListSkeleton count={3} />}>
+          <ReviewList
+            reviews={reviews}
+            currentUser={user}
+            byUserId={(await user).id}
+          />
+        </Suspense>
       </div>
     </>
   );

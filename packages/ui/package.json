@@ -6,6 +6,7 @@
   "exports": {
     ".": "./src/index.ts",
     "./alert-dialog": "./src/alert-dialog.tsx",
+    "./backgrounds": "./src/backgrounds.tsx",
     "./completions": "./src/completions.tsx",
     "./button": "./src/button.tsx",
     "./calendar": "./src/calendar.tsx",
