@@ -3,7 +3,8 @@ import * as React from "react";
 import { cn } from ".";
 
 export {
-  SettingsIcon,
+  UserPlusIcon as FriendsIcon,
+  LogOutIcon as SignOutIcon,
   MoreVerticalIcon as DotsVerticalIcon,
   StarIcon,
   CalendarIcon,

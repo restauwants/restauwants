@@ -4,14 +4,7 @@ import { useState } from "react";
 
 import { Button } from "@restauwants/ui/button";
 import { ConfirmationDialog } from "@restauwants/ui/confirmation";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@restauwants/ui/dropdown-menu";
-import { SettingsIcon } from "@restauwants/ui/icons";
+import { FriendsIcon, SignOutIcon } from "@restauwants/ui/icons";
 
 import { signOut } from "~/actions/auth";
 import { useDialogOrDrawer } from "~/hooks/dialog-or-drawer";
@@ -21,24 +14,13 @@ export function Settings() {
   const dialogOrDrawer = useDialogOrDrawer();
   const [isSignOutModalOpen, setIsSignOutModalOpen] = useState(false);
   return (
-    <>
+    <div className="flex flex-row gap-2 md:gap-4">
       <dialogOrDrawer.Root>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon">
-              <SettingsIcon className="size-8 text-primary-foreground" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <dialogOrDrawer.Trigger className="w-full">
-              <DropdownMenuItem>Friends</DropdownMenuItem>
-            </dialogOrDrawer.Trigger>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => setIsSignOutModalOpen(true)}>
-              Sign Out
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <dialogOrDrawer.Trigger asChild>
+          <Button>
+            <FriendsIcon />
+          </Button>
+        </dialogOrDrawer.Trigger>
         <ManageFriends
           Content={dialogOrDrawer.Content}
           Header={dialogOrDrawer.Header}
@@ -46,6 +28,9 @@ export function Settings() {
           Footer={dialogOrDrawer.Footer}
         />
       </dialogOrDrawer.Root>
+      <Button onClick={() => setIsSignOutModalOpen(true)}>
+        <SignOutIcon />
+      </Button>
       <ConfirmationDialog
         title="Sign-Out Confirmation"
         description="Are you sure you want to sign out?"
@@ -55,6 +40,6 @@ export function Settings() {
         open={isSignOutModalOpen}
         onOpenChange={setIsSignOutModalOpen}
       />
-    </>
+    </div>
   );
 }
