@@ -1,5 +1,4 @@
-export const signInPage = "/signin";
+export const landingPage = "/";
 export const profilePage = "/profile";
-export const profileCreationPage = "/profile/create";
 export const feedPage = "/feed";
 export const reviewPage = "/review";

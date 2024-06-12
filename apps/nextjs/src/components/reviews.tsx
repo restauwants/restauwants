@@ -56,7 +56,7 @@ import { useDialogOrDrawer } from "~/hooks/dialog-or-drawer";
 import { api } from "~/trpc/react";
 import { RestaurantSearchBoxWithSuggestions } from "./restaurants";
 
-export function CreateReviewForm() {
+export function CreateReviewForm({ skipSubmit }: { skipSubmit?: boolean }) {
   const form = useForm({
     schema: ReviewFormSchema,
     defaultValues: {
@@ -74,12 +74,16 @@ export function CreateReviewForm() {
 
   const utils = api.useUtils();
 
+  const reset = () => {
+    form.reset();
+    form.setValue("visitedAt", new Date());
+  };
+
   const createReview = api.review.create.useMutation({
     onSuccess: async () => {
-      form.reset();
-      form.setValue("visitedAt", new Date());
       await utils.review.invalidate();
       toast.success(`Review created`);
+      reset();
     },
     onError: () => {
       toast.error("Failed to create review");
@@ -87,6 +91,10 @@ export function CreateReviewForm() {
   });
 
   const onSubmit = (formInput: z.input<typeof ReviewFormSchema>) => {
+    if (skipSubmit) {
+      reset();
+      return;
+    }
     const formOutput = ReviewFormSchema.parse(formInput);
     createReview.mutate(
       CreateReviewSchema.parse({

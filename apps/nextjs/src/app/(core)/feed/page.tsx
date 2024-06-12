@@ -13,9 +13,7 @@ export default withRestrictionsBasedOnSession(() => {
   return (
     <>
       <div className="flex h-20 w-full justify-center">
-        <div className="absolute -z-50 h-28 w-full">
-          <WavyBackground variant={1} />
-        </div>
+        <WavyBackground variant={1} className="absolute -z-50 h-28 w-full" />
         <h1 className="font-brand pt-4 text-4xl text-primary-foreground sm:text-5xl">
           RestauWants
         </h1>
