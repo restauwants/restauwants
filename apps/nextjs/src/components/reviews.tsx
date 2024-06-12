@@ -333,19 +333,12 @@ function reviewList() {
 
     if (reviews.length === 0) {
       return (
-        <div className="relative flex w-full flex-col items-center gap-4">
-          <div className="mt-20 max-w-xs">
-            <div className="mt-20 max-w-xs">
-              <p className="text-l text-center">
-                Your feed is looking a bit{" "}
-                <span className="italic">hungry...</span> maybe it&apos;s time
-                to find a place to eat!
-              </p>
-              <div className="mt-5 flex justify-center">
-                <ShrimpIcon className="size-20" />
-              </div>
-            </div>
-          </div>
+        <div className="mt-10 flex flex-col items-center gap-5">
+          <p className="max-w-xs text-center">
+            Your feed is looking a bit <span className="italic">hungry...</span>{" "}
+            maybe it&#39;s time to add friends!
+          </p>
+          <ShrimpIcon className="size-36" />
         </div>
       );
     }
@@ -491,7 +484,7 @@ export function ReviewCardSkeleton(props: { pulse?: boolean }) {
         <div className="grid gap-1.5">
           <CardTitle
             className={cn(
-              "min-h-9 w-32 rounded bg-secondary",
+              "min-h-9 w-32 rounded bg-muted-foreground",
               pulse && "animate-pulse",
             )}
           />
@@ -507,9 +500,11 @@ export function ReviewCardSkeleton(props: { pulse?: boolean }) {
             pulse && "animate-pulse",
           )}
         >
-          <div className="w-16 rounded bg-secondary text-3xl">&nbsp;</div>
+          <div className="w-16 rounded bg-muted-foreground text-3xl">
+            &nbsp;
+          </div>
           <div className="ml-auto flex items-center gap-2">
-            <span className="w-20 rounded bg-secondary">&nbsp;</span>
+            <span className="w-20 rounded bg-muted-foreground">&nbsp;</span>
           </div>
         </div>
       </CardContent>

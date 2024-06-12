@@ -32,7 +32,7 @@ export const Navigation = () => {
       const isCurrentPage = pathname === pagePath;
       return {
         strokeWidth: isCurrentPage ? 3 : 2,
-        className: cn("size-7", isCurrentPage && "text-secondary"),
+        className: cn("size-7", isCurrentPage && "text-primary"),
       };
     },
     [pathname],
