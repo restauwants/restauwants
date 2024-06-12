@@ -22,7 +22,17 @@ export default withRestrictionsBasedOnSession(() => {
       </div>
       <div className="container max-w-[48rem] pb-20 pt-9">
         <Suspense fallback={<ReviewListSkeleton count={1} />}>
-          <ReviewList reviews={reviews} currentUser={currentUser} />
+          <ReviewList
+            reviews={reviews}
+            currentUser={currentUser}
+            emptyMessage={
+              <p className="text-center">
+                Your feed is looking a bit{" "}
+                <span className="italic">hungry...</span> maybe it&#39;s time to
+                add friends!
+              </p>
+            }
+          />
         </Suspense>
       </div>
     </>
