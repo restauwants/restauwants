@@ -16,7 +16,6 @@
   "dependencies": {
     "@restauwants/api": "workspace:^0.1.0",
     "@restauwants/auth": "workspace:^0.1.0",
-    "@restauwants/db": "workspace:^0.1.0",
     "@restauwants/schema": "workspace:^0.1.0",
     "@restauwants/ui": "workspace:^0.1.0",
     "@t3-oss/env-nextjs": "^0.7.1",
