@@ -16,13 +16,13 @@ export default withRestrictionsBasedOnSession(async () => {
       <div className="absolute -z-50 h-28 w-full">
         <WavyBackground variant={0} />
       </div>
-      <div className="container flex flex-row items-center justify-between pt-4">
+      <div className="container flex max-w-[48rem] flex-row items-center justify-between pt-4">
         <p className="min-w-0 break-words text-2xl font-bold text-primary-foreground">
           {(await user).username}
         </p>
         <Settings />
       </div>
-      <div className="container pb-20 pt-16">
+      <div className="container max-w-[48rem] pb-20 pt-16">
         <Suspense fallback={<ReviewListSkeleton count={3} />}>
           <ReviewList
             reviews={reviews}
