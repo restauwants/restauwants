@@ -52,14 +52,14 @@ export const RestaurantSearchBoxWithSuggestions =
       isGoogleMapsScriptLoaded,
     }: PropsWithGoogleMapsScript<RestaurantSearchBoxWithSuggestionsProps>) => {
       const toValue = useCallback(
-        (restaurant: z.infer<typeof RestaurantSchema>) =>
-          AddDescriptionToRestaurantSchema.parse(restaurant).description,
+        (restaurant?: z.infer<typeof RestaurantSchema>) =>
+          restaurant
+            ? AddDescriptionToRestaurantSchema.parse(restaurant).description
+            : "",
         [],
       );
 
-      const [skeletonValue, setSkeletonValue] = useState(
-        selected ? toValue(selected) : "",
-      );
+      const [skeletonValue, setSkeletonValue] = useState(toValue(selected));
 
       const {
         ready,
@@ -99,7 +99,6 @@ export const RestaurantSearchBoxWithSuggestions =
       }, [ready, skeletonValue, setValue]);
 
       useEffect(() => {
-        if (!selected) return;
         const value = toValue(selected);
         if (ready) {
           setValue(value);
